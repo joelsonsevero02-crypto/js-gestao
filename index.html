@@ -13,8 +13,6 @@
 <link rel="icon" type="image/png" href="https://ui-avatars.com/api/?name=JS&background=0f172a&color=3b82f6&size=512&rounded=true&length=2&bold=true&font-size=0.45">
 <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=JS&background=0f172a&color=3b82f6&size=512&rounded=true&length=2&bold=true&font-size=0.45">
 
-<link rel="manifest" href='data:application/manifest+json;base64,eyJuYW1lIjoiSlMgR2VzdMOjbyIsInNob3J0X25hbWUiOiJKUyBHZXN0w6NvIiwic3RhcnRfdXJsIjoiLiIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMwZjE3MmEiLCJ0aGVtZV9jb2xvciI6IiMwZjE3MmEiLCJpY29ucyI6W3sic3JjIjoiaHR0cHM6Ly91aS1hdmF0YXJzLmNvbS9hcGkvP25hbWU9SlMmYmFja2dyb3VuZD0wZjE3MmEmY29sb3I9M2I4MmY2JnNpemU9NTEyJnJvdW5kZWQ9dHJ1ZSZsZW5ndGg9MiZib2xkPXRydWUmZm9udC1zaXplPTAuNDUiLCJzaXplcyI6IjUxMng1MTIiLCJ0eXBlIjoiaW1hZ2UvcG5nIn1dfQ==' />
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,17 +21,18 @@
 <style>
 /* ================= CSS (VISUAL) ================= */
 :root {
-    --bg-body: #0f172a;       
+    --bg-body: #0f172a;        
     --bg-sidebar: #111827;    
-    --surface: #1e293b;       
+    --surface: #1e293b;        
     --border: #334155;        
     --text-main: #f8fafc;     
     --text-secondary: #94a3b8; 
-    --primary: #3b82f6;       
+    --primary: #3b82f6;        
     --accent-purple: #8b5cf6; 
     --accent-green: #10b981;  
     --accent-pink: #ec4899;   
     --danger: #ef4444;        
+    --deposit: #0ea5e9;
     --radius: 12px;
     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
     --transition: all 0.3s ease;
@@ -63,10 +62,12 @@ main { flex: 1; margin-left: 250px; padding: 30px; overflow-y: auto; padding-bot
 .page-title { font-size: 1.5rem; font-weight: 700; }
 .date-display { font-size: 0.9rem; color: var(--text-secondary); background: var(--surface); padding: 8px 15px; border-radius: 20px; border: 1px solid var(--border); }
 .card { background: var(--surface); border-radius: var(--radius); padding: 25px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); }
-input, select { width: 100%; padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border); background: #0f172a; color: white; font-size: 0.9rem; transition: var(--transition); }
-input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
+input, select, textarea { width: 100%; padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border); background: #0f172a; color: white; font-size: 0.9rem; transition: var(--transition); font-family: 'Inter', sans-serif;}
+input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
+textarea { resize: vertical; min-height: 80px; }
 .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 0.95rem; }
 .btn-primary { background: var(--primary); color: white; }
+.btn-success { background: var(--accent-green); color: white; }
 .btn-danger { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
 .btn-secondary { background: var(--border); color: var(--text-main); }
 .dash-filters { display: flex; background: var(--surface); padding: 5px; border-radius: 12px; width: fit-content; margin-bottom: 20px; border: 1px solid var(--border); overflow-x: auto; max-width: 100%; }
@@ -80,11 +81,12 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 2px 
 .bg-pink { background: linear-gradient(135deg, #ec4899, #db2777); }
 .stat-info h3 { margin: 0; font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
 .stat-info p { margin: 5px 0 0 0; font-size: 1.6rem; font-weight: 700; color: var(--text-main); }
-.transaction-list { list-style: none; padding: 0; }
+.transaction-list { list-style: none; padding: 0; margin: 0; }
 .transaction-item { background: rgba(255,255,255,0.02); padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid transparent; transition: 0.2s; }
 .transaction-item:hover { background: rgba(255,255,255,0.05); }
 .t-entrada { border-left-color: var(--accent-green); }
 .t-saida { border-left-color: var(--danger); }
+.t-deposito { border-left-color: var(--deposit); }
 .filter-wrapper { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
 .search-box { flex: 1; position: relative; }
 .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
@@ -95,7 +97,9 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 2px 
 .toast { position: fixed; top: 20px; right: 20px; background: var(--surface); border: 1px solid var(--border); padding: 15px; border-radius: 8px; z-index: 2000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 10px; }
 .text-green { color: var(--accent-green); }
 .text-red { color: var(--danger); }
+.text-blue { color: var(--deposit); }
 .split-box { background: rgba(59,130,246,0.1); border: 1px dashed var(--primary); padding: 15px; border-radius: 8px; margin-top: 10px; }
+.uppercase-input { text-transform: uppercase; }
 </style>
 </head>
 <body>
@@ -120,24 +124,30 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 2px 
         </div>
 
         <section id="dashboard" class="active-section">
-            <div class="dash-filters">
-                <button class="df-btn" onclick="setDashFilter('dia')" id="d-btn-dia">Hoje</button>
-                <button class="df-btn" onclick="setDashFilter('semana')" id="d-btn-semana">Semana</button>
-                <button class="df-btn active" onclick="setDashFilter('mes')" id="d-btn-mes">Mês</button>
-                <button class="df-btn" onclick="setDashFilter('ano')" id="d-btn-ano">Ano</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div class="dash-filters">
+                    <button class="df-btn active" onclick="setDashFilter('dia')" id="d-btn-dia">Hoje</button>
+                    <button class="df-btn" onclick="setDashFilter('semana')" id="d-btn-semana">Semana</button>
+                    <button class="df-btn" onclick="setDashFilter('mes')" id="d-btn-mes">Mês</button>
+                    <button class="df-btn" onclick="setDashFilter('ano')" id="d-btn-ano">Ano</button>
+                </div>
+                <button class="btn btn-success" style="width: auto; padding: 10px 20px; margin-bottom: 20px;" onclick="exportarWhatsApp()">
+                    <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Exportar Relatório (Hoje)
+                </button>
             </div>
+            
             <div class="stats-grid">
                 <div class="card stat-widget">
                     <div class="icon-box bg-green"><i class="fas fa-arrow-up"></i></div>
                     <div class="stat-info">
-                        <h3>Entradas (<span id="lblPeriodo">Mês</span>)</h3>
+                        <h3>Entradas (<span id="lblPeriodo">Hoje</span>)</h3>
                         <p id="dashEntradas" class="text-green">R$ 0,00</p>
                     </div>
                 </div>
                 <div class="card stat-widget">
                     <div class="icon-box bg-purple"><i class="fas fa-arrow-down"></i></div>
                     <div class="stat-info">
-                        <h3>Saídas (<span id="lblPeriodo2">Mês</span>)</h3>
+                        <h3>Saídas (<span id="lblPeriodo2">Hoje</span>)</h3>
                         <p id="dashSaidas" class="text-red">R$ 0,00</p>
                     </div>
                 </div>
@@ -149,6 +159,12 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 2px 
                     </div>
                 </div>
             </div>
+
+            <div class="card">
+                <h3 style="margin-top:0"><i class="fas fa-edit"></i> Anotações e Fechamento do Dia</h3>
+                <textarea id="anotacoesDia" placeholder="Digite aqui as observações, pendências ou fechamento de caixa de hoje..." oninput="salvarAnotacao()"></textarea>
+            </div>
+
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
                 <div class="card">
                     <h3 style="margin-top:0"><i class="fas fa-chart-bar"></i> Visão Geral</h3>
@@ -171,21 +187,25 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 2px 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div style="grid-column: span 2;">
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Cliente</label>
-                        <input id="nomeCliente" placeholder="Nome do Cliente" />
+                        <input id="nomeCliente" class="uppercase-input" placeholder="NOME DO CLIENTE" oninput="this.value = this.value.toUpperCase()" onkeyup="checkEnter(event, salvarPagamento)" />
+                    </div>
+                    <div>
+                        <label style="font-size:0.8rem; color:var(--text-secondary)">Contrato</label>
+                        <input id="contrato" class="uppercase-input" placeholder="Nº CONTRATO" oninput="this.value = this.value.toUpperCase()" onkeyup="checkEnter(event, salvarPagamento)" />
                     </div>
                     <div>
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Referência</label>
-                        <input id="referencia" placeholder="Ex: Dez/2025" />
+                        <input id="referencia" class="uppercase-input" placeholder="EX: DEZ/2026" oninput="this.value = this.value.toUpperCase()" onkeyup="checkEnter(event, salvarPagamento)" />
                     </div>
-                    <div>
+                    <div style="grid-column: span 2;">
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Valor (R$)</label>
-                        <input id="valorPago" type="number" step="0.01" />
+                        <input id="valorPago" type="number" step="0.01" placeholder="0.00" onkeyup="checkEnter(event, salvarPagamento)" />
                     </div>
                     <div style="grid-column: span 2;">
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Método</label>
-                        <select id="metodo">
-                            <option value="Pix">Pix</option>
+                        <select id="metodo" onkeyup="checkEnter(event, salvarPagamento)">
                             <option value="Dinheiro">Dinheiro</option>
+                            <option value="Pix">Pix</option>
                             <option value="Crédito">Crédito</option>
                             <option value="Débito">Débito</option>
                         </select>
@@ -195,11 +215,12 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 2px 
                             <i class="far fa-square" id="iconMisto"></i> Pagamento Misto?
                         </div>
                         <div id="boxMisto" class="split-box hidden">
-                            <input id="valorPago2" type="number" placeholder="Valor 2 (R$)" style="margin-bottom:10px;" />
-                            <select id="metodo2">
-                                <option value="Dinheiro">Dinheiro</option>
+                            <input id="valorPago2" type="number" placeholder="Valor 2 (R$)" style="margin-bottom:10px;" onkeyup="checkEnter(event, salvarPagamento)" />
+                            <select id="metodo2" onkeyup="checkEnter(event, salvarPagamento)">
                                 <option value="Pix">Pix</option>
+                                <option value="Dinheiro">Dinheiro</option>
                                 <option value="Crédito">Crédito</option>
+                                <option value="Débito">Débito</option>
                             </select>
                         </div>
                     </div>
@@ -218,7 +239,7 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 2px 
                 <div class="filter-wrapper">
                     <div class="search-box">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="buscaPagamentos" placeholder="Buscar cliente..." onkeyup="renderizarListas()">
+                        <input type="text" id="buscaPagamentos" placeholder="Buscar cliente ou contrato..." onkeyup="renderizarListas()">
                     </div>
                     <div style="flex-basis: 160px;">
                         <input type="date" id="filtroDataLista" onchange="renderizarListas()" title="Filtrar dia específico">
@@ -231,10 +252,24 @@ input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 2px 
 
         <section id="despesas" class="hidden">
             <div class="card">
-                <h3 style="margin-top:0"><i class="fas fa-minus"></i> Nova Despesa</h3>
+                <h3 style="margin-top:0"><i class="fas fa-minus"></i> Nova Saída / Depósito</h3>
                 <div style="display: grid; gap: 15px;">
-                    <input id="descDespesa" placeholder="Descrição da Saída" />
-                    <input id="valorDespesa" type="number" step="0.01" placeholder="Valor (R$)" />
+                    <div>
+                        <label style="font-size:0.8rem; color:var(--text-secondary)">Tipo de Saída</label>
+                        <select id="tipoSaida" onkeyup="checkEnter(event, salvarDespesa)">
+                            <option value="Despesa">Despesa Geral</option>
+                            <option value="Depósito">Depósito Bancário</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size:0.8rem; color:var(--text-secondary)">Descrição</label>
+                        <input id="descDespesa" class="uppercase-input" placeholder="DESCRIÇÃO" oninput="this.value = this.value.toUpperCase()" onkeyup="checkEnter(event, salvarDespesa)" />
+                    </div>
+                    <div>
+                        <label style="font-size:0.8rem; color:var(--text-secondary)">Valor (R$)</label>
+                        <input id="valorDespesa" type="number" step="0.01" placeholder="0.00" onkeyup="checkEnter(event, salvarDespesa)" />
+                    </div>
+                    
                     <button class="btn btn-danger" onclick="salvarDespesa()">Registrar Saída</button>
                 </div>
             </div>
@@ -279,17 +314,25 @@ let pagamentos = JSON.parse(localStorage.getItem('pg') || '[]');
 let despesas = JSON.parse(localStorage.getItem('dp') || '[]');
 let chartInstance = null;
 let modoMisto = false;
-let dashFilter = 'mes'; 
+let dashFilter = 'dia'; // Mudado para 'dia' como padrão
 
 document.getElementById('dataAtual').innerText = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
 migrarDados();
+carregarAnotacao();
 navegar('dashboard');
+
+// Captura do Enter
+function checkEnter(event, callback) {
+    if(event.key === 'Enter') {
+        callback();
+    }
+}
 
 function navegar(sec) {
     document.querySelectorAll('section').forEach(s => { s.classList.add('hidden'); s.classList.remove('active-section'); });
     const target = document.getElementById(sec);
     target.classList.remove('hidden'); target.classList.add('active-section');
-    const titulos = {'dashboard': 'Dashboard', 'pagamentos': 'Contas a Receber', 'despesas': 'Contas a Pagar', 'config': 'Configurações'};
+    const titulos = {'dashboard': 'Dashboard', 'pagamentos': 'Contas a Receber', 'despesas': 'Saídas e Depósitos', 'config': 'Configurações'};
     document.getElementById('pageTitle').innerText = titulos[sec];
     document.querySelectorAll('.nav-btn, .mobile-btn').forEach(b => b.classList.remove('active'));
     const deskBtn = document.getElementById('btn-' + (sec === 'pagamentos' ? 'pag' : sec === 'despesas' ? 'desp' : sec === 'config' ? 'conf' : 'dash'));
@@ -309,6 +352,21 @@ function save() {
     localStorage.setItem('pg', JSON.stringify(pagamentos));
     localStorage.setItem('dp', JSON.stringify(despesas));
 }
+
+// Anotações
+function getNotaKey() {
+    const hoje = new Date();
+    return `nota_${hoje.getFullYear()}_${hoje.getMonth()+1}_${hoje.getDate()}`;
+}
+function salvarAnotacao() {
+    const texto = document.getElementById('anotacoesDia').value;
+    localStorage.setItem(getNotaKey(), texto);
+}
+function carregarAnotacao() {
+    const texto = localStorage.getItem(getNotaKey());
+    if(texto) document.getElementById('anotacoesDia').value = texto;
+}
+
 function toggleMisto() {
     modoMisto = !modoMisto;
     const box = document.getElementById('boxMisto');
@@ -318,45 +376,56 @@ function toggleMisto() {
 }
 function salvarPagamento() {
     const idEdit = document.getElementById('idEmEdicao').value;
-    const nome = document.getElementById('nomeCliente').value;
-    const ref = document.getElementById('referencia').value;
+    const nome = document.getElementById('nomeCliente').value.toUpperCase();
+    const contrato = document.getElementById('contrato').value.toUpperCase();
+    const ref = document.getElementById('referencia').value.toUpperCase();
     const v1 = parseFloat(document.getElementById('valorPago').value);
     const m1 = document.getElementById('metodo').value;
-    if(!nome || isNaN(v1)) return showToast("Preencha os dados!", "error");
+    
+    if(!nome || isNaN(v1)) return showToast("Preencha Nome e Valor!", "error");
     if(idEdit) {
         const idx = pagamentos.findIndex(p => p.id == idEdit);
         if(idx > -1) {
-            pagamentos[idx].nome = nome; pagamentos[idx].ref = ref; pagamentos[idx].valor = v1; pagamentos[idx].metodo = m1;
+            pagamentos[idx].nome = nome; pagamentos[idx].contrato = contrato; pagamentos[idx].ref = ref; pagamentos[idx].valor = v1; pagamentos[idx].metodo = m1;
             showToast("Atualizado!"); cancelarEdicao();
         }
     } else {
         const agora = new Date();
-        pagamentos.unshift({ id: Date.now(), nome, valor: v1, metodo: m1, ref, data: agora.toLocaleString('pt-BR'), ts: agora.getTime() });
+        pagamentos.unshift({ id: Date.now(), nome, contrato, valor: v1, metodo: m1, ref, data: agora.toLocaleString('pt-BR'), ts: agora.getTime() });
         if(modoMisto) {
             const v2 = parseFloat(document.getElementById('valorPago2').value);
             const m2 = document.getElementById('metodo2').value;
             if(!isNaN(v2) && v2 > 0) {
-                pagamentos.unshift({ id: Date.now()+1, nome: nome+" (Parcial)", valor: v2, metodo: m2, ref, data: agora.toLocaleString('pt-BR'), ts: agora.getTime() });
+                pagamentos.unshift({ id: Date.now()+1, nome: nome+" (PARCIAL)", contrato, valor: v2, metodo: m2, ref, data: agora.toLocaleString('pt-BR'), ts: agora.getTime() });
             }
         }
         showToast("Recebido!");
     }
     save(); limparFormPag(); renderizarListas();
+    
+    // Volta o foco para o primeiro campo após salvar
+    document.getElementById('nomeCliente').focus();
 }
 function salvarDespesa() {
-    const desc = document.getElementById('descDespesa').value;
+    const tipo = document.getElementById('tipoSaida').value;
+    const desc = document.getElementById('descDespesa').value.toUpperCase();
     const val = parseFloat(document.getElementById('valorDespesa').value);
     if(!desc || isNaN(val)) return showToast("Preencha tudo!", "error");
     const agora = new Date();
-    despesas.unshift({ id: Date.now(), descricao: desc, valor: val, data: agora.toLocaleString('pt-BR'), ts: agora.getTime() });
-    save(); showToast("Saída registrada!", "error");
+    despesas.unshift({ id: Date.now(), tipo: tipo, descricao: desc, valor: val, data: agora.toLocaleString('pt-BR'), ts: agora.getTime() });
+    save(); 
+    showToast(tipo + " registrada!", "success");
     document.getElementById('descDespesa').value = ''; document.getElementById('valorDespesa').value = ''; renderizarListas();
+    document.getElementById('descDespesa').focus();
 }
 function editarPagamento(id) {
     const p = pagamentos.find(x => x.id == id);
     if(!p) return;
-    document.getElementById('nomeCliente').value = p.nome; document.getElementById('referencia').value = p.ref || '';
-    document.getElementById('valorPago').value = p.valor; document.getElementById('metodo').value = p.metodo;
+    document.getElementById('nomeCliente').value = p.nome; 
+    document.getElementById('contrato').value = p.contrato || '';
+    document.getElementById('referencia').value = p.ref || '';
+    document.getElementById('valorPago').value = p.valor; 
+    document.getElementById('metodo').value = p.metodo;
     document.getElementById('idEmEdicao').value = p.id;
     document.getElementById('btnSalvar').innerText = "Atualizar"; document.getElementById('btnCancelarEdit').classList.remove('hidden');
     window.scrollTo({top:0, behavior:'smooth'});
@@ -366,11 +435,14 @@ function cancelarEdicao() {
     document.getElementById('btnSalvar').innerText = "Confirmar Entrada"; document.getElementById('btnCancelarEdit').classList.add('hidden');
 }
 function limparFormPag() {
-    document.getElementById('nomeCliente').value = ''; document.getElementById('referencia').value = ''; document.getElementById('valorPago').value = '';
+    document.getElementById('nomeCliente').value = ''; 
+    document.getElementById('contrato').value = ''; 
+    document.getElementById('referencia').value = ''; 
+    document.getElementById('valorPago').value = '';
     if(modoMisto) toggleMisto();
 }
 function deletar(type, id) {
-    if(!confirm("Tem certeza?")) return;
+    if(!confirm("Tem certeza que deseja apagar?")) return;
     if(type === 'pg') pagamentos = pagamentos.filter(p => p.id != id); else despesas = despesas.filter(d => d.id != id);
     save(); renderizarListas(); atualizarDashboard();
 }
@@ -385,14 +457,14 @@ function renderizarListas() {
         const fimDia = new Date(partes[0], partes[1]-1, partes[2], 23, 59, 59).getTime();
         listaPg = listaPg.filter(p => { if(!p.ts) return false; return p.ts >= inicioDia && p.ts <= fimDia; });
     }
-    listaPg = listaPg.filter(p => p.nome.toLowerCase().includes(termo));
+    listaPg = listaPg.filter(p => p.nome.toLowerCase().includes(termo) || (p.contrato && p.contrato.toLowerCase().includes(termo)));
     const ulPg = document.getElementById('listaPagamentos');
     ulPg.innerHTML = listaPg.length ? listaPg.map(p => `
         <li class="transaction-item t-entrada">
             <div style="flex:1">
                 <strong style="color:var(--text-main)">${p.nome}</strong> 
                 <span style="font-size:0.8rem; color:var(--text-secondary); margin-left:5px">(${p.metodo})</span><br>
-                <small style="color:var(--text-secondary)">${p.data} ${p.ref ? '• '+p.ref : ''}</small>
+                <small style="color:var(--text-secondary)">${p.data} ${p.contrato ? '• CT: '+p.contrato : ''} ${p.ref ? '• '+p.ref : ''}</small>
             </div>
             <div style="text-align:right">
                 <span style="color:var(--accent-green); font-weight:700;">+ ${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
@@ -403,18 +475,24 @@ function renderizarListas() {
             </div>
         </li>
     `).join('') : '<li style="text-align:center; padding:20px; color:var(--text-secondary)">Nenhum registro encontrado.</li>';
-    document.getElementById('listaDespesas').innerHTML = despesas.map(d => `
-        <li class="transaction-item t-saida">
+    
+    document.getElementById('listaDespesas').innerHTML = despesas.map(d => {
+        const isDep = d.tipo === 'Depósito';
+        const colorClass = isDep ? 'text-blue' : 'text-red';
+        const borderClass = isDep ? 't-deposito' : 't-saida';
+        const icon = isDep ? '<i class="fas fa-university" style="color:var(--deposit); margin-right:5px"></i>' : '';
+        return `
+        <li class="transaction-item ${borderClass}">
             <div>
-                <strong>${d.descricao}</strong><br>
-                <small style="color:var(--text-secondary)">${d.data}</small>
+                <strong>${icon}${d.descricao}</strong><br>
+                <small style="color:var(--text-secondary)">${d.data} • ${d.tipo || 'Despesa'}</small>
             </div>
             <div style="text-align:right">
-                <span style="color:var(--danger); font-weight:700;">- ${d.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+                <span class="${colorClass}" style="font-weight:700;">- ${d.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
                 <i class="fas fa-trash" onclick="deletar('dp', ${d.id})" style="cursor:pointer; color:var(--danger); margin-left:10px;"></i>
             </div>
-        </li>
-    `).join('');
+        </li>`
+    }).join('');
 }
 function setDashFilter(periodo) {
     dashFilter = periodo;
@@ -427,13 +505,20 @@ function setDashFilter(periodo) {
 function atualizarDashboard() {
     const agora = new Date();
     let inicio = 0;
-    if(dashFilter === 'dia') inicio = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate()).getTime();
+    let fim = agora.getTime();
+
+    if(dashFilter === 'dia') {
+        inicio = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 0, 0, 0).getTime();
+        fim = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 23, 59, 59).getTime();
+    }
     else if(dashFilter === 'semana') { const d = new Date(agora); d.setDate(agora.getDate() - agora.getDay()); d.setHours(0,0,0,0); inicio = d.getTime(); }
     else if (dashFilter === 'mes') inicio = new Date(agora.getFullYear(), agora.getMonth(), 1).getTime();
     else if (dashFilter === 'ano') inicio = new Date(agora.getFullYear(), 0, 1).getTime();
     
-    const pgFiltro = pagamentos.filter(p => (p.ts || 0) >= inicio);
-    const dpFiltro = despesas.filter(d => (d.ts || 0) >= inicio);
+    // Aplica intervalo para pegar o 'Hoje' exato
+    const pgFiltro = pagamentos.filter(p => (p.ts || 0) >= inicio && (p.ts || 0) <= fim);
+    const dpFiltro = despesas.filter(d => (d.ts || 0) >= inicio && (d.ts || 0) <= fim);
+    
     const totalE = pgFiltro.reduce((a,b)=>a+b.valor,0);
     const totalS = dpFiltro.reduce((a,b)=>a+b.valor,0);
     
@@ -469,6 +554,44 @@ function atualizarDashboard() {
             <span>${k}</span> <span style="color:var(--text-main); font-weight:600">${metodos[k].toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
         </div>`).join('') || '<div style="text-align:center; color:#64748b; padding:10px">Sem dados no período</div>';
 }
+
+function exportarWhatsApp() {
+    const agora = new Date();
+    const inicioDia = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 0, 0, 0).getTime();
+    const fimDia = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 23, 59, 59).getTime();
+    
+    // Pega só as entradas de hoje
+    const pgHoje = pagamentos.filter(p => p.ts >= inicioDia && p.ts <= fimDia);
+    const notas = document.getElementById('anotacoesDia').value;
+    
+    if(pgHoje.length === 0 && !notas) {
+        showToast("Não há dados hoje para exportar.", "error");
+        return;
+    }
+
+    let relatorio = `*FECHAMENTO DE CAIXA - ${agora.toLocaleDateString('pt-BR')}*\n\n`;
+    
+    if(pgHoje.length > 0) {
+        relatorio += `*ENTRADAS DO DIA:*\n`;
+        let total = 0;
+        pgHoje.forEach(p => {
+            const valorFormat = p.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+            relatorio += `• *${p.nome}* (${p.metodo})\n`;
+            relatorio += `${p.data} ${p.contrato ? '• CT: ' + p.contrato : ''} ${p.ref ? '• ' + p.ref : ''}\n`;
+            relatorio += `+ R$ ${valorFormat}\n\n`;
+            total += p.valor;
+        });
+        relatorio += `*TOTAL ENTRADAS: R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}*\n\n`;
+    }
+
+    if(notas) {
+        relatorio += `*ANOTAÇÕES / OBSERVAÇÕES:*\n${notas}\n`;
+    }
+    
+    const zapLink = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(relatorio);
+    window.open(zapLink, '_blank');
+}
+
 function baixarBackup() {
     const node = document.createElement('a');
     node.setAttribute("href", "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({pagamentos, despesas})));
