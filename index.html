@@ -402,14 +402,14 @@ function imprimirRecibo(id) {
         
         <div class="item"><span class="bold">DATA:</span> ${p.data}</div>
         <div class="item"><span class="bold">CLIENTE:</span> ${p.nome}</div>
-        \${p.contrato ? \`<div class="item"><span class="bold">CONTRATO:</span> \${p.contrato}</div>\` : ''}
-        \${p.ref ? \`<div class="item"><span class="bold">REF:</span> \${p.ref}</div>\` : ''}
-        <div class="item"><span class="bold">MÉTODO:</span> \${p.metodo}</div>
+        ${p.contrato ? `<div class="item"><span class="bold">CONTRATO:</span> ${p.contrato}</div>` : ''}
+        ${p.ref ? `<div class="item"><span class="bold">REF:</span> ${p.ref}</div>` : ''}
+        <div class="item"><span class="bold">MÉTODO:</span> ${p.metodo}</div>
         
         <div class="line"></div>
         
         <div class="center bold" style="font-size: 20px; margin: 15px 0;">
-            VALOR: R$ \${p.valor.toFixed(2)}
+            VALOR: R$ ${p.valor.toFixed(2)}
         </div>
         
         <div class="line"></div>
@@ -568,16 +568,16 @@ function renderizarListas() {
     ulPg.innerHTML = listaPg.length ? listaPg.map(p => `
         <li class="transaction-item t-entrada">
             <div style="flex:1">
-                <strong style="color:var(--text-main)">\${p.nome}</strong> 
-                <span style="font-size:0.8rem; color:var(--text-secondary); margin-left:5px">(\${p.metodo})</span><br>
-                <small style="color:var(--text-secondary)">\${p.data} \${p.contrato ? '• CT: '+p.contrato : ''} \${p.ref ? '• '+p.ref : ''}</small>
+                <strong style="color:var(--text-main)">${p.nome}</strong> 
+                <span style="font-size:0.8rem; color:var(--text-secondary); margin-left:5px">(${p.metodo})</span><br>
+                <small style="color:var(--text-secondary)">${p.data} ${p.contrato ? '• CT: '+p.contrato : ''} ${p.ref ? '• '+p.ref : ''}</small>
             </div>
             <div style="text-align:right">
-                <span style="color:var(--accent-green); font-weight:700;">+ \${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+                <span style="color:var(--accent-green); font-weight:700;">+ ${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
                 <div style="margin-top:5px; display:flex; gap:12px; justify-content:flex-end;">
-                    <i class="fas fa-print" onclick="imprimirRecibo(\${p.id})" style="cursor:pointer; color:var(--text-main); font-size:1rem" title="Imprimir Recibo"></i>
-                    <i class="fas fa-pen" onclick="editarPagamento(\${p.id})" style="cursor:pointer; color:var(--primary); font-size:1rem"></i>
-                    <i class="fas fa-trash" onclick="deletar('pg', \${p.id})" style="cursor:pointer; color:var(--danger); font-size:1rem"></i>
+                    <i class="fas fa-print" onclick="imprimirRecibo(${p.id})" style="cursor:pointer; color:var(--text-main); font-size:1rem" title="Imprimir Recibo"></i>
+                    <i class="fas fa-pen" onclick="editarPagamento(${p.id})" style="cursor:pointer; color:var(--primary); font-size:1rem"></i>
+                    <i class="fas fa-trash" onclick="deletar('pg', ${p.id})" style="cursor:pointer; color:var(--danger); font-size:1rem"></i>
                 </div>
             </div>
         </li>
@@ -589,14 +589,14 @@ function renderizarListas() {
         const borderClass = isDep ? 't-deposito' : 't-saida';
         const icon = isDep ? '<i class="fas fa-university" style="color:var(--deposit); margin-right:5px"></i>' : '';
         return `
-        <li class="transaction-item \${borderClass}">
+        <li class="transaction-item ${borderClass}">
             <div>
-                <strong>\${icon}\${d.descricao}</strong><br>
-                <small style="color:var(--text-secondary)">\${d.data} • \${d.tipo || 'Despesa'}</small>
+                <strong>${icon}${d.descricao}</strong><br>
+                <small style="color:var(--text-secondary)">${d.data} • ${d.tipo || 'Despesa'}</small>
             </div>
             <div style="text-align:right">
-                <span class="\${colorClass}" style="font-weight:700;">- \${d.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
-                <i class="fas fa-trash" onclick="deletar('dp', \${d.id})" style="cursor:pointer; color:var(--danger); margin-left:10px;"></i>
+                <span class="${colorClass}" style="font-weight:700;">- ${d.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+                <i class="fas fa-trash" onclick="deletar('dp', ${d.id})" style="cursor:pointer; color:var(--danger); margin-left:10px;"></i>
             </div>
         </li>`
     }).join('');
@@ -636,12 +636,12 @@ function atualizarDashboard() {
     document.getElementById('dashboardHistoryList').innerHTML = ultimosPg.length ? ultimosPg.map(p => `
         <li class="transaction-item t-entrada" style="padding: 10px;">
             <div style="flex:1">
-                <strong style="color:var(--text-main); font-size:0.9rem;">\${p.nome}</strong> 
-                <span style="font-size:0.75rem; color:var(--text-secondary);">(\${p.metodo})</span><br>
-                <small style="color:var(--text-secondary); font-size:0.75rem;">\${p.data}</small>
+                <strong style="color:var(--text-main); font-size:0.9rem;">${p.nome}</strong> 
+                <span style="font-size:0.75rem; color:var(--text-secondary);">(${p.metodo})</span><br>
+                <small style="color:var(--text-secondary); font-size:0.75rem;">${p.data}</small>
             </div>
             <div style="text-align:right">
-                <span style="color:var(--accent-green); font-weight:600; font-size:0.9rem;">+ \${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+                <span style="color:var(--accent-green); font-weight:600; font-size:0.9rem;">+ ${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
             </div>
         </li>`).join('') : '<li style="text-align:center; padding:15px; color:var(--text-secondary); font-size:0.9rem">Sem pagamentos recentes.</li>';
 
@@ -657,7 +657,7 @@ function atualizarDashboard() {
     });
     document.getElementById('detalhesMetodos').innerHTML = labels.map(k => `
         <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); color:var(--text-secondary)">
-            <span>\${k}</span> <span style="color:var(--text-main); font-weight:600">\${metodos[k].toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+            <span>${k}</span> <span style="color:var(--text-main); font-weight:600">${metodos[k].toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
         </div>`).join('') || '<div style="text-align:center; color:#64748b; padding:10px">Sem dados no período</div>';
 }
 
@@ -674,23 +674,23 @@ function exportarWhatsApp() {
         return;
     }
 
-    let relatorio = `*FECHAMENTO DE CAIXA - \${agora.toLocaleDateString('pt-BR')}*\n\n`;
+    let relatorio = `*FECHAMENTO DE CAIXA - ${agora.toLocaleDateString('pt-BR')}*\n\n`;
     
     if(pgHoje.length > 0) {
         relatorio += `*ENTRADAS DO DIA:*\n`;
         let total = 0;
         pgHoje.forEach(p => {
             const valorFormat = p.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-            relatorio += `• *\${p.nome}* (\${p.metodo})\n`;
-            relatorio += `\${p.data} \${p.contrato ? '• CT: ' + p.contrato : ''} \${p.ref ? '• ' + p.ref : ''}\n`;
-            relatorio += `+ R$ \${valorFormat}\n\n`;
+            relatorio += `• *${p.nome}* (${p.metodo})\n`;
+            relatorio += `${p.data} ${p.contrato ? '• CT: ' + p.contrato : ''} ${p.ref ? '• ' + p.ref : ''}\n`;
+            relatorio += `+ R$ ${valorFormat}\n\n`;
             total += p.valor;
         });
-        relatorio += `*TOTAL ENTRADAS: R$ \${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}*\n\n`;
+        relatorio += `*TOTAL ENTRADAS: R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}*\n\n`;
     }
 
     if(notas) {
-        relatorio += `*ANOTAÇÕES / OBSERVAÇÕES:*\n\${notas}\n`;
+        relatorio += `*ANOTAÇÕES / OBSERVAÇÕES:*\n${notas}\n`;
     }
     
     const zapLink = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(relatorio);
@@ -713,7 +713,7 @@ function restaurarBackup(input) {
 function limparDados(){ if(confirm("Apagar tudo?")) { localStorage.clear(); location.reload(); } }
 function showToast(msg, type='success') {
     const t = document.createElement('div'); t.className = 'toast';
-    t.innerHTML = `<i class="fas fa-\${type==='error'?'times':'check'}-circle" style="color:\${type==='error'?'var(--danger)':'var(--accent-green)'}"></i> \${msg}`;
+    t.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle" style="color:${type==='error'?'var(--danger)':'var(--accent-green)'}"></i> ${msg}`;
     document.getElementById('toast-container').appendChild(t); setTimeout(()=>t.remove(), 3000);
 }
 </script>
