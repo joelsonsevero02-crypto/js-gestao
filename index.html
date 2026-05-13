@@ -104,6 +104,9 @@ textarea { resize: vertical; min-height: 80px; }
 </head>
 <body>
 
+<datalist id="listaNomes"></datalist>
+<datalist id="listaContratos"></datalist>
+
 <div class="app-wrapper">
     <aside>
         <div class="brand">
@@ -187,11 +190,11 @@ textarea { resize: vertical; min-height: 80px; }
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div style="grid-column: span 2;">
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Cliente</label>
-                        <input id="nomeCliente" class="uppercase-input" placeholder="NOME DO CLIENTE" oninput="this.value = this.value.toUpperCase()" onkeyup="checkEnter(event, salvarPagamento)" />
+                        <input id="nomeCliente" class="uppercase-input" list="listaNomes" placeholder="NOME DO CLIENTE" oninput="this.value = this.value.toUpperCase(); autoPreencher('nome')" onkeyup="checkEnter(event, salvarPagamento)" autocomplete="off" />
                     </div>
                     <div>
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Contrato</label>
-                        <input id="contrato" class="uppercase-input" placeholder="Nº CONTRATO" oninput="this.value = this.value.toUpperCase()" onkeyup="checkEnter(event, salvarPagamento)" />
+                        <input id="contrato" class="uppercase-input" list="listaContratos" placeholder="Nº CONTRATO" oninput="this.value = this.value.toUpperCase(); autoPreencher('contrato')" onkeyup="checkEnter(event, salvarPagamento)" autocomplete="off" />
                     </div>
                     <div>
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Referência</label>
@@ -312,13 +315,15 @@ textarea { resize: vertical; min-height: 80px; }
 // --- CORE LOGIC ---
 let pagamentos = JSON.parse(localStorage.getItem('pg') || '[]');
 let despesas = JSON.parse(localStorage.getItem('dp') || '[]');
+let clientesDB = [];
 let chartInstance = null;
 let modoMisto = false;
-let dashFilter = 'dia'; // Mudado para 'dia' como padrão
+let dashFilter = 'dia'; 
 
 document.getElementById('dataAtual').innerText = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
 migrarDados();
 carregarAnotacao();
+atualizarBaseClientes();
 navegar('dashboard');
 
 // Captura do Enter
@@ -327,6 +332,107 @@ function checkEnter(event, callback) {
         callback();
     }
 }
+
+// Base de Clientes para Autocomplete
+function atualizarBaseClientes() {
+    clientesDB = [];
+    pagamentos.forEach(p => {
+        if(p.nome && !clientesDB.find(c => c.nome === p.nome && c.contrato === p.contrato)) {
+            clientesDB.push({ nome: p.nome, contrato: p.contrato || '' });
+        }
+    });
+    
+    const dlNomes = document.getElementById('listaNomes');
+    const dlContratos = document.getElementById('listaContratos');
+    
+    dlNomes.innerHTML = [...new Set(clientesDB.map(c => c.nome))].map(n => `<option value="${n}">`).join('');
+    dlContratos.innerHTML = [...new Set(clientesDB.map(c => c.contrato).filter(c=>c))].map(c => `<option value="${c}">`).join('');
+}
+
+function autoPreencher(origem) {
+    const nomeInp = document.getElementById('nomeCliente');
+    const contInp = document.getElementById('contrato');
+    
+    if (origem === 'nome' && nomeInp.value) {
+        const cliente = clientesDB.find(c => c.nome === nomeInp.value);
+        if (cliente && cliente.contrato && !contInp.value) {
+            contInp.value = cliente.contrato;
+        }
+    } else if (origem === 'contrato' && contInp.value) {
+        const cliente = clientesDB.find(c => c.contrato === contInp.value);
+        if (cliente && cliente.nome && !nomeInp.value) {
+            nomeInp.value = cliente.nome;
+        }
+    }
+}
+
+// Impressão de Recibo Térmico (ATUALIZADO PARA IBANET FIBRA)
+function imprimirRecibo(id) {
+    const p = pagamentos.find(x => x.id == id);
+    if(!p) return;
+    
+    const printWindow = window.open('', '_blank', 'width=350,height=600');
+    
+    const html = `
+    <html>
+    <head>
+        <title>Recibo - ${p.nome}</title>
+        <style>
+            @page { margin: 0; size: 72mm 297mm; }
+            body { 
+                font-family: 'Courier New', Courier, monospace; 
+                width: 68mm; 
+                margin: 0 auto;
+                padding: 5mm 2mm;
+                font-size: 13px; 
+                color: #000; 
+                line-height: 1.4;
+            }
+            .center { text-align: center; }
+            .bold { font-weight: bold; }
+            .line { border-top: 1px dashed #000; margin: 10px 0; }
+            .item { margin-bottom: 5px; }
+        </style>
+    </head>
+    <body>
+        <div class="center bold" style="font-size: 18px;">IBANET FIBRA</div>
+        <div class="center" style="margin-bottom: 15px;">RECIBO DE PAGAMENTO</div>
+        
+        <div class="line"></div>
+        
+        <div class="item"><span class="bold">DATA:</span> ${p.data}</div>
+        <div class="item"><span class="bold">CLIENTE:</span> ${p.nome}</div>
+        \${p.contrato ? \`<div class="item"><span class="bold">CONTRATO:</span> \${p.contrato}</div>\` : ''}
+        \${p.ref ? \`<div class="item"><span class="bold">REF:</span> \${p.ref}</div>\` : ''}
+        <div class="item"><span class="bold">MÉTODO:</span> \${p.metodo}</div>
+        
+        <div class="line"></div>
+        
+        <div class="center bold" style="font-size: 20px; margin: 15px 0;">
+            VALOR: R$ \${p.valor.toFixed(2)}
+        </div>
+        
+        <div class="line"></div>
+        
+        <div class="center" style="font-size: 11px; margin-top: 25px;">
+            Obrigado pela preferência!
+        </div>
+        
+        <script>
+            window.onload = function() {
+                window.print();
+                setTimeout(function(){ window.close(); }, 500);
+            }
+        <\/script>
+    </body>
+    </html>
+    `;
+    
+    printWindow.document.open();
+    printWindow.document.write(html);
+    printWindow.document.close();
+}
+
 
 function navegar(sec) {
     document.querySelectorAll('section').forEach(s => { s.classList.add('hidden'); s.classList.remove('active-section'); });
@@ -353,7 +459,6 @@ function save() {
     localStorage.setItem('dp', JSON.stringify(despesas));
 }
 
-// Anotações
 function getNotaKey() {
     const hoje = new Date();
     return `nota_${hoje.getFullYear()}_${hoje.getMonth()+1}_${hoje.getDate()}`;
@@ -401,9 +506,10 @@ function salvarPagamento() {
         }
         showToast("Recebido!");
     }
-    save(); limparFormPag(); renderizarListas();
-    
-    // Volta o foco para o primeiro campo após salvar
+    save(); 
+    atualizarBaseClientes();
+    limparFormPag(); 
+    renderizarListas();
     document.getElementById('nomeCliente').focus();
 }
 function salvarDespesa() {
@@ -444,7 +550,7 @@ function limparFormPag() {
 function deletar(type, id) {
     if(!confirm("Tem certeza que deseja apagar?")) return;
     if(type === 'pg') pagamentos = pagamentos.filter(p => p.id != id); else despesas = despesas.filter(d => d.id != id);
-    save(); renderizarListas(); atualizarDashboard();
+    save(); atualizarBaseClientes(); renderizarListas(); atualizarDashboard();
 }
 function limparFiltroData() { document.getElementById('filtroDataLista').value = ''; renderizarListas(); }
 function renderizarListas() {
@@ -462,15 +568,16 @@ function renderizarListas() {
     ulPg.innerHTML = listaPg.length ? listaPg.map(p => `
         <li class="transaction-item t-entrada">
             <div style="flex:1">
-                <strong style="color:var(--text-main)">${p.nome}</strong> 
-                <span style="font-size:0.8rem; color:var(--text-secondary); margin-left:5px">(${p.metodo})</span><br>
-                <small style="color:var(--text-secondary)">${p.data} ${p.contrato ? '• CT: '+p.contrato : ''} ${p.ref ? '• '+p.ref : ''}</small>
+                <strong style="color:var(--text-main)">\${p.nome}</strong> 
+                <span style="font-size:0.8rem; color:var(--text-secondary); margin-left:5px">(\${p.metodo})</span><br>
+                <small style="color:var(--text-secondary)">\${p.data} \${p.contrato ? '• CT: '+p.contrato : ''} \${p.ref ? '• '+p.ref : ''}</small>
             </div>
             <div style="text-align:right">
-                <span style="color:var(--accent-green); font-weight:700;">+ ${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
-                <div style="margin-top:5px; display:flex; gap:10px; justify-content:flex-end;">
-                    <i class="fas fa-pen" onclick="editarPagamento(${p.id})" style="cursor:pointer; color:var(--primary); font-size:0.9rem"></i>
-                    <i class="fas fa-trash" onclick="deletar('pg', ${p.id})" style="cursor:pointer; color:var(--danger); font-size:0.9rem"></i>
+                <span style="color:var(--accent-green); font-weight:700;">+ \${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+                <div style="margin-top:5px; display:flex; gap:12px; justify-content:flex-end;">
+                    <i class="fas fa-print" onclick="imprimirRecibo(\${p.id})" style="cursor:pointer; color:var(--text-main); font-size:1rem" title="Imprimir Recibo"></i>
+                    <i class="fas fa-pen" onclick="editarPagamento(\${p.id})" style="cursor:pointer; color:var(--primary); font-size:1rem"></i>
+                    <i class="fas fa-trash" onclick="deletar('pg', \${p.id})" style="cursor:pointer; color:var(--danger); font-size:1rem"></i>
                 </div>
             </div>
         </li>
@@ -482,14 +589,14 @@ function renderizarListas() {
         const borderClass = isDep ? 't-deposito' : 't-saida';
         const icon = isDep ? '<i class="fas fa-university" style="color:var(--deposit); margin-right:5px"></i>' : '';
         return `
-        <li class="transaction-item ${borderClass}">
+        <li class="transaction-item \${borderClass}">
             <div>
-                <strong>${icon}${d.descricao}</strong><br>
-                <small style="color:var(--text-secondary)">${d.data} • ${d.tipo || 'Despesa'}</small>
+                <strong>\${icon}\${d.descricao}</strong><br>
+                <small style="color:var(--text-secondary)">\${d.data} • \${d.tipo || 'Despesa'}</small>
             </div>
             <div style="text-align:right">
-                <span class="${colorClass}" style="font-weight:700;">- ${d.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
-                <i class="fas fa-trash" onclick="deletar('dp', ${d.id})" style="cursor:pointer; color:var(--danger); margin-left:10px;"></i>
+                <span class="\${colorClass}" style="font-weight:700;">- \${d.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+                <i class="fas fa-trash" onclick="deletar('dp', \${d.id})" style="cursor:pointer; color:var(--danger); margin-left:10px;"></i>
             </div>
         </li>`
     }).join('');
@@ -515,7 +622,6 @@ function atualizarDashboard() {
     else if (dashFilter === 'mes') inicio = new Date(agora.getFullYear(), agora.getMonth(), 1).getTime();
     else if (dashFilter === 'ano') inicio = new Date(agora.getFullYear(), 0, 1).getTime();
     
-    // Aplica intervalo para pegar o 'Hoje' exato
     const pgFiltro = pagamentos.filter(p => (p.ts || 0) >= inicio && (p.ts || 0) <= fim);
     const dpFiltro = despesas.filter(d => (d.ts || 0) >= inicio && (d.ts || 0) <= fim);
     
@@ -530,12 +636,12 @@ function atualizarDashboard() {
     document.getElementById('dashboardHistoryList').innerHTML = ultimosPg.length ? ultimosPg.map(p => `
         <li class="transaction-item t-entrada" style="padding: 10px;">
             <div style="flex:1">
-                <strong style="color:var(--text-main); font-size:0.9rem;">${p.nome}</strong> 
-                <span style="font-size:0.75rem; color:var(--text-secondary);">(${p.metodo})</span><br>
-                <small style="color:var(--text-secondary); font-size:0.75rem;">${p.data}</small>
+                <strong style="color:var(--text-main); font-size:0.9rem;">\${p.nome}</strong> 
+                <span style="font-size:0.75rem; color:var(--text-secondary);">(\${p.metodo})</span><br>
+                <small style="color:var(--text-secondary); font-size:0.75rem;">\${p.data}</small>
             </div>
             <div style="text-align:right">
-                <span style="color:var(--accent-green); font-weight:600; font-size:0.9rem;">+ ${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+                <span style="color:var(--accent-green); font-weight:600; font-size:0.9rem;">+ \${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
             </div>
         </li>`).join('') : '<li style="text-align:center; padding:15px; color:var(--text-secondary); font-size:0.9rem">Sem pagamentos recentes.</li>';
 
@@ -551,7 +657,7 @@ function atualizarDashboard() {
     });
     document.getElementById('detalhesMetodos').innerHTML = labels.map(k => `
         <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); color:var(--text-secondary)">
-            <span>${k}</span> <span style="color:var(--text-main); font-weight:600">${metodos[k].toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+            <span>\${k}</span> <span style="color:var(--text-main); font-weight:600">\${metodos[k].toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
         </div>`).join('') || '<div style="text-align:center; color:#64748b; padding:10px">Sem dados no período</div>';
 }
 
@@ -560,7 +666,6 @@ function exportarWhatsApp() {
     const inicioDia = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 0, 0, 0).getTime();
     const fimDia = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 23, 59, 59).getTime();
     
-    // Pega só as entradas de hoje
     const pgHoje = pagamentos.filter(p => p.ts >= inicioDia && p.ts <= fimDia);
     const notas = document.getElementById('anotacoesDia').value;
     
@@ -569,23 +674,23 @@ function exportarWhatsApp() {
         return;
     }
 
-    let relatorio = `*FECHAMENTO DE CAIXA - ${agora.toLocaleDateString('pt-BR')}*\n\n`;
+    let relatorio = `*FECHAMENTO DE CAIXA - \${agora.toLocaleDateString('pt-BR')}*\n\n`;
     
     if(pgHoje.length > 0) {
         relatorio += `*ENTRADAS DO DIA:*\n`;
         let total = 0;
         pgHoje.forEach(p => {
             const valorFormat = p.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-            relatorio += `• *${p.nome}* (${p.metodo})\n`;
-            relatorio += `${p.data} ${p.contrato ? '• CT: ' + p.contrato : ''} ${p.ref ? '• ' + p.ref : ''}\n`;
-            relatorio += `+ R$ ${valorFormat}\n\n`;
+            relatorio += `• *\${p.nome}* (\${p.metodo})\n`;
+            relatorio += `\${p.data} \${p.contrato ? '• CT: ' + p.contrato : ''} \${p.ref ? '• ' + p.ref : ''}\n`;
+            relatorio += `+ R$ \${valorFormat}\n\n`;
             total += p.valor;
         });
-        relatorio += `*TOTAL ENTRADAS: R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}*\n\n`;
+        relatorio += `*TOTAL ENTRADAS: R$ \${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}*\n\n`;
     }
 
     if(notas) {
-        relatorio += `*ANOTAÇÕES / OBSERVAÇÕES:*\n${notas}\n`;
+        relatorio += `*ANOTAÇÕES / OBSERVAÇÕES:*\n\${notas}\n`;
     }
     
     const zapLink = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(relatorio);
@@ -608,7 +713,7 @@ function restaurarBackup(input) {
 function limparDados(){ if(confirm("Apagar tudo?")) { localStorage.clear(); location.reload(); } }
 function showToast(msg, type='success') {
     const t = document.createElement('div'); t.className = 'toast';
-    t.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle" style="color:${type==='error'?'var(--danger)':'var(--accent-green)'}"></i> ${msg}`;
+    t.innerHTML = `<i class="fas fa-\${type==='error'?'times':'check'}-circle" style="color:\${type==='error'?'var(--danger)':'var(--accent-green)'}"></i> \${msg}`;
     document.getElementById('toast-container').appendChild(t); setTimeout(()=>t.remove(), 3000);
 }
 </script>
