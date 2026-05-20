@@ -389,7 +389,7 @@ function autoPreencher(origem) {
     }
 }
 
-// Impressão de Recibo Térmico - ALINHAMENTO E MARGEM (80mm) CORRIGIDO
+// Impressão de Recibo Térmico - OTIMIZADO PARA BOBINA (Fonte Arial, Alinhado à esquerda)
 function imprimirRecibo(id) {
     const p = pagamentos.find(x => x.id == id);
     if(!p) return;
@@ -401,47 +401,44 @@ function imprimirRecibo(id) {
     <head>
         <title>Recibo - ${p.nome}</title>
         <style>
-            @page { margin: 0; size: 80mm auto; }
+            @page { margin: 0; }
             body { 
-                font-family: 'Courier New', Courier, monospace; 
-                width: 72mm; 
+                font-family: Arial, Helvetica, sans-serif; 
+                width: 100%; 
+                max-width: 72mm; 
                 margin: 0; 
-                padding: 4mm 4mm;
-                font-size: 14px; 
+                padding: 2mm 3mm;
+                font-size: 13px; 
                 color: #000 !important; 
-                line-height: 1.5;
+                line-height: 1.4;
             }
             .center { text-align: center; }
-            .bold { font-weight: bold; }
-            .title { font-size: 20px; letter-spacing: 1px; margin-bottom: 5px; }
-            .subtitle { font-size: 14px; margin-bottom: 10px; }
-            .dashed-line { border-top: 1.5px dashed #000; margin: 10px 0; }
-            .solid-line { border-top: 1.5px solid #000; margin: 10px 0; }
-            .row { text-align: left; margin-bottom: 6px; }
+            .subtitle { font-size: 16px; font-weight: bold; margin: 0 0 8px 0; padding-top: 2mm; }
+            .dashed-line { border-top: 1px dashed #000; margin: 8px 0; }
+            .solid-line { border-top: 1px solid #000; margin: 15px 0 5px 0; }
+            .item { margin-bottom: 4px; word-wrap: break-word; }
             .label { font-weight: bold; }
-            .value { text-transform: uppercase; }
-            .stamp-space { height: 20mm; } 
+            .stamp-space { height: 15mm; } 
         </style>
     </head>
     <body>
-        <div class="center bold title">IBANET FIBRA</div>
-        <div class="center bold subtitle">RECIBO DE PAGAMENTO</div>
+        <div class="center subtitle">RECIBO DE PAGAMENTO</div>
         
         <div class="dashed-line"></div>
         
-        <div class="row"><span class="label">Cliente:</span> <span class="value">${p.nome}</span></div>
-        ${p.contrato ? `<div class="row"><span class="label">Contrato:</span> <span class="value">${p.contrato}</span></div>` : ''}
-        <div class="row"><span class="label">Valor:</span> <span class="value">R$ ${p.valor.toFixed(2).replace('.', ',')}</span></div>
-        ${p.ref ? `<div class="row"><span class="label">Referente:</span> <span class="value">${p.ref}</span></div>` : ''}
-        <div class="row"><span class="label">Pgto:</span> <span class="value">${p.metodo}</span></div>
-        <div class="row"><span class="label">Emissão:</span> <span class="value">${p.data}</span></div>
+        <div class="item"><span class="label">Cliente:</span> ${p.nome}</div>
+        ${p.contrato ? `<div class="item"><span class="label">Contrato:</span> ${p.contrato}</div>` : ''}
+        <div class="item"><span class="label">Valor:</span> R$ ${p.valor.toFixed(2).replace('.', ',')}</div>
+        ${p.ref ? `<div class="item"><span class="label">Ref:</span> ${p.ref}</div>` : ''}
+        <div class="item"><span class="label">Pgto:</span> ${p.metodo}</div>
+        <div class="item"><span class="label">Emissão:</span> ${p.data}</div>
         
         <div class="dashed-line"></div>
         
         <div class="stamp-space"></div>
         
         <div class="solid-line"></div>
-        <div class="center bold" style="font-size: 12px;">IBANET FIBRA - ASSINATURA</div>
+        <div class="center" style="font-size: 12px; font-weight: bold;">ASSINATURA / CARIMBO</div>
         
         <script>
             window.onload = function() {
