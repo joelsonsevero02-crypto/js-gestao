@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>JS Gestão | App</title>
 
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f172a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="JS Gestão">
-
 <link rel="icon" type="image/png" href="https://ui-avatars.com/api/?name=JS&background=0f172a&color=3b82f6&size=512&rounded=true&length=2&bold=true&font-size=0.45">
 <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=JS&background=0f172a&color=3b82f6&size=512&rounded=true&length=2&bold=true&font-size=0.45">
 
@@ -46,7 +46,6 @@ body {
 }
 .app-wrapper { display: flex; width: 100%; }
 
-/* GLASSMORPHISM & SIDEBAR COLLAPSE */
 aside { 
     width: 250px; background: var(--bg-sidebar); 
     backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
@@ -161,6 +160,16 @@ textarea { resize: vertical; min-height: 80px; }
 </head>
 <body>
 
+<div id="login-container" style="position:fixed; top:0; left:0; width:100%; height:100%; background:radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%); z-index:9999; display:flex; align-items:center; justify-content:center;">
+    <div class="card" style="width:350px; text-align:center;">
+        <h2 style="color:white; margin-bottom:10px;">JS GESTÃO</h2>
+        <p style="color:var(--text-secondary); margin-bottom:30px; font-size:0.9rem;">Acesso restrito do balcão</p>
+        <input type="email" id="login-email" placeholder="E-mail" style="margin-bottom:15px;">
+        <input type="password" id="login-senha" placeholder="Senha" style="margin-bottom:25px;" onkeyup="if(event.key==='Enter') fazerLogin()">
+        <button class="btn btn-primary" onclick="fazerLogin()">ENTRAR</button>
+    </div>
+</div>
+
 <datalist id="listaNomes"></datalist>
 <datalist id="listaContratos"></datalist>
 
@@ -194,9 +203,7 @@ textarea { resize: vertical; min-height: 80px; }
                     <button class="df-btn" onclick="setDashFilter('semana')" id="d-btn-semana">Semana</button>
                     <button class="df-btn" onclick="setDashFilter('mes')" id="d-btn-mes">Mês</button>
                     <button class="df-btn" onclick="setDashFilter('ano')" id="d-btn-ano">Ano</button>
-                    
                     <div style="width: 1px; height: 18px; background: rgba(255,255,255,0.1); margin: 0 5px;"></div>
-                    
                     <button class="df-btn" onclick="document.getElementById('dashDateFilter').showPicker()" id="d-btn-data" title="Escolher data específica">
                         <i class="fas fa-calendar-alt"></i> <span id="lblDataEscolhida" style="margin-left: 5px;">Data</span>
                     </button>
@@ -294,7 +301,6 @@ textarea { resize: vertical; min-height: 80px; }
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                     <h3 style="margin:0">Histórico de Recebimentos</h3>
                 </div>
-                
                 <div class="filter-wrapper">
                     <div class="search-box">
                         <i class="fas fa-search"></i>
@@ -304,12 +310,10 @@ textarea { resize: vertical; min-height: 80px; }
                         <input type="date" id="filtroDataLista" onchange="renderizarListas()" title="Filtrar por data específica" style="border: none; background: transparent; padding: 12px 10px;">
                     </div>
                     <button class="btn btn-secondary" onclick="limparFiltroData()" style="width:auto; padding:0 15px;" title="Limpar Filtro"><i class="fas fa-eraser"></i></button>
-                    
                     <button class="btn btn-success" onclick="exportarWhatsApp()" style="width:auto; padding:0 15px;" title="Exportar Relatório do dia selecionado">
                         <i class="fab fa-whatsapp"></i> Exportar Caixa
                     </button>
                 </div>
-
                 <ul id="listaPagamentos" class="transaction-list"></ul>
             </div>
         </section>
@@ -333,7 +337,6 @@ textarea { resize: vertical; min-height: 80px; }
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Valor (R$)</label>
                         <input id="valorDespesa" type="number" step="0.01" placeholder="0.00" onkeyup="checkEnter(event, salvarDespesa)" />
                     </div>
-                    
                     <button class="btn btn-danger" onclick="salvarDespesa()">Registrar Saída</button>
                 </div>
             </div>
@@ -352,7 +355,6 @@ textarea { resize: vertical; min-height: 80px; }
                 </div>
                 <div id="clientesGrid" style="display: grid; gap: 10px;"></div>
             </div>
-            
             <div id="clienteDetalhes" class="card hidden" style="border-left: 4px solid var(--primary)">
                 <div style="display:flex; justify-content: space-between; align-items:flex-start;">
                     <div>
@@ -378,18 +380,12 @@ textarea { resize: vertical; min-height: 80px; }
 
         <section id="config" class="hidden">
             <div class="card">
-                <h3>Dados & Backup</h3>
-                <button class="btn btn-primary" onclick="baixarBackup()" style="margin-bottom:15px; background:var(--accent-green); box-shadow: 0 4px 15px rgba(16,185,129,0.3);">
-                    <i class="fas fa-download"></i> Baixar Backup (JSON)
+                <h3>Sincronização & Backup</h3>
+                <button class="btn btn-primary" onclick="fazerLogout()" style="margin-bottom:15px; background:var(--danger); box-shadow: none;">
+                    <i class="fas fa-sign-out-alt"></i> Sair da Conta (Logout)
                 </button>
-                <div style="position:relative; margin-bottom:15px;">
-                    <button class="btn btn-secondary" onclick="document.getElementById('inputRestore').click()">
-                        <i class="fas fa-upload"></i> Restaurar Backup
-                    </button>
-                    <input type="file" id="inputRestore" accept=".json" class="hidden" onchange="restaurarBackup(this)">
-                </div>
-                <button class="btn btn-danger" onclick="limparDados()">
-                    <i class="fas fa-trash"></i> Resetar Tudo
+                <button class="btn btn-primary" onclick="baixarBackup()" style="margin-bottom:15px; background:var(--accent-green); box-shadow: 0 4px 15px rgba(16,185,129,0.3);">
+                    <i class="fas fa-download"></i> Backup Físico (JSON)
                 </button>
             </div>
         </section>
@@ -406,44 +402,126 @@ textarea { resize: vertical; min-height: 80px; }
 
 <div id="toast-container"></div>
 
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, onSnapshot, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCcHnGvzxlPr1U9g_6lHkVstfu7VFFk3PA",
+    authDomain: "js-gestao-dcebb.firebaseapp.com",
+    projectId: "js-gestao-dcebb",
+    storageBucket: "js-gestao-dcebb.firebasestorage.app",
+    messagingSenderId: "718080158101",
+    appId: "1:718080158101:web:aa12635957e21f7df46e9c",
+    measurementId: "G-PCCZ9G2WQM"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  window.auth = getAuth(app);
+  window.db = getFirestore(app);
+  window.doc = doc;
+  window.setDoc = setDoc;
+
+  // Ativando Persistência Offline
+  enableIndexedDbPersistence(window.db).catch((err) => {
+      console.log("Persistência offline falhou: ", err);
+  });
+
+  window.fazerLogin = async () => {
+    const email = document.getElementById('login-email').value;
+    const senha = document.getElementById('login-senha').value;
+    try {
+      await signInWithEmailAndPassword(window.auth, email, senha);
+      showToast("Conectado na nuvem!");
+    } catch (e) {
+      showToast("Erro: " + e.message, "error");
+    }
+  };
+
+  window.fazerLogout = async () => {
+      if(confirm("Tem certeza que deseja sair? O sistema vai travar na tela de login.")) {
+          await signOut(window.auth);
+          location.reload();
+      }
+  }
+
+  // Listener em tempo real da Nuvem
+  onAuthStateChanged(window.auth, (user) => {
+    if (user) {
+      document.getElementById('login-container').style.display = 'none';
+      
+      onSnapshot(doc(window.db, "users", user.uid), (docRef) => {
+        if (docRef.exists()) {
+          const data = docRef.data();
+          window.pagamentos = data.pagamentos || [];
+          window.despesas = data.despesas || [];
+          
+          // Mantém backup local
+          localStorage.setItem('pg', JSON.stringify(window.pagamentos));
+          localStorage.setItem('dp', JSON.stringify(window.despesas));
+          
+          window.atualizarBaseClientes();
+          window.renderizarListas();
+          window.atualizarDashboard();
+        }
+      });
+    } else {
+      document.getElementById('login-container').style.display = 'flex';
+    }
+  });
+</script>
+
 <script>
-// --- CORE LOGIC ---
-let pagamentos = JSON.parse(localStorage.getItem('pg') || '[]');
-let despesas = JSON.parse(localStorage.getItem('dp') || '[]');
+// --- PWA SERVICE WORKER REGISTRATION ---
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(()=> console.log("SW Falhou"));
+}
+
+window.pagamentos = JSON.parse(localStorage.getItem('pg') || '[]');
+window.despesas = JSON.parse(localStorage.getItem('dp') || '[]');
 let clientesDB = [];
 let chartInstance = null;
 let modoMisto = false;
 let dashFilter = 'dia'; 
 
-// Sidebar Toggle Function
 function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('collapsed');
     document.getElementById('main-content').classList.toggle('collapsed');
 }
 
-// Identificar Mês e Ano atual para Referência Automática
 function getMesAtual() {
     const meses = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
     const d = new Date();
     return meses[d.getMonth()] + '/' + d.getFullYear();
 }
 
-// Data Inicial para o Header e Filtros Fixos Hoje
 const hoje = new Date();
 const anoHj = hoje.getFullYear();
 const mesHj = String(hoje.getMonth() + 1).padStart(2, '0');
 const diaHj = String(hoje.getDate()).padStart(2, '0');
 const dataPadrao = anoHj + '-' + mesHj + '-' + diaHj;
 document.getElementById('filtroDataLista').value = dataPadrao;
-
 document.getElementById('dataAtual').innerText = hoje.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
 document.getElementById('referencia').value = getMesAtual();
 
-migrarDados();
-atualizarBaseClientes();
+window.atualizarBaseClientes = function() {
+    clientesDB = [];
+    window.pagamentos.forEach(p => {
+        if(p.nome && !clientesDB.find(c => c.nome === p.nome && c.contrato === p.contrato)) {
+            clientesDB.push({ nome: p.nome, contrato: p.contrato || '' });
+        }
+    });
+    
+    const dlNomes = document.getElementById('listaNomes');
+    const dlContratos = document.getElementById('listaContratos');
+    dlNomes.innerHTML = [...new Set(clientesDB.map(c => c.nome))].map(n => `<option value="${n}">`).join('');
+    dlContratos.innerHTML = [...new Set(clientesDB.map(c => c.contrato).filter(c=>c))].map(c => `<option value="${c}">`).join('');
+}
+
+window.atualizarBaseClientes();
 navegar('dashboard');
 
-// ATALHOS GLOBAIS DE TECLADO
 document.addEventListener('keydown', function(e) {
     if (e.key === 'F2') {
         e.preventDefault(); 
@@ -457,24 +535,7 @@ document.addEventListener('keydown', function(e) {
 });
 
 function checkEnter(event, callback) {
-    if(event.key === 'Enter') {
-        callback();
-    }
-}
-
-// Base de Clientes para Autocomplete
-function atualizarBaseClientes() {
-    clientesDB = [];
-    pagamentos.forEach(p => {
-        if(p.nome && !clientesDB.find(c => c.nome === p.nome && c.contrato === p.contrato)) {
-            clientesDB.push({ nome: p.nome, contrato: p.contrato || '' });
-        }
-    });
-    
-    const dlNomes = document.getElementById('listaNomes');
-    const dlContratos = document.getElementById('listaContratos');
-    dlNomes.innerHTML = [...new Set(clientesDB.map(c => c.nome))].map(n => `<option value="${n}">`).join('');
-    dlContratos.innerHTML = [...new Set(clientesDB.map(c => c.contrato).filter(c=>c))].map(c => `<option value="${c}">`).join('');
+    if(event.key === 'Enter') callback();
 }
 
 function autoPreencher(origem) {
@@ -483,27 +544,21 @@ function autoPreencher(origem) {
     
     if (origem === 'nome' && nomeInp.value) {
         const cliente = clientesDB.find(c => c.nome === nomeInp.value);
-        if (cliente && cliente.contrato && !contInp.value) {
-            contInp.value = cliente.contrato;
-        }
+        if (cliente && cliente.contrato && !contInp.value) contInp.value = cliente.contrato;
     } else if (origem === 'contrato' && contInp.value) {
         const cliente = clientesDB.find(c => c.contrato === contInp.value);
-        if (cliente && cliente.nome && !nomeInp.value) {
-            nomeInp.value = cliente.nome;
-        }
+        if (cliente && cliente.nome && !nomeInp.value) nomeInp.value = cliente.nome;
     }
 }
 
-function renderClientes() {
+window.renderClientes = function() {
     const termo = document.getElementById('pesquisaClienteDB').value.toLowerCase();
     const grid = document.getElementById('clientesGrid');
     
     const cliMap = {};
-    pagamentos.forEach(p => {
+    window.pagamentos.forEach(p => {
         const key = p.nome + '|' + (p.contrato || '');
-        if(!cliMap[key]) {
-            cliMap[key] = { nome: p.nome, contrato: p.contrato, total: 0, historico: [] };
-        }
+        if(!cliMap[key]) cliMap[key] = { nome: p.nome, contrato: p.contrato, total: 0, historico: [] };
         cliMap[key].total += p.valor;
         cliMap[key].historico.push(p);
     });
@@ -535,7 +590,7 @@ function abrirDetalhesCliente(nome, contrato) {
     const box = document.getElementById('clienteDetalhes');
     box.classList.remove('hidden');
     
-    const pgCliente = pagamentos.filter(p => p.nome === nome && (p.contrato || '') === contrato);
+    const pgCliente = window.pagamentos.filter(p => p.nome === nome && (p.contrato || '') === contrato);
     pgCliente.sort((a,b) => b.ts - a.ts);
     
     const total = pgCliente.reduce((acc, curr) => acc + curr.valor, 0);
@@ -547,9 +602,7 @@ function abrirDetalhesCliente(nome, contrato) {
     
     document.getElementById('cdHistorico').innerHTML = pgCliente.map(p => {
         let metodoStr = p.metodo;
-        if(p.metodo === 'Misto' && p.mistoData) {
-            metodoStr = `Misto (${p.mistoData[0].metodo} + ${p.mistoData[1].metodo})`;
-        }
+        if(p.metodo === 'Misto' && p.mistoData) metodoStr = `Misto (${p.mistoData[0].metodo} + ${p.mistoData[1].metodo})`;
         return `
         <li class="transaction-item t-entrada" style="padding:10px;">
             <div>
@@ -570,10 +623,8 @@ function fecharDetalhesCliente() {
     document.getElementById('painelClientesLista').classList.remove('hidden');
 }
 
-
-// Impressão de Recibo Térmico (80mm)
 function imprimirRecibo(id) {
-    const p = pagamentos.find(x => x.id == id);
+    const p = window.pagamentos.find(x => x.id == id);
     if(!p) return;
     
     let pgtoHtml = `<div class="item"><span class="label">Pgto:</span> ${p.metodo}</div>`;
@@ -612,44 +663,32 @@ function imprimirRecibo(id) {
     </head>
     <body>
         <div class="center subtitle">RECIBO DE PAGAMENTO</div>
-        
         <div class="dashed-line"></div>
-        
         <div class="item"><span class="label">Cliente:</span> ${p.nome}</div>
         ${p.contrato ? `<div class="item"><span class="label">Contrato:</span> ${p.contrato}</div>` : ''}
         <div class="item"><span class="label">Valor:</span> R$ ${p.valor.toFixed(2).replace('.', ',')}</div>
         ${p.ref ? `<div class="item"><span class="label">Ref:</span> ${p.ref}</div>` : ''}
         ${pgtoHtml}
         <div class="item"><span class="label">Emissão:</span> ${p.data}</div>
-        
         <div class="dashed-line"></div>
         <div class="stamp-space"></div>
         <div class="solid-line"></div>
-        
-        <div class="center" style="font-size: 12px; font-weight: bold;">ASSINATURA / CARIMBO</div>
-        
-        <script>
-            window.onload = function() {
-                window.print();
-                setTimeout(function(){ window.close(); }, 500);
-            }
-        <\/script>
+        <div class="center" style="font-size: 12px; font-weight: bold;">IBANET FIBRA - ASSINATURA</div>
+        <script>window.onload=function(){window.print();setTimeout(function(){window.close();},500);}<\/script>
     </body>
-    </html>
-    `;
+    </html>`;
     printWindow.document.open();
     printWindow.document.write(html);
     printWindow.document.close();
 }
 
-
 function navegar(sec) {
     document.querySelectorAll('section').forEach(s => { s.classList.add('hidden'); s.classList.remove('active-section'); });
-    const target = document.getElementById(sec);
-    target.classList.remove('hidden'); target.classList.add('active-section');
+    document.getElementById(sec).classList.remove('hidden'); 
+    document.getElementById(sec).classList.add('active-section');
     
     if(sec === 'clientes') {
-        renderClientes();
+        window.renderClientes();
         document.getElementById('painelClientesLista').classList.remove('hidden');
         document.getElementById('clienteDetalhes').classList.add('hidden');
     }
@@ -663,20 +702,29 @@ function navegar(sec) {
     if(deskBtn) deskBtn.classList.add('active');
     if(mobBtn) mobBtn.classList.add('active');
     
-    if(sec === 'dashboard') atualizarDashboard();
-    if(sec === 'pagamentos' || sec === 'despesas') renderizarListas();
+    if(sec === 'dashboard') window.atualizarDashboard();
+    if(sec === 'pagamentos' || sec === 'despesas') window.renderizarListas();
+}
+
+async function saveNuvem() {
+    localStorage.setItem('pg', JSON.stringify(window.pagamentos));
+    localStorage.setItem('dp', JSON.stringify(window.despesas));
+    
+    if(window.auth && window.auth.currentUser) {
+        try {
+            await window.setDoc(window.doc(window.db, "users", window.auth.currentUser.uid), {
+                pagamentos: window.pagamentos,
+                despesas: window.despesas
+            });
+        } catch (e) { console.error("Erro na nuvem: ", e); }
+    }
 }
 
 function migrarDados() {
     let changed = false;
-    pagamentos.forEach((p, i) => { if(!p.id) { p.id = Date.now() + i; changed = true; } });
-    despesas.forEach((d, i) => { if(!d.id) { d.id = Date.now() + i; changed = true; } });
-    if(changed) save();
-}
-
-function save() {
-    localStorage.setItem('pg', JSON.stringify(pagamentos));
-    localStorage.setItem('dp', JSON.stringify(despesas));
+    window.pagamentos.forEach((p, i) => { if(!p.id) { p.id = Date.now() + i; changed = true; } });
+    window.despesas.forEach((d, i) => { if(!d.id) { d.id = Date.now() + i; changed = true; } });
+    if(changed) saveNuvem();
 }
 
 function toggleMisto() {
@@ -713,37 +761,30 @@ function salvarPagamento() {
     }
     
     if(idEdit) {
-        const idx = pagamentos.findIndex(p => p.id == idEdit);
+        const idx = window.pagamentos.findIndex(p => p.id == idEdit);
         if(idx > -1) {
-            pagamentos[idx].nome = nome; 
-            pagamentos[idx].contrato = contrato; 
-            pagamentos[idx].ref = ref; 
-            pagamentos[idx].valor = valorSalvar; 
-            pagamentos[idx].metodo = metodoSalvar;
-            pagamentos[idx].mistoData = mistoArr;
+            window.pagamentos[idx].nome = nome; 
+            window.pagamentos[idx].contrato = contrato; 
+            window.pagamentos[idx].ref = ref; 
+            window.pagamentos[idx].valor = valorSalvar; 
+            window.pagamentos[idx].metodo = metodoSalvar;
+            window.pagamentos[idx].mistoData = mistoArr;
             showToast("Atualizado!"); 
             cancelarEdicao();
         }
     } else {
         const agora = new Date();
-        pagamentos.unshift({ 
-            id: Date.now(), 
-            nome, 
-            contrato, 
-            valor: valorSalvar, 
-            metodo: metodoSalvar, 
-            mistoData: mistoArr,
-            ref, 
-            data: agora.toLocaleString('pt-BR'), 
-            ts: agora.getTime() 
+        window.pagamentos.unshift({ 
+            id: Date.now(), nome, contrato, valor: valorSalvar, metodo: metodoSalvar, mistoData: mistoArr,
+            ref, data: agora.toLocaleString('pt-BR'), ts: agora.getTime() 
         });
         showToast("Recebido!");
     }
     
-    save(); 
-    atualizarBaseClientes();
+    saveNuvem(); 
+    window.atualizarBaseClientes();
     limparFormPag(); 
-    renderizarListas();
+    window.renderizarListas();
     document.getElementById('nomeCliente').focus();
 }
 
@@ -753,15 +794,15 @@ function salvarDespesa() {
     const val = parseFloat(document.getElementById('valorDespesa').value);
     if(!desc || isNaN(val)) return showToast("Preencha tudo!", "error");
     const agora = new Date();
-    despesas.unshift({ id: Date.now(), tipo: tipo, descricao: desc, valor: val, data: agora.toLocaleString('pt-BR'), ts: agora.getTime() });
-    save(); 
+    window.despesas.unshift({ id: Date.now(), tipo: tipo, descricao: desc, valor: val, data: agora.toLocaleString('pt-BR'), ts: agora.getTime() });
+    saveNuvem(); 
     showToast(tipo + " registrada!");
-    document.getElementById('descDespesa').value = ''; document.getElementById('valorDespesa').value = ''; renderizarListas();
+    document.getElementById('descDespesa').value = ''; document.getElementById('valorDespesa').value = ''; window.renderizarListas();
     document.getElementById('descDespesa').focus();
 }
 
 function editarPagamento(id) {
-    const p = pagamentos.find(x => x.id == id);
+    const p = window.pagamentos.find(x => x.id == id);
     if(!p) return;
     document.getElementById('nomeCliente').value = p.nome; 
     document.getElementById('contrato').value = p.contrato || '';
@@ -800,16 +841,16 @@ function limparFormPag() {
 
 function deletar(type, id) {
     if(!confirm("Tem certeza que deseja apagar permanentemente?")) return;
-    if(type === 'pg') pagamentos = pagamentos.filter(p => p.id != id); else despesas = despesas.filter(d => d.id != id);
-    save(); atualizarBaseClientes(); renderizarListas(); atualizarDashboard();
+    if(type === 'pg') window.pagamentos = window.pagamentos.filter(p => p.id != id); else window.despesas = window.despesas.filter(d => d.id != id);
+    saveNuvem(); window.atualizarBaseClientes(); window.renderizarListas(); window.atualizarDashboard();
 }
 
-function limparFiltroData() { document.getElementById('filtroDataLista').value = ''; renderizarListas(); }
+function limparFiltroData() { document.getElementById('filtroDataLista').value = ''; window.renderizarListas(); }
 
-function renderizarListas() {
+window.renderizarListas = function() {
     const termo = document.getElementById('buscaPagamentos').value.toLowerCase();
     const dataFiltroInput = document.getElementById('filtroDataLista').value; 
-    let listaPg = pagamentos;
+    let listaPg = window.pagamentos;
     if(dataFiltroInput) {
         const partes = dataFiltroInput.split('-');
         const inicioDia = new Date(partes[0], partes[1]-1, partes[2], 0, 0, 0).getTime();
@@ -843,7 +884,7 @@ function renderizarListas() {
         </li>
     `}).join('') : '<li style="text-align:center; padding:20px; color:var(--text-secondary)">Nenhum registro encontrado.</li>';
     
-    document.getElementById('listaDespesas').innerHTML = despesas.map(d => {
+    document.getElementById('listaDespesas').innerHTML = window.despesas.map(d => {
         const isDep = d.tipo === 'Depósito';
         const colorClass = isDep ? 'text-blue' : 'text-red';
         const borderClass = isDep ? 't-deposito' : 't-saida';
@@ -886,10 +927,10 @@ function setDashFilter(periodo) {
     
     document.getElementById('lblPeriodo').innerText = txt; 
     document.getElementById('lblPeriodo2').innerText = txt;
-    atualizarDashboard();
+    window.atualizarDashboard();
 }
 
-function atualizarDashboard() {
+window.atualizarDashboard = function() {
     const agora = new Date();
     let inicio = 0;
     let fim = agora.getTime();
@@ -908,8 +949,8 @@ function atualizarDashboard() {
     else if (dashFilter === 'mes') inicio = new Date(agora.getFullYear(), agora.getMonth(), 1).getTime();
     else if (dashFilter === 'ano') inicio = new Date(agora.getFullYear(), 0, 1).getTime();
     
-    const pgFiltro = pagamentos.filter(p => (p.ts || 0) >= inicio && (p.ts || 0) <= fim);
-    const dpFiltro = despesas.filter(d => (d.ts || 0) >= inicio && (d.ts || 0) <= fim);
+    const pgFiltro = window.pagamentos.filter(p => (p.ts || 0) >= inicio && (p.ts || 0) <= fim);
+    const dpFiltro = window.despesas.filter(d => (d.ts || 0) >= inicio && (d.ts || 0) <= fim);
     
     const totalE = pgFiltro.reduce((a,b)=>a+b.valor,0);
     const totalS = dpFiltro.reduce((a,b)=>a+b.valor,0);
@@ -958,8 +999,8 @@ function exportarWhatsApp() {
         dataTexto = agora.toLocaleDateString('pt-BR');
     }
     
-    const pgFiltrados = pagamentos.filter(p => p.ts >= inicioDia && p.ts <= fimDia);
-    const dpFiltrados = despesas.filter(d => d.ts >= inicioDia && d.ts <= fimDia);
+    const pgFiltrados = window.pagamentos.filter(p => p.ts >= inicioDia && p.ts <= fimDia);
+    const dpFiltrados = window.despesas.filter(d => d.ts >= inicioDia && d.ts <= fimDia);
     
     if(pgFiltrados.length === 0 && dpFiltrados.length === 0) {
         showToast("Não há dados nessa data para exportar.", "error");
@@ -1028,18 +1069,10 @@ function exportarWhatsApp() {
 
 function baixarBackup() {
     const node = document.createElement('a');
-    node.setAttribute("href", "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({pagamentos, despesas})));
+    node.setAttribute("href", "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({pagamentos: window.pagamentos, despesas: window.despesas})));
     node.setAttribute("download", "backup_jsgestao.json");
     document.body.appendChild(node); node.click(); node.remove();
 }
-function restaurarBackup(input) {
-    const fr = new FileReader();
-    fr.onload = (e) => {
-        const d = JSON.parse(e.target.result);
-        if(d.pagamentos && d.despesas) { pagamentos = d.pagamentos; despesas = d.despesas; migrarDados(); save(); location.reload(); }
-    }; fr.readAsText(input.files[0]);
-}
-function limparDados(){ if(confirm("Apagar tudo permanentemente?")) { localStorage.clear(); location.reload(); } }
 function showToast(msg, type='success') {
     const t = document.createElement('div'); 
     t.className = 'toast' + (type === 'error' ? ' error-toast' : '');
