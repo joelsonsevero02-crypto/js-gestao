@@ -385,8 +385,14 @@ textarea { resize: vertical; min-height: 80px; }
                     <i class="fas fa-sign-out-alt"></i> Sair da Conta (Logout)
                 </button>
                 <button class="btn btn-primary" onclick="baixarBackup()" style="margin-bottom:15px; background:var(--accent-green); box-shadow: 0 4px 15px rgba(16,185,129,0.3);">
-                    <i class="fas fa-download"></i> Backup Físico (JSON)
+                    <i class="fas fa-download"></i> Baixar Backup Físico (JSON)
                 </button>
+                <div style="position:relative; margin-bottom:15px;">
+                    <button class="btn btn-secondary" onclick="document.getElementById('inputRestore').click()">
+                        <i class="fas fa-upload"></i> Restaurar do Arquivo Backup
+                    </button>
+                    <input type="file" id="inputRestore" accept=".json" class="hidden" onchange="restaurarBackup(this)">
+                </div>
             </div>
         </section>
     </main>
@@ -446,7 +452,7 @@ textarea { resize: vertical; min-height: 80px; }
       }
   }
 
-  // Listener em tempo real da Nuvem
+  // Listener inteligente da Nuvem (Proteção de primeiro login)
   onAuthStateChanged(window.auth, (user) => {
     if (user) {
       document.getElementById('login-container').style.display = 'none';
@@ -454,17 +460,22 @@ textarea { resize: vertical; min-height: 80px; }
       onSnapshot(doc(window.db, "users", user.uid), (docRef) => {
         if (docRef.exists()) {
           const data = docRef.data();
-          window.pagamentos = data.pagamentos || [];
-          window.despesas = data.despesas || [];
-          
-          // Mantém backup local
-          localStorage.setItem('pg', JSON.stringify(window.pagamentos));
-          localStorage.setItem('dp', JSON.stringify(window.despesas));
-          
-          window.atualizarBaseClientes();
-          window.renderizarListas();
-          window.atualizarDashboard();
+          // Só substitui a tela se a nuvem tiver dados salvos de fato
+          if (data.pagamentos || data.despesas) {
+              window.pagamentos = data.pagamentos || [];
+              window.despesas = data.despesas || [];
+              
+              localStorage.setItem('pg', JSON.stringify(window.pagamentos));
+              localStorage.setItem('dp', JSON.stringify(window.despesas));
+          }
+        } else {
+          // Se a nuvem está vazia (1º acesso), joga o histórico do PC para a nuvem
+          window.saveNuvem();
         }
+        
+        window.atualizarBaseClientes();
+        window.renderizarListas();
+        window.atualizarDashboard();
       });
     } else {
       document.getElementById('login-container').style.display = 'flex';
@@ -1073,6 +1084,26 @@ function baixarBackup() {
     node.setAttribute("download", "backup_jsgestao.json");
     document.body.appendChild(node); node.click(); node.remove();
 }
+
+window.restaurarBackup = function(input) {
+    const fr = new FileReader();
+    fr.onload = (e) => {
+        const d = JSON.parse(e.target.result);
+        if(d.pagamentos && d.despesas) { 
+            window.pagamentos = d.pagamentos; 
+            window.despesas = d.despesas; 
+            saveNuvem(); 
+            showToast("Backup Restaurado com Sucesso!");
+            setTimeout(() => { location.reload(); }, 1500);
+        } else {
+            showToast("Arquivo de backup inválido!", "error");
+        }
+    }; 
+    fr.readAsText(input.files[0]);
+}
+
+function limparDados(){ if(confirm("Apagar tudo permanentemente?")) { localStorage.clear(); location.reload(); } }
+
 function showToast(msg, type='success') {
     const t = document.createElement('div'); 
     t.className = 'toast' + (type === 'error' ? ' error-toast' : '');
