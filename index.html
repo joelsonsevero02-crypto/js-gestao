@@ -19,12 +19,12 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-/* ================= CSS (VISUAL) ================= */
+/* ================= CSS (VISUAL ELITE) ================= */
 :root {
     --bg-body: #0f172a;        
-    --bg-sidebar: #111827;    
-    --surface: #1e293b;        
-    --border: #334155;        
+    --bg-sidebar: rgba(17, 24, 39, 0.75);    
+    --surface: rgba(30, 41, 59, 0.65);        
+    --border: rgba(255, 255, 255, 0.08);        
     --text-main: #f8fafc;     
     --text-secondary: #94a3b8; 
     --primary: #3b82f6;        
@@ -34,72 +34,129 @@
     --danger: #ef4444;        
     --deposit: #0ea5e9;
     --radius: 12px;
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
     --transition: all 0.3s ease;
 }
 * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-main); display: flex; min-height: 100vh; overscroll-behavior-y: none; }
+body { 
+    margin: 0; font-family: 'Inter', sans-serif; 
+    background: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%); 
+    background-attachment: fixed;
+    color: var(--text-main); display: flex; min-height: 100vh; overscroll-behavior-y: none; 
+}
 .app-wrapper { display: flex; width: 100%; }
-aside { width: 250px; background: var(--bg-sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
-.brand { font-size: 1.4rem; font-weight: 800; color: var(--text-main); margin-bottom: 40px; display: flex; align-items: center; gap: 10px; }
+
+/* GLASSMORPHISM & SIDEBAR COLLAPSE */
+aside { 
+    width: 250px; background: var(--bg-sidebar); 
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    border-right: 1px solid var(--border); 
+    display: flex; flex-direction: column; padding: 20px; position: fixed; height: 100vh; z-index: 100;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s;
+}
+aside.collapsed { width: 80px; padding: 20px 15px; }
+aside.collapsed .brand-text, aside.collapsed .nav-btn span { display: none; }
+aside.collapsed .toggle-icon { transform: rotate(180deg); }
+
+.brand { font-size: 1.4rem; font-weight: 800; color: var(--text-main); margin-bottom: 40px; display: flex; align-items: center; justify-content: space-between; }
 .brand span { color: var(--primary); } 
+.toggle-icon { cursor: pointer; font-size: 1rem; color: var(--text-secondary); transition: var(--transition); padding: 5px; }
+.toggle-icon:hover { color: var(--text-main); }
+
 .nav-menu { display: flex; flex-direction: column; gap: 10px; }
-.nav-btn { background: transparent; border: none; padding: 12px 15px; border-radius: var(--radius); color: var(--text-secondary); font-weight: 500; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 12px; font-size: 0.95rem; transition: var(--transition); }
+.nav-btn { background: transparent; border: none; padding: 12px 15px; border-radius: var(--radius); color: var(--text-secondary); font-weight: 500; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 12px; font-size: 0.95rem; transition: var(--transition); overflow: hidden; white-space: nowrap; }
 .nav-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
-.nav-btn.active { background: linear-gradient(90deg, rgba(59,130,246,0.15) 0%, rgba(0,0,0,0) 100%); color: var(--primary); border-left: 3px solid var(--primary); }
-.nav-btn i { width: 20px; text-align: center; }
-main { flex: 1; margin-left: 250px; padding: 30px; overflow-y: auto; padding-bottom: 100px; }
+.nav-btn.active { background: linear-gradient(90deg, rgba(59,130,246,0.2) 0%, rgba(0,0,0,0) 100%); color: var(--primary); border-left: 3px solid var(--primary); }
+.nav-btn i { min-width: 20px; text-align: center; }
+
+main { flex: 1; padding: 30px; overflow-y: auto; padding-bottom: 100px; transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+@media (min-width: 769px) { 
+    .mobile-nav { display: none !important; } 
+    main { margin-left: 250px; }
+    main.collapsed { margin-left: 80px; }
+}
 @media (max-width: 768px) {
     aside { display: none; } 
     main { margin-left: 0; padding: 15px; padding-bottom: 90px; }
-    .mobile-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg-sidebar); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
-    .mobile-btn { background: transparent; border: none; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 0.75rem; }
+    .mobile-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg-sidebar); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
+    .mobile-btn { background: transparent; border: none; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 0.70rem; }
     .mobile-btn.active { color: var(--primary); }
-    .mobile-btn i { font-size: 1.2rem; }
+    .mobile-btn i { font-size: 1.1rem; }
 }
-@media (min-width: 769px) { .mobile-nav { display: none; } }
+
 .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
 .page-title { font-size: 1.5rem; font-weight: 700; }
-.date-display { font-size: 0.9rem; color: var(--text-secondary); background: var(--surface); padding: 8px 15px; border-radius: 20px; border: 1px solid var(--border); }
-.card { background: var(--surface); border-radius: var(--radius); padding: 25px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); }
-input, select, textarea { width: 100%; padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border); background: #0f172a; color: white; font-size: 0.9rem; transition: var(--transition); font-family: 'Inter', sans-serif;}
-input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
+.date-display { font-size: 0.9rem; color: var(--text-secondary); background: var(--surface); backdrop-filter: blur(15px); padding: 8px 15px; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+
+.card { background: var(--surface); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: var(--radius); padding: 25px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+
+input, select, textarea { width: 100%; padding: 12px 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white; font-size: 0.9rem; transition: var(--transition); font-family: 'Inter', sans-serif;}
+input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(59,130,246,0.3); background: rgba(0,0,0,0.4); }
+input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; opacity: 0.7; }
 textarea { resize: vertical; min-height: 80px; }
-.btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 0.95rem; }
-.btn-primary { background: var(--primary); color: white; }
-.btn-success { background: var(--accent-green); color: white; }
+
+.btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 0.95rem; transition: var(--transition); }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(59,130,246,0.4); }
+.btn-success { background: var(--accent-green); color: white; box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
 .btn-danger { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
-.btn-secondary { background: var(--border); color: var(--text-main); }
-.dash-filters { display: flex; background: var(--surface); padding: 5px; border-radius: 12px; width: fit-content; margin-bottom: 20px; border: 1px solid var(--border); overflow-x: auto; max-width: 100%; }
+.btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-main); }
+
+.dash-filters { display: flex; background: var(--surface); backdrop-filter: blur(15px); padding: 5px; border-radius: 12px; width: fit-content; margin-bottom: 20px; border: 1px solid var(--border); overflow-x: auto; max-width: 100%; align-items: center; box-shadow: var(--shadow); }
 .df-btn { background: transparent; border: none; color: var(--text-secondary); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; white-space: nowrap; }
-.df-btn.active { background: var(--primary); color: white; }
+.df-btn.active { background: var(--primary); color: white; box-shadow: 0 2px 10px rgba(59,130,246,0.4); }
+
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px; }
 .stat-widget { display: flex; align-items: center; gap: 20px; }
-.icon-box { width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-.bg-purple { background: linear-gradient(135deg, #a855f7, #7e22ce); }
-.bg-green { background: linear-gradient(135deg, #10b981, #059669); }
-.bg-pink { background: linear-gradient(135deg, #ec4899, #db2777); }
+.icon-box { width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+.bg-purple { background: linear-gradient(135deg, #a855f7, #7e22ce); box-shadow: 0 0 15px rgba(139,92,246,0.3); }
+.bg-green { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 0 15px rgba(16,185,129,0.3); }
+.bg-pink { background: linear-gradient(135deg, #ec4899, #db2777); box-shadow: 0 0 15px rgba(236,72,153,0.3); }
+
+/* GLOW EFFECT NA FONTE */
+.text-green { color: var(--accent-green); text-shadow: 0 0 12px rgba(16,185,129,0.5); }
+.text-red { color: var(--danger); text-shadow: 0 0 12px rgba(239,68,68,0.5); }
+.text-blue { color: var(--deposit); text-shadow: 0 0 12px rgba(14,165,233,0.5); }
 .stat-info h3 { margin: 0; font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
-.stat-info p { margin: 5px 0 0 0; font-size: 1.6rem; font-weight: 700; color: var(--text-main); }
+.stat-info p { margin: 5px 0 0 0; font-size: 1.6rem; font-weight: 700; color: var(--text-main); text-shadow: 0 0 10px rgba(255,255,255,0.1); }
+
 .transaction-list { list-style: none; padding: 0; margin: 0; }
-.transaction-item { background: rgba(255,255,255,0.02); padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid transparent; transition: 0.2s; }
-.transaction-item:hover { background: rgba(255,255,255,0.05); }
+.transaction-item { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid transparent; transition: 0.2s; border: 1px solid transparent; }
+.transaction-item:hover { background: rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.05); transform: translateX(2px); }
 .t-entrada { border-left-color: var(--accent-green); }
 .t-saida { border-left-color: var(--danger); }
 .t-deposito { border-left-color: var(--deposit); }
+
 .filter-wrapper { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
 .search-box { flex: 1; position: relative; }
 .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
 .search-box input { padding-left: 40px; }
-.hidden { display: none; }
+.hidden { display: none !important; }
 .active-section { display: block; animation: fadeUp 0.4s ease; }
 @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-.toast { position: fixed; top: 20px; right: 20px; background: var(--surface); border: 1px solid var(--border); padding: 15px; border-radius: 8px; z-index: 2000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 10px; }
-.text-green { color: var(--accent-green); }
-.text-red { color: var(--danger); }
-.text-blue { color: var(--deposit); }
-.split-box { background: rgba(59,130,246,0.1); border: 1px dashed var(--primary); padding: 15px; border-radius: 8px; margin-top: 10px; }
+
+/* ANIMATED TOAST COM PROGRESS BAR */
+.toast { 
+    position: fixed; top: 20px; right: 20px; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); 
+    border: 1px solid var(--border); padding: 15px 20px; border-radius: 8px; z-index: 2000; box-shadow: var(--shadow); 
+    display: flex; align-items: center; gap: 12px; font-weight: 500;
+    animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    overflow: hidden;
+}
+.toast i { font-size: 1.2rem; }
+.toast::after {
+    content: ''; position: absolute; bottom: 0; left: 0; height: 3px; background: var(--accent-green);
+    width: 100%; animation: toastProgress 3s linear forwards;
+}
+.toast.error-toast::after { background: var(--danger); }
+@keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes toastProgress { from { width: 100%; } to { width: 0; } }
+
+.split-box { background: rgba(59,130,246,0.05); border: 1px dashed rgba(59,130,246,0.3); padding: 15px; border-radius: 8px; margin-top: 10px; backdrop-filter: blur(5px); }
 .uppercase-input { text-transform: uppercase; }
+.badge-misto { background: rgba(59,130,246,0.2); color: var(--primary); padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; margin-left: 5px; border: 1px solid rgba(59,130,246,0.3); }
+.hidden-date-input { position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; border: none; }
 </style>
 </head>
 <body>
@@ -108,19 +165,23 @@ textarea { resize: vertical; min-height: 80px; }
 <datalist id="listaContratos"></datalist>
 
 <div class="app-wrapper">
-    <aside>
+    <aside id="sidebar">
         <div class="brand">
-            <i class="fas fa-chart-line"></i> JS<span>GESTÃO</span>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <i class="fas fa-chart-line"></i> <span class="brand-text">JS<span>GESTÃO</span></span>
+            </div>
+            <i class="fas fa-chevron-left toggle-icon" onclick="toggleSidebar()" title="Recolher Menu"></i>
         </div>
         <nav class="nav-menu">
-            <button onclick="navegar('dashboard')" id="btn-dash" class="nav-btn active"><i class="fas fa-chart-pie"></i> Dashboard</button>
-            <button onclick="navegar('pagamentos')" id="btn-pag" class="nav-btn"><i class="fas fa-money-bill-wave"></i> Receber <span style="font-size: 0.7rem; color: #475569; margin-left: 5px;">[F2]</span></button>
-            <button onclick="navegar('despesas')" id="btn-desp" class="nav-btn"><i class="fas fa-wallet"></i> Pagar</button>
-            <button onclick="navegar('config')" id="btn-conf" class="nav-btn"><i class="fas fa-cogs"></i> Configurações</button>
+            <button onclick="navegar('dashboard')" id="btn-dash" class="nav-btn active"><i class="fas fa-chart-pie"></i> <span>Dashboard</span></button>
+            <button onclick="navegar('pagamentos')" id="btn-pag" class="nav-btn"><i class="fas fa-money-bill-wave"></i> <span>Receber <small style="color: #475569; margin-left: 5px;">[F2]</small></span></button>
+            <button onclick="navegar('despesas')" id="btn-desp" class="nav-btn"><i class="fas fa-wallet"></i> <span>Pagar</span></button>
+            <button onclick="navegar('clientes')" id="btn-cli" class="nav-btn"><i class="fas fa-users"></i> <span>Clientes</span></button>
+            <button onclick="navegar('config')" id="btn-conf" class="nav-btn"><i class="fas fa-cogs"></i> <span>Configurações</span></button>
         </nav>
     </aside>
 
-    <main>
+    <main id="main-content">
         <div class="header-top">
             <div class="page-title" id="pageTitle">Dashboard</div>
             <div class="date-display" id="dataAtual"></div>
@@ -133,6 +194,13 @@ textarea { resize: vertical; min-height: 80px; }
                     <button class="df-btn" onclick="setDashFilter('semana')" id="d-btn-semana">Semana</button>
                     <button class="df-btn" onclick="setDashFilter('mes')" id="d-btn-mes">Mês</button>
                     <button class="df-btn" onclick="setDashFilter('ano')" id="d-btn-ano">Ano</button>
+                    
+                    <div style="width: 1px; height: 18px; background: rgba(255,255,255,0.1); margin: 0 5px;"></div>
+                    
+                    <button class="df-btn" onclick="document.getElementById('dashDateFilter').showPicker()" id="d-btn-data" title="Escolher data específica">
+                        <i class="fas fa-calendar-alt"></i> <span id="lblDataEscolhida" style="margin-left: 5px;">Data</span>
+                    </button>
+                    <input type="date" id="dashDateFilter" class="hidden-date-input" onchange="setDashFilter('data')">
                 </div>
             </div>
             
@@ -162,7 +230,7 @@ textarea { resize: vertical; min-height: 80px; }
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
                 <div class="card">
-                    <h3 style="margin-top:0"><i class="fas fa-chart-bar"></i> Visão Geral</h3>
+                    <h3 style="margin-top:0"><i class="fas fa-chart-bar"></i> Visão Geral de Entradas</h3>
                     <div style="height: 250px;"><canvas id="financeChart"></canvas></div>
                 </div>
                 <div class="card">
@@ -202,11 +270,11 @@ textarea { resize: vertical; min-height: 80px; }
                         </select>
                     </div>
                     <div style="grid-column: span 2;">
-                         <div onclick="toggleMisto()" style="cursor:pointer; color:var(--primary); font-size:0.9rem; margin-bottom:10px;">
+                         <div onclick="toggleMisto()" style="cursor:pointer; color:var(--primary); font-size:0.9rem; margin-bottom:10px; transition: var(--transition);">
                             <i class="far fa-square" id="iconMisto"></i> Pagamento Misto?
                         </div>
                         <div id="boxMisto" class="split-box hidden">
-                            <input id="valorPago2" type="number" placeholder="Valor 2 (R$)" style="margin-bottom:10px;" onkeyup="checkEnter(event, salvarPagamento)" />
+                            <input id="valorPago2" type="number" placeholder="Valor da 2ª Parte (R$)" style="margin-bottom:10px;" onkeyup="checkEnter(event, salvarPagamento)" />
                             <select id="metodo2" onkeyup="checkEnter(event, salvarPagamento)">
                                 <option value="Pix">Pix</option>
                                 <option value="Dinheiro">Dinheiro</option>
@@ -232,8 +300,8 @@ textarea { resize: vertical; min-height: 80px; }
                         <i class="fas fa-search"></i>
                         <input type="text" id="buscaPagamentos" placeholder="Buscar cliente ou contrato..." onkeyup="renderizarListas()">
                     </div>
-                    <div style="flex-basis: 150px;">
-                        <input type="date" id="filtroDataLista" onchange="renderizarListas()" title="Filtrar por data específica">
+                    <div style="flex-basis: 150px; display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding-right: 5px;">
+                        <input type="date" id="filtroDataLista" onchange="renderizarListas()" title="Filtrar por data específica" style="border: none; background: transparent; padding: 12px 10px;">
                     </div>
                     <button class="btn btn-secondary" onclick="limparFiltroData()" style="width:auto; padding:0 15px;" title="Limpar Filtro"><i class="fas fa-eraser"></i></button>
                     
@@ -275,10 +343,43 @@ textarea { resize: vertical; min-height: 80px; }
             </div>
         </section>
 
+        <section id="clientes" class="hidden">
+            <div class="card" id="painelClientesLista">
+                <h3 style="margin-top:0"><i class="fas fa-users"></i> Base de Clientes</h3>
+                <div class="search-box" style="margin-bottom: 20px;">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="pesquisaClienteDB" placeholder="Pesquisar histórico por nome ou contrato..." onkeyup="renderClientes()">
+                </div>
+                <div id="clientesGrid" style="display: grid; gap: 10px;"></div>
+            </div>
+            
+            <div id="clienteDetalhes" class="card hidden" style="border-left: 4px solid var(--primary)">
+                <div style="display:flex; justify-content: space-between; align-items:flex-start;">
+                    <div>
+                        <h2 id="cdNome" style="margin:0 0 5px 0">NOME DO CLIENTE</h2>
+                        <span id="cdContrato" style="color:var(--text-secondary); font-size:0.9rem;">CT: 1234</span>
+                    </div>
+                    <button class="btn btn-secondary" style="width:auto; padding: 8px 15px;" onclick="fecharDetalhesCliente()"><i class="fas fa-arrow-left"></i> Voltar</button>
+                </div>
+                <div style="margin-top: 20px; display:flex; gap: 20px;">
+                    <div>
+                        <small style="color:var(--text-secondary)">Total Pago Histórico</small><br>
+                        <strong id="cdTotal" class="text-green" style="font-size:1.2rem; text-shadow:none;">R$ 0,00</strong>
+                    </div>
+                    <div>
+                        <small style="color:var(--text-secondary)">Qtd. Mensalidades</small><br>
+                        <strong id="cdQtd" style="font-size:1.2rem; color:white;">0</strong>
+                    </div>
+                </div>
+                <h4 style="margin-top:25px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">Lançamentos do Cliente</h4>
+                <ul id="cdHistorico" class="transaction-list"></ul>
+            </div>
+        </section>
+
         <section id="config" class="hidden">
             <div class="card">
                 <h3>Dados & Backup</h3>
-                <button class="btn btn-primary" onclick="baixarBackup()" style="margin-bottom:15px; background:var(--accent-green)">
+                <button class="btn btn-primary" onclick="baixarBackup()" style="margin-bottom:15px; background:var(--accent-green); box-shadow: 0 4px 15px rgba(16,185,129,0.3);">
                     <i class="fas fa-download"></i> Baixar Backup (JSON)
                 </button>
                 <div style="position:relative; margin-bottom:15px;">
@@ -296,10 +397,11 @@ textarea { resize: vertical; min-height: 80px; }
 </div>
 
 <nav class="mobile-nav">
-    <button onclick="navegar('dashboard')" class="mobile-btn active" id="mob-dashboard"><i class="fas fa-chart-pie"></i>Dash</button>
-    <button onclick="navegar('pagamentos')" class="mobile-btn" id="mob-pagamentos"><i class="fas fa-arrow-up"></i>Receber</button>
-    <button onclick="navegar('despesas')" class="mobile-btn" id="mob-despesas"><i class="fas fa-arrow-down"></i>Pagar</button>
-    <button onclick="navegar('config')" class="mobile-btn" id="mob-config"><i class="fas fa-cog"></i>Config</button>
+    <button onclick="navegar('dashboard')" class="mobile-btn active" id="mob-dashboard"><i class="fas fa-chart-pie"></i></button>
+    <button onclick="navegar('pagamentos')" class="mobile-btn" id="mob-pagamentos"><i class="fas fa-money-bill-wave"></i></button>
+    <button onclick="navegar('despesas')" class="mobile-btn" id="mob-despesas"><i class="fas fa-wallet"></i></button>
+    <button onclick="navegar('clientes')" class="mobile-btn" id="mob-clientes"><i class="fas fa-users"></i></button>
+    <button onclick="navegar('config')" class="mobile-btn" id="mob-config"><i class="fas fa-cog"></i></button>
 </nav>
 
 <div id="toast-container"></div>
@@ -313,6 +415,12 @@ let chartInstance = null;
 let modoMisto = false;
 let dashFilter = 'dia'; 
 
+// Sidebar Toggle Function
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('collapsed');
+    document.getElementById('main-content').classList.toggle('collapsed');
+}
+
 // Identificar Mês e Ano atual para Referência Automática
 function getMesAtual() {
     const meses = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
@@ -320,16 +428,15 @@ function getMesAtual() {
     return meses[d.getMonth()] + '/' + d.getFullYear();
 }
 
-// Data Inicial para o Header e Filtro Fixo Hoje
+// Data Inicial para o Header e Filtros Fixos Hoje
 const hoje = new Date();
 const anoHj = hoje.getFullYear();
 const mesHj = String(hoje.getMonth() + 1).padStart(2, '0');
 const diaHj = String(hoje.getDate()).padStart(2, '0');
-document.getElementById('filtroDataLista').value = `${anoHj}-${mesHj}-${diaHj}`;
+const dataPadrao = anoHj + '-' + mesHj + '-' + diaHj;
+document.getElementById('filtroDataLista').value = dataPadrao;
 
 document.getElementById('dataAtual').innerText = hoje.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
-
-// Inicia com Referência preenchida
 document.getElementById('referencia').value = getMesAtual();
 
 migrarDados();
@@ -349,7 +456,6 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Captura do Enter
 function checkEnter(event, callback) {
     if(event.key === 'Enter') {
         callback();
@@ -367,7 +473,6 @@ function atualizarBaseClientes() {
     
     const dlNomes = document.getElementById('listaNomes');
     const dlContratos = document.getElementById('listaContratos');
-    
     dlNomes.innerHTML = [...new Set(clientesDB.map(c => c.nome))].map(n => `<option value="${n}">`).join('');
     dlContratos.innerHTML = [...new Set(clientesDB.map(c => c.contrato).filter(c=>c))].map(c => `<option value="${c}">`).join('');
 }
@@ -389,13 +494,97 @@ function autoPreencher(origem) {
     }
 }
 
-// Impressão de Recibo Térmico - OTIMIZADO PARA BOBINA (Fonte Arial, Alinhado à esquerda)
+function renderClientes() {
+    const termo = document.getElementById('pesquisaClienteDB').value.toLowerCase();
+    const grid = document.getElementById('clientesGrid');
+    
+    const cliMap = {};
+    pagamentos.forEach(p => {
+        const key = p.nome + '|' + (p.contrato || '');
+        if(!cliMap[key]) {
+            cliMap[key] = { nome: p.nome, contrato: p.contrato, total: 0, historico: [] };
+        }
+        cliMap[key].total += p.valor;
+        cliMap[key].historico.push(p);
+    });
+    
+    const arr = Object.values(cliMap).filter(c => c.nome.toLowerCase().includes(termo) || (c.contrato && c.contrato.toLowerCase().includes(termo)));
+    arr.sort((a,b) => a.nome.localeCompare(b.nome));
+    
+    if(arr.length === 0) {
+        grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Nenhum cliente encontrado.</div>';
+        return;
+    }
+    
+    grid.innerHTML = arr.map(c => `
+        <div class="transaction-item" style="cursor:pointer; border-left: 3px solid var(--primary);" onclick="abrirDetalhesCliente('${c.nome}', '${c.contrato || ''}')">
+            <div>
+                <strong style="color: white;">${c.nome}</strong><br>
+                <small style="color:var(--text-secondary)">${c.contrato ? 'CT: ' + c.contrato : 'Sem contrato'}</small>
+            </div>
+            <div style="text-align:right">
+                <span style="color:var(--text-secondary); font-size:0.8rem;">${c.historico.length} pgto(s)</span><br>
+                <strong class="text-green">${c.total.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</strong>
+            </div>
+        </div>
+    `).join('');
+}
+
+function abrirDetalhesCliente(nome, contrato) {
+    document.getElementById('painelClientesLista').classList.add('hidden');
+    const box = document.getElementById('clienteDetalhes');
+    box.classList.remove('hidden');
+    
+    const pgCliente = pagamentos.filter(p => p.nome === nome && (p.contrato || '') === contrato);
+    pgCliente.sort((a,b) => b.ts - a.ts);
+    
+    const total = pgCliente.reduce((acc, curr) => acc + curr.valor, 0);
+    
+    document.getElementById('cdNome').innerText = nome;
+    document.getElementById('cdContrato').innerText = contrato ? 'CT: ' + contrato : 'Sem contrato registrado';
+    document.getElementById('cdTotal').innerText = total.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+    document.getElementById('cdQtd').innerText = pgCliente.length;
+    
+    document.getElementById('cdHistorico').innerHTML = pgCliente.map(p => {
+        let metodoStr = p.metodo;
+        if(p.metodo === 'Misto' && p.mistoData) {
+            metodoStr = `Misto (${p.mistoData[0].metodo} + ${p.mistoData[1].metodo})`;
+        }
+        return `
+        <li class="transaction-item t-entrada" style="padding:10px;">
+            <div>
+                <strong style="color:var(--text-main); font-size:0.9rem;">${p.data}</strong><br>
+                <small style="color:var(--text-secondary); font-size:0.75rem;">${p.ref ? 'Ref: '+p.ref : ''} • ${metodoStr}</small>
+            </div>
+            <div style="text-align:right">
+                <span style="color:var(--accent-green); font-weight:600; font-size:0.9rem;">+ ${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+            </div>
+        </li>
+    `}).join('');
+    
+    window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function fecharDetalhesCliente() {
+    document.getElementById('clienteDetalhes').classList.add('hidden');
+    document.getElementById('painelClientesLista').classList.remove('hidden');
+}
+
+
+// Impressão de Recibo Térmico (80mm)
 function imprimirRecibo(id) {
     const p = pagamentos.find(x => x.id == id);
     if(!p) return;
     
-    const printWindow = window.open('', '_blank', 'width=350,height=600');
+    let pgtoHtml = `<div class="item"><span class="label">Pgto:</span> ${p.metodo}</div>`;
+    if(p.metodo === 'Misto' && p.mistoData) {
+        pgtoHtml = `
+        <div class="item"><span class="label">Pgto:</span> MISTO</div>
+        <div class="item" style="font-size: 11px; margin-top:-3px;">(${p.mistoData[0].metodo}: R$ ${p.mistoData[0].valor.toFixed(2).replace('.',',')} | ${p.mistoData[1].metodo}: R$ ${p.mistoData[1].valor.toFixed(2).replace('.',',')})</div>
+        `;
+    }
     
+    const printWindow = window.open('', '_blank', 'width=350,height=600');
     const html = `
     <html>
     <head>
@@ -430,14 +619,13 @@ function imprimirRecibo(id) {
         ${p.contrato ? `<div class="item"><span class="label">Contrato:</span> ${p.contrato}</div>` : ''}
         <div class="item"><span class="label">Valor:</span> R$ ${p.valor.toFixed(2).replace('.', ',')}</div>
         ${p.ref ? `<div class="item"><span class="label">Ref:</span> ${p.ref}</div>` : ''}
-        <div class="item"><span class="label">Pgto:</span> ${p.metodo}</div>
+        ${pgtoHtml}
         <div class="item"><span class="label">Emissão:</span> ${p.data}</div>
         
         <div class="dashed-line"></div>
-        
         <div class="stamp-space"></div>
-        
         <div class="solid-line"></div>
+        
         <div class="center" style="font-size: 12px; font-weight: bold;">ASSINATURA / CARIMBO</div>
         
         <script>
@@ -449,7 +637,6 @@ function imprimirRecibo(id) {
     </body>
     </html>
     `;
-    
     printWindow.document.open();
     printWindow.document.write(html);
     printWindow.document.close();
@@ -460,22 +647,33 @@ function navegar(sec) {
     document.querySelectorAll('section').forEach(s => { s.classList.add('hidden'); s.classList.remove('active-section'); });
     const target = document.getElementById(sec);
     target.classList.remove('hidden'); target.classList.add('active-section');
-    const titulos = {'dashboard': 'Dashboard', 'pagamentos': 'Contas a Receber', 'despesas': 'Saídas e Sangrias', 'config': 'Configurações'};
+    
+    if(sec === 'clientes') {
+        renderClientes();
+        document.getElementById('painelClientesLista').classList.remove('hidden');
+        document.getElementById('clienteDetalhes').classList.add('hidden');
+    }
+    
+    const titulos = {'dashboard': 'Dashboard', 'pagamentos': 'Contas a Receber', 'despesas': 'Saídas e Sangrias', 'clientes': 'Base de Clientes', 'config': 'Configurações'};
     document.getElementById('pageTitle').innerText = titulos[sec];
     document.querySelectorAll('.nav-btn, .mobile-btn').forEach(b => b.classList.remove('active'));
-    const deskBtn = document.getElementById('btn-' + (sec === 'pagamentos' ? 'pag' : sec === 'despesas' ? 'desp' : sec === 'config' ? 'conf' : 'dash'));
+    
+    const deskBtn = document.getElementById('btn-' + (sec === 'pagamentos' ? 'pag' : sec === 'despesas' ? 'desp' : sec === 'clientes' ? 'cli' : sec === 'config' ? 'conf' : 'dash'));
     const mobBtn = document.getElementById('mob-' + sec);
     if(deskBtn) deskBtn.classList.add('active');
     if(mobBtn) mobBtn.classList.add('active');
+    
     if(sec === 'dashboard') atualizarDashboard();
     if(sec === 'pagamentos' || sec === 'despesas') renderizarListas();
 }
+
 function migrarDados() {
     let changed = false;
     pagamentos.forEach((p, i) => { if(!p.id) { p.id = Date.now() + i; changed = true; } });
     despesas.forEach((d, i) => { if(!d.id) { d.id = Date.now() + i; changed = true; } });
     if(changed) save();
 }
+
 function save() {
     localStorage.setItem('pg', JSON.stringify(pagamentos));
     localStorage.setItem('dp', JSON.stringify(despesas));
@@ -488,80 +686,126 @@ function toggleMisto() {
     if(modoMisto) { box.classList.remove('hidden'); icon.className = "far fa-check-square"; } 
     else { box.classList.add('hidden'); icon.className = "far fa-square"; document.getElementById('valorPago2').value = ''; }
 }
+
 function salvarPagamento() {
     const idEdit = document.getElementById('idEmEdicao').value;
-    const nome = document.getElementById('nomeCliente').value.toUpperCase();
-    const contrato = document.getElementById('contrato').value.toUpperCase();
-    const ref = document.getElementById('referencia').value.toUpperCase();
+    const nome = document.getElementById('nomeCliente').value.toUpperCase().trim();
+    const contrato = document.getElementById('contrato').value.toUpperCase().trim();
+    const ref = document.getElementById('referencia').value.toUpperCase().trim();
+    
     const v1 = parseFloat(document.getElementById('valorPago').value);
     const m1 = document.getElementById('metodo').value;
     
     if(!nome || isNaN(v1)) return showToast("Preencha Nome e Valor!", "error");
+    
+    let valorSalvar = v1;
+    let metodoSalvar = m1;
+    let mistoArr = null;
+    
+    if(modoMisto) {
+        const v2 = parseFloat(document.getElementById('valorPago2').value);
+        const m2 = document.getElementById('metodo2').value;
+        if(!isNaN(v2) && v2 > 0) {
+            valorSalvar = v1 + v2;
+            metodoSalvar = 'Misto';
+            mistoArr = [ {metodo: m1, valor: v1}, {metodo: m2, valor: v2} ];
+        }
+    }
+    
     if(idEdit) {
         const idx = pagamentos.findIndex(p => p.id == idEdit);
         if(idx > -1) {
-            pagamentos[idx].nome = nome; pagamentos[idx].contrato = contrato; pagamentos[idx].ref = ref; pagamentos[idx].valor = v1; pagamentos[idx].metodo = m1;
-            showToast("Atualizado!"); cancelarEdicao();
+            pagamentos[idx].nome = nome; 
+            pagamentos[idx].contrato = contrato; 
+            pagamentos[idx].ref = ref; 
+            pagamentos[idx].valor = valorSalvar; 
+            pagamentos[idx].metodo = metodoSalvar;
+            pagamentos[idx].mistoData = mistoArr;
+            showToast("Atualizado!"); 
+            cancelarEdicao();
         }
     } else {
         const agora = new Date();
-        pagamentos.unshift({ id: Date.now(), nome, contrato, valor: v1, metodo: m1, ref, data: agora.toLocaleString('pt-BR'), ts: agora.getTime() });
-        if(modoMisto) {
-            const v2 = parseFloat(document.getElementById('valorPago2').value);
-            const m2 = document.getElementById('metodo2').value;
-            if(!isNaN(v2) && v2 > 0) {
-                pagamentos.unshift({ id: Date.now()+1, nome: nome+" (PARCIAL)", contrato, valor: v2, metodo: m2, ref, data: agora.toLocaleString('pt-BR'), ts: agora.getTime() });
-            }
-        }
+        pagamentos.unshift({ 
+            id: Date.now(), 
+            nome, 
+            contrato, 
+            valor: valorSalvar, 
+            metodo: metodoSalvar, 
+            mistoData: mistoArr,
+            ref, 
+            data: agora.toLocaleString('pt-BR'), 
+            ts: agora.getTime() 
+        });
         showToast("Recebido!");
     }
+    
     save(); 
     atualizarBaseClientes();
     limparFormPag(); 
     renderizarListas();
     document.getElementById('nomeCliente').focus();
 }
+
 function salvarDespesa() {
     const tipo = document.getElementById('tipoSaida').value;
-    const desc = document.getElementById('descDespesa').value.toUpperCase();
+    const desc = document.getElementById('descDespesa').value.toUpperCase().trim();
     const val = parseFloat(document.getElementById('valorDespesa').value);
     if(!desc || isNaN(val)) return showToast("Preencha tudo!", "error");
     const agora = new Date();
     despesas.unshift({ id: Date.now(), tipo: tipo, descricao: desc, valor: val, data: agora.toLocaleString('pt-BR'), ts: agora.getTime() });
     save(); 
-    showToast(tipo + " registrada!", "success");
+    showToast(tipo + " registrada!");
     document.getElementById('descDespesa').value = ''; document.getElementById('valorDespesa').value = ''; renderizarListas();
     document.getElementById('descDespesa').focus();
 }
+
 function editarPagamento(id) {
     const p = pagamentos.find(x => x.id == id);
     if(!p) return;
     document.getElementById('nomeCliente').value = p.nome; 
     document.getElementById('contrato').value = p.contrato || '';
     document.getElementById('referencia').value = p.ref || '';
-    document.getElementById('valorPago').value = p.valor; 
-    document.getElementById('metodo').value = p.metodo;
+    
+    if(p.metodo === 'Misto' && p.mistoData) {
+        document.getElementById('valorPago').value = p.mistoData[0].valor; 
+        document.getElementById('metodo').value = p.mistoData[0].metodo;
+        if(!modoMisto) toggleMisto();
+        document.getElementById('valorPago2').value = p.mistoData[1].valor; 
+        document.getElementById('metodo2').value = p.mistoData[1].metodo;
+    } else {
+        document.getElementById('valorPago').value = p.valor; 
+        document.getElementById('metodo').value = p.metodo;
+        if(modoMisto) toggleMisto();
+    }
+    
     document.getElementById('idEmEdicao').value = p.id;
-    document.getElementById('btnSalvar').innerText = "Atualizar"; document.getElementById('btnCancelarEdit').classList.remove('hidden');
+    document.getElementById('btnSalvar').innerText = "Atualizar Entrada"; 
+    document.getElementById('btnCancelarEdit').classList.remove('hidden');
     window.scrollTo({top:0, behavior:'smooth'});
 }
+
 function cancelarEdicao() {
     limparFormPag(); document.getElementById('idEmEdicao').value = '';
     document.getElementById('btnSalvar').innerText = "Confirmar Entrada"; document.getElementById('btnCancelarEdit').classList.add('hidden');
 }
+
 function limparFormPag() {
     document.getElementById('nomeCliente').value = ''; 
     document.getElementById('contrato').value = ''; 
-    document.getElementById('referencia').value = getMesAtual(); // Referencia automática
+    document.getElementById('referencia').value = getMesAtual();
     document.getElementById('valorPago').value = '';
     if(modoMisto) toggleMisto();
 }
+
 function deletar(type, id) {
-    if(!confirm("Tem certeza que deseja apagar?")) return;
+    if(!confirm("Tem certeza que deseja apagar permanentemente?")) return;
     if(type === 'pg') pagamentos = pagamentos.filter(p => p.id != id); else despesas = despesas.filter(d => d.id != id);
     save(); atualizarBaseClientes(); renderizarListas(); atualizarDashboard();
 }
+
 function limparFiltroData() { document.getElementById('filtroDataLista').value = ''; renderizarListas(); }
+
 function renderizarListas() {
     const termo = document.getElementById('buscaPagamentos').value.toLowerCase();
     const dataFiltroInput = document.getElementById('filtroDataLista').value; 
@@ -573,13 +817,19 @@ function renderizarListas() {
         listaPg = listaPg.filter(p => { if(!p.ts) return false; return p.ts >= inicioDia && p.ts <= fimDia; });
     }
     listaPg = listaPg.filter(p => p.nome.toLowerCase().includes(termo) || (p.contrato && p.contrato.toLowerCase().includes(termo)));
+    
     const ulPg = document.getElementById('listaPagamentos');
     
-    ulPg.innerHTML = listaPg.length ? listaPg.map(p => `
+    ulPg.innerHTML = listaPg.length ? listaPg.map(p => {
+        let metodoBadge = p.metodo;
+        if(p.metodo === 'Misto' && p.mistoData) {
+            metodoBadge = `Misto <span class="badge-misto">${p.mistoData[0].metodo} + ${p.mistoData[1].metodo}</span>`;
+        }
+        return `
         <li class="transaction-item t-entrada">
             <div style="flex:1">
                 <strong style="color:var(--text-main)">${p.nome}</strong> 
-                <span style="font-size:0.8rem; color:var(--text-secondary); margin-left:5px">(${p.metodo})</span><br>
+                <span style="font-size:0.8rem; color:var(--text-secondary); margin-left:5px">(${metodoBadge})</span><br>
                 <small style="color:var(--text-secondary)">${p.data} ${p.contrato ? '• CT: '+p.contrato : ''} ${p.ref ? '• '+p.ref : ''}</small>
             </div>
             <div style="text-align:right">
@@ -591,7 +841,7 @@ function renderizarListas() {
                 </div>
             </div>
         </li>
-    `).join('') : '<li style="text-align:center; padding:20px; color:var(--text-secondary)">Nenhum registro encontrado.</li>';
+    `}).join('') : '<li style="text-align:center; padding:20px; color:var(--text-secondary)">Nenhum registro encontrado.</li>';
     
     document.getElementById('listaDespesas').innerHTML = despesas.map(d => {
         const isDep = d.tipo === 'Depósito';
@@ -611,14 +861,34 @@ function renderizarListas() {
         </li>`
     }).join('');
 }
+
 function setDashFilter(periodo) {
     dashFilter = periodo;
-    document.querySelectorAll('.df-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('d-btn-' + periodo).classList.add('active');
-    let txt = periodo === 'dia' ? 'Hoje' : periodo === 'semana' ? 'Semana' : periodo === 'mes' ? 'Mês' : 'Ano';
-    document.getElementById('lblPeriodo').innerText = txt; document.getElementById('lblPeriodo2').innerText = txt;
+    document.querySelectorAll('#dashboard .df-btn').forEach(b => b.classList.remove('active'));
+    
+    let txt = '';
+    if(periodo !== 'data') {
+        document.getElementById('d-btn-' + periodo).classList.add('active');
+        document.getElementById('dashDateFilter').value = '';
+        document.getElementById('lblDataEscolhida').innerText = 'Data';
+        if(periodo === 'dia') txt = 'Hoje';
+        else if(periodo === 'semana') txt = 'Semana';
+        else if(periodo === 'mes') txt = 'Mês';
+        else if(periodo === 'ano') txt = 'Ano';
+    } else {
+        document.getElementById('d-btn-data').classList.add('active');
+        const val = document.getElementById('dashDateFilter').value;
+        if(!val) return setDashFilter('dia');
+        const partes = val.split('-');
+        txt = `${partes[2]}/${partes[1]}/${partes[0]}`;
+        document.getElementById('lblDataEscolhida').innerText = txt;
+    }
+    
+    document.getElementById('lblPeriodo').innerText = txt; 
+    document.getElementById('lblPeriodo2').innerText = txt;
     atualizarDashboard();
 }
+
 function atualizarDashboard() {
     const agora = new Date();
     let inicio = 0;
@@ -627,6 +897,12 @@ function atualizarDashboard() {
     if(dashFilter === 'dia') {
         inicio = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 0, 0, 0).getTime();
         fim = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 23, 59, 59).getTime();
+    }
+    else if(dashFilter === 'data') {
+        const val = document.getElementById('dashDateFilter').value;
+        const partes = val.split('-');
+        inicio = new Date(partes[0], partes[1]-1, partes[2], 0, 0, 0).getTime();
+        fim = new Date(partes[0], partes[1]-1, partes[2], 23, 59, 59).getTime();
     }
     else if(dashFilter === 'semana') { const d = new Date(agora); d.setDate(agora.getDate() - agora.getDay()); d.setHours(0,0,0,0); inicio = d.getTime(); }
     else if (dashFilter === 'mes') inicio = new Date(agora.getFullYear(), agora.getMonth(), 1).getTime();
@@ -643,7 +919,14 @@ function atualizarDashboard() {
     document.getElementById('dashSaldo').innerText = (totalE - totalS).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
     const metodos = {};
-    pgFiltro.forEach(p => { metodos[p.metodo] = (metodos[p.metodo]||0) + p.valor });
+    pgFiltro.forEach(p => { 
+        if(p.metodo === 'Misto' && p.mistoData) {
+            p.mistoData.forEach(md => { metodos[md.metodo] = (metodos[md.metodo]||0) + md.valor; });
+        } else {
+            metodos[p.metodo] = (metodos[p.metodo]||0) + p.valor; 
+        }
+    });
+    
     if(chartInstance) chartInstance.destroy();
     const ctx = document.getElementById('financeChart').getContext('2d');
     const labels = Object.keys(metodos);
@@ -654,7 +937,7 @@ function atualizarDashboard() {
     });
     
     document.getElementById('detalhesMetodos').innerHTML = labels.map(k => `
-        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); color:var(--text-secondary)">
+        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05); color:var(--text-secondary)">
             <span>${k}</span> <span style="color:var(--text-main); font-weight:600">${metodos[k].toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
         </div>`).join('') || '<div style="text-align:center; color:#64748b; padding:10px">Sem dados no período</div>';
 }
@@ -684,21 +967,34 @@ function exportarWhatsApp() {
     }
 
     let relatorio = `*FECHAMENTO DE CAIXA - ${dataTexto}*\n\n`;
-    
     let totalDinheiro = 0, totalPix = 0, totalCredito = 0, totalDebito = 0, totalEntradas = 0;
     
     if(pgFiltrados.length > 0) {
         relatorio += `*ENTRADAS:*\n`;
         pgFiltrados.forEach(p => {
-            if(p.metodo === 'Dinheiro') totalDinheiro += p.valor;
-            else if(p.metodo === 'Pix') totalPix += p.valor;
-            else if(p.metodo === 'Crédito') totalCredito += p.valor;
-            else if(p.metodo === 'Débito') totalDebito += p.valor;
+            if(p.metodo === 'Misto' && p.mistoData) {
+                p.mistoData.forEach(md => {
+                    if(md.metodo === 'Dinheiro') totalDinheiro += md.valor;
+                    else if(md.metodo === 'Pix') totalPix += md.valor;
+                    else if(md.metodo === 'Crédito') totalCredito += md.valor;
+                    else if(md.metodo === 'Débito') totalDebito += md.valor;
+                });
+            } else {
+                if(p.metodo === 'Dinheiro') totalDinheiro += p.valor;
+                else if(p.metodo === 'Pix') totalPix += p.valor;
+                else if(p.metodo === 'Crédito') totalCredito += p.valor;
+                else if(p.metodo === 'Débito') totalDebito += p.valor;
+            }
             
             totalEntradas += p.valor;
             
             const valorFormat = p.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-            relatorio += `• *${p.nome.trim()}* (${p.metodo})\n`;
+            let txtMetodo = p.metodo;
+            if(p.metodo === 'Misto' && p.mistoData) {
+                txtMetodo = `Misto: ${p.mistoData[0].metodo} e ${p.mistoData[1].metodo}`;
+            }
+            
+            relatorio += `• *${p.nome.trim()}* (${txtMetodo})\n`;
             relatorio += `${p.data} ${p.contrato ? '• CT: ' + p.contrato.trim() : ''} ${p.ref ? '• ' + p.ref.trim() : ''}\n`;
             relatorio += `+ R$ ${valorFormat}\n\n`;
         });
@@ -743,11 +1039,13 @@ function restaurarBackup(input) {
         if(d.pagamentos && d.despesas) { pagamentos = d.pagamentos; despesas = d.despesas; migrarDados(); save(); location.reload(); }
     }; fr.readAsText(input.files[0]);
 }
-function limparDados(){ if(confirm("Apagar tudo?")) { localStorage.clear(); location.reload(); } }
+function limparDados(){ if(confirm("Apagar tudo permanentemente?")) { localStorage.clear(); location.reload(); } }
 function showToast(msg, type='success') {
-    const t = document.createElement('div'); t.className = 'toast';
-    t.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle" style="color:${type==='error'?'var(--danger)':'var(--accent-green)'}"></i> ${msg}`;
-    document.getElementById('toast-container').appendChild(t); setTimeout(()=>t.remove(), 3000);
+    const t = document.createElement('div'); 
+    t.className = 'toast' + (type === 'error' ? ' error-toast' : '');
+    t.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle" style="color:${type==='error'?'var(--danger)':'var(--accent-green)'}"></i> <span>${msg}</span>`;
+    document.getElementById('toast-container').appendChild(t); 
+    setTimeout(()=>t.remove(), 3000);
 }
 </script>
 </body>
