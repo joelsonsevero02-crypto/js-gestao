@@ -23,7 +23,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
 <style>
-/* ================= CSS VISUAL ELITE (RESTAURADO) ================= */
+/* ================= CSS VISUAL ELITE ================= */
 :root {
     --bg-body: #0f172a;        
     --bg-sidebar: rgba(17, 24, 39, 0.75);    
@@ -51,10 +51,8 @@ body {
 .app-wrapper { display: flex; width: 100%; }
 
 aside { 
-    width: 250px; background: var(--bg-sidebar); 
-    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-    border-right: 1px solid var(--border); 
-    display: flex; flex-direction: column; padding: 20px; position: fixed; height: 100vh; z-index: 100;
+    width: 250px; background: var(--bg-sidebar); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px; position: fixed; height: 100vh; z-index: 100;
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s;
 }
 aside.collapsed { width: 80px; padding: 20px 15px; }
@@ -116,7 +114,6 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); curso
 .bg-green { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 0 15px rgba(16,185,129,0.3); }
 .bg-pink { background: linear-gradient(135deg, #ec4899, #db2777); box-shadow: 0 0 15px rgba(236,72,153,0.3); }
 
-/* GLOW EFFECT NA FONTE */
 .text-green { color: var(--accent-green); text-shadow: 0 0 12px rgba(16,185,129,0.5); }
 .text-red { color: var(--danger); text-shadow: 0 0 12px rgba(239,68,68,0.5); }
 .text-blue { color: var(--deposit); text-shadow: 0 0 12px rgba(14,165,233,0.5); }
@@ -138,26 +135,15 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); curso
 .active-section { display: block; animation: fadeUp 0.4s ease; }
 @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 
-/* ANIMATED TOAST COM PROGRESS BAR */
 .toast { 
-    position: fixed; top: 20px; right: 20px; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); 
+    position: fixed; top: 20px; right: 20px; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(10px); 
     border: 1px solid var(--border); padding: 15px 20px; border-radius: 8px; z-index: 2000; box-shadow: var(--shadow); 
-    display: flex; align-items: center; gap: 12px; font-weight: 500;
-    animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    overflow: hidden;
+    display: flex; align-items: center; gap: 12px; font-weight: 500; animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
-.toast i { font-size: 1.2rem; }
-.toast::after {
-    content: ''; position: absolute; bottom: 0; left: 0; height: 3px; background: var(--accent-green);
-    width: 100%; animation: toastProgress 3s linear forwards;
-}
-.toast.error-toast::after { background: var(--danger); }
 @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-@keyframes toastProgress { from { width: 100%; } to { width: 0; } }
-
-.split-box { background: rgba(59,130,246,0.05); border: 1px dashed rgba(59,130,246,0.3); padding: 15px; border-radius: 8px; margin-top: 10px; backdrop-filter: blur(5px); }
+.split-box { background: rgba(59,130,246,0.05); border: 1px dashed rgba(59,130,246,0.3); padding: 15px; border-radius: 8px; margin-top: 10px; }
 .uppercase-input { text-transform: uppercase; }
-.badge-misto { background: rgba(59,130,246,0.2); color: var(--primary); padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; margin-left: 5px; border: 1px solid rgba(59,130,246,0.3); }
+.badge-misto { background: rgba(59,130,246,0.2); color: var(--primary); padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; margin-left: 5px; }
 .hidden-date-input { position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; border: none; }
 </style>
 </head>
@@ -182,7 +168,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); curso
             <div style="display:flex; align-items:center; gap:10px;">
                 <i class="fas fa-chart-line"></i> <span class="brand-text">JS<span>GESTÃO</span></span>
             </div>
-            <i class="fas fa-chevron-left toggle-icon" onclick="toggleSidebar()" title="Recolher Menu"></i>
+            <i class="fas fa-chevron-left toggle-icon" onclick="toggleSidebar()"></i>
         </div>
         <nav class="nav-menu">
             <button onclick="navegar('dashboard')" id="btn-dash" class="nav-btn active"><i class="fas fa-chart-pie"></i> <span>Dashboard</span></button>
@@ -207,7 +193,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); curso
                     <button class="df-btn" onclick="setDashFilter('mes')" id="d-btn-mes">Mês</button>
                     <button class="df-btn" onclick="setDashFilter('ano')" id="d-btn-ano">Ano</button>
                     <div style="width: 1px; height: 18px; background: rgba(255,255,255,0.1); margin: 0 5px;"></div>
-                    <button class="df-btn" onclick="document.getElementById('dashDateFilter').showPicker()" id="d-btn-data" title="Escolher data específica">
+                    <button class="df-btn" onclick="document.getElementById('dashDateFilter').showPicker()" id="d-btn-data">
                         <i class="fas fa-calendar-alt"></i> <span id="lblDataEscolhida" style="margin-left: 5px;">Data</span>
                     </button>
                     <input type="date" id="dashDateFilter" class="hidden-date-input" onchange="setDashFilter('data')">
@@ -268,7 +254,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); curso
                     </div>
                     <div style="grid-column: span 2;">
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Valor (R$)</label>
-                        <input id="valorPago" type="number" step="0.01" placeholder="0.00" onkeyup="checkEnter(event, salvarPagamento)" />
+                        <input id="valorPago" type="text" inputmode="numeric" placeholder="0,00" oninput="mascararMoeda(this)" onkeyup="checkEnter(event, salvarPagamento)" />
                     </div>
                     <div style="grid-column: span 2;">
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Método</label>
@@ -280,11 +266,11 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); curso
                         </select>
                     </div>
                     <div style="grid-column: span 2;">
-                         <div onclick="toggleMisto()" style="cursor:pointer; color:var(--primary); font-size:0.9rem; margin-bottom:10px; transition: var(--transition);">
+                         <div onclick="toggleMisto()" style="cursor:pointer; color:var(--primary); font-size:0.9rem; margin-bottom:10px;">
                             <i class="far fa-square" id="iconMisto"></i> Pagamento Misto?
                         </div>
                         <div id="boxMisto" class="split-box hidden">
-                            <input id="valorPago2" type="number" placeholder="Valor da 2ª Parte (R$)" style="margin-bottom:10px;" onkeyup="checkEnter(event, salvarPagamento)" />
+                            <input id="valorPago2" type="text" inputmode="numeric" placeholder="Valor da 2ª Parte (R$)" style="margin-bottom:10px;" oninput="mascararMoeda(this)" onkeyup="checkEnter(event, salvarPagamento)" />
                             <select id="metodo2" onkeyup="checkEnter(event, salvarPagamento)">
                                 <option value="Pix">Pix</option>
                                 <option value="Dinheiro">Dinheiro</option>
@@ -310,12 +296,11 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); curso
                         <input type="text" id="buscaPagamentos" placeholder="Buscar cliente ou contrato..." onkeyup="renderizarListas()">
                     </div>
                     <div style="flex-basis: 150px; display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding-right: 5px;">
-                        <input type="date" id="filtroDataLista" onchange="renderizarListas()" title="Filtrar por data específica" style="border: none; background: transparent; padding: 12px 10px;">
+                        <input type="date" id="filtroDataLista" onchange="renderizarListas()" style="border: none; background: transparent; padding: 12px 10px;">
                     </div>
-                    <button class="btn btn-secondary" onclick="limparFiltroData()" style="width:auto; padding:0 15px;" title="Limpar Filtro"><i class="fas fa-eraser"></i></button>
-                    <button class="btn btn-success" onclick="exportarWhatsApp()" style="width:auto; padding:0 15px;" title="Exportar Relatório do dia selecionado">
-                        <i class="fab fa-whatsapp"></i> Exportar Caixa
-                    </button>
+                    <button class="btn btn-secondary" onclick="limparFiltroData()" style="width:auto; padding:0 15px;"><i class="fas fa-eraser"></i></button>
+                    <button class="btn btn-success" onclick="exportarWhatsApp()" style="width:auto; padding:0 15px;"><i class="fab fa-whatsapp"></i> Dia</button>
+                    <button class="btn btn-primary" onclick="exportarMensalWhatsApp()" style="width:auto; padding:0 15px; background:var(--accent-purple); border:none;"><i class="fas fa-calendar-alt"></i> Mês</button>
                 </div>
                 <ul id="listaPagamentos" class="transaction-list"></ul>
             </div>
@@ -338,7 +323,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); curso
                     </div>
                     <div>
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Valor (R$)</label>
-                        <input id="valorDespesa" type="number" step="0.01" placeholder="0.00" onkeyup="checkEnter(event, salvarDespesa)" />
+                        <input id="valorDespesa" type="text" inputmode="numeric" placeholder="0,00" oninput="mascararMoeda(this)" onkeyup="checkEnter(event, salvarDespesa)" />
                     </div>
                     <button class="btn btn-danger" onclick="salvarDespesa()">Registrar Saída</button>
                 </div>
@@ -403,190 +388,32 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); curso
 <div id="toast-container"></div>
 
 <script>
-// CONFIGURAÇÃO DO FIREBASE
-const firebaseConfig = {
-    apiKey: "AIzaSyCcHnGvzxlPr1U9g_6lHkVstfu7VFFk3PA",
-    authDomain: "js-gestao-dcebb.firebaseapp.com",
-    projectId: "js-gestao-dcebb",
-    storageBucket: "js-gestao-dcebb.firebasestorage.app",
-    messagingSenderId: "718080158101",
-    appId: "1:718080158101:web:aa12635957e21f7df46e9c",
-    measurementId: "G-PCCZ9G2WQM"
-};
-
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-// DADOS HISTÓRICOS QUE RECUPERAMOS
-const dadosRecuperados = [
-    {nome: "GILBERTO LEITÃO DE LIMA", valor: 55, metodo: "Dinheiro", data: "02/05/2026, 12:01:46", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "JOSUÉ NASCIMENTO DA SILVA", valor: 60, metodo: "Dinheiro", data: "02/05/2026, 12:01:17", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "JOSÉ RONALDO DE LIMA", valor: 70, metodo: "Dinheiro", data: "02/05/2026, 12:00:48", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "ANDREIS DUDA DUARTE", valor: 60, metodo: "Dinheiro", data: "02/05/2026, 12:00:13", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "ANTONIO APARECIDO FELIX", valor: 55, metodo: "Dinheiro", data: "02/05/2026, 11:59:46", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "GEOVÁ PEREIRA DA SILVA", valor: 130, metodo: "Dinheiro", data: "02/05/2026, 11:59:11", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "ELENILDO SEBASTIÃO DA SILVA", valor: 130, metodo: "Débito", data: "02/05/2026, 11:58:29", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "JOELMA COSMO PEREIRA", valor: 60, metodo: "Dinheiro", data: "02/05/2026, 11:56:51", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "EDVANIO FERREIRA DE AMORIM", valor: 60, metodo: "Dinheiro", data: "02/05/2026, 11:55:49", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "ROSA FRANCISCO DE OLIVEIRA", valor: 55, metodo: "Dinheiro", data: "02/05/2026, 11:55:20", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "SERGIVALDO HELENO DA SILVA", valor: 70, metodo: "Dinheiro", data: "02/05/2026, 11:54:07", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "JANAINA MARTINS DA SILVA", valor: 70, metodo: "Dinheiro", data: "02/05/2026, 11:53:18", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "CARLA PATRICIA MARQUES BELARMINO DA SILVA", valor: 70, metodo: "Dinheiro", data: "02/05/2026, 11:52:50", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "RUBIANA MARIA BASTOS", valor: 55, metodo: "Dinheiro", data: "02/05/2026, 11:52:05", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "VIVIANE DE SOUZA PAIVA", valor: 220, metodo: "Dinheiro", data: "02/05/2026, 11:51:07", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "ROBERTO ARAÚJO DA SILVA", valor: 80, metodo: "Dinheiro", data: "02/05/2026, 11:49:55", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "HELENA MARIA LEOPOLDO DA SILVA", valor: 60, metodo: "Dinheiro", data: "02/05/2026, 11:49:38", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "JOSÉ IVAN DE SOUZA BEZERRA", valor: 70, metodo: "Crédito", data: "02/05/2026, 11:45:14", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "TERCILIA RAQUEL DA SILVA", valor: 55, metodo: "Dinheiro", data: "02/05/2026, 11:42:43", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "MARIA AUXILIADORA SOARES DA SILVA", valor: 75, metodo: "Dinheiro", data: "02/05/2026, 08:39:20", ts: new Date(2026, 4, 2).getTime()},
-    {nome: "GILIARD JOSÉ CORREIA DE ALMEIDA", valor: 60, metodo: "Dinheiro", data: "04/05/2026, 11:35:24", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "EDIVAN LEOBINO PEREIRA", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 11:34:40", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "ARLINDA MIGUEL DOS SANTOS", valor: 60, metodo: "Dinheiro", data: "04/05/2026, 10:43:17", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "MARIA EDUARDA DA SILVA", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 10:22:25", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "LUCIANA MOTA DE LIMA", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 10:15:40", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "CLAUDENICE CAETANO DA SILVA", valor: 75, metodo: "Dinheiro", data: "04/05/2026, 09:58:11", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "CLEMILDA MARIA DA SILVA", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 09:57:34", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "JANDSON LUCIANO DA SILVA", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 09:57:12", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "JOSEZITO VICENTE DE LIMA", valor: 75, metodo: "Dinheiro", data: "04/05/2026, 09:56:17", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "PEDRO SILVA DE MOURA", valor: 60, metodo: "Dinheiro", data: "04/05/2026, 09:55:46", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "MARIA JOSIETE FELICIANO DA SILVA", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 09:55:25", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "ANA PAULA PEREIRA DA SILVA LOPES", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 09:54:52", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "JACIANE CAETANO SOARES DA SILVA", valor: 75, metodo: "Dinheiro", data: "04/05/2026, 09:54:22", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "JOSEANE CAETANO DA SILVA", valor: 75, metodo: "Dinheiro", data: "04/05/2026, 09:53:57", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "BENEDITO VIEIRA DA SILVA", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 09:53:26", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "QUITÉRIA MARIA DA SILVA", valor: 60, metodo: "Dinheiro", data: "04/05/2026, 09:52:37", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "GILSON FERREIRA DE OLIVEIRA", valor: 65, metodo: "Dinheiro", data: "04/05/2026, 09:49:36", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "SILVANEIDE VENTURA DE ALBUQUERQUE", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 09:46:06", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "DENIS ARTHUR DA SILVA", valor: 125, metodo: "Crédito", data: "04/05/2026, 08:45:06", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "DOMINGOS LOURENÇO CUSTÓDIO", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 08:28:06", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "CARLOS ANDRÉ FERREIRA", valor: 130, metodo: "Dinheiro", data: "04/05/2026, 17:50:36", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "ELIAS RODRIGUES DA SILVA", valor: 80, metodo: "Dinheiro", data: "04/05/2026, 17:50:07", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "ELIENE OLIVEIRA DA SILVA", valor: 60, metodo: "Dinheiro", data: "04/05/2026, 17:49:39", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "JOZIANE JORGE DE OLIVEIRA", valor: 75, metodo: "Débito", data: "04/05/2026, 16:33:51", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "JOZIANE JORGE DE OLIVEIRA", valor: 65, metodo: "Débito", data: "04/05/2026, 16:33:38", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "QUITERIA JOSE DA SILVA", valor: 65, metodo: "Dinheiro", data: "04/05/2026, 16:26:28", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "CICERO LAURINDO POSSIANO", valor: 60, metodo: "Dinheiro", data: "04/05/2026, 16:21:58", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "TERESINHA GONÇALVES SOARES", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 16:15:02", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "ALTEMIR HOLANDA DA FONSECA", valor: 75, metodo: "Dinheiro", data: "04/05/2026, 14:52:37", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "MARIA HELENA ALVES DA SILVA", valor: 55, metodo: "Débito", data: "04/05/2026, 14:52:11", ts: new Date(2026, 4, 4).getTime()},
-    {nome: "JOSÉ ADEILTON BARBOSA DOS SANTOS", valor: 60, metodo: "Débito", data: "06/05/2026, 17:32:04", ts: new Date(2026, 4, 6).getTime()},
-    {nome: "NÚBIA MARIA DA SILVA BATISTA", valor: 65, metodo: "Crédito", data: "06/05/2026, 17:31:26", ts: new Date(2026, 4, 6).getTime()},
-    {nome: "EUFRAZIA ALMEIDA SILVA FLOR", valor: 55, metodo: "Dinheiro", data: "06/05/2026, 17:30:47", ts: new Date(2026, 4, 6).getTime()},
-    {nome: "TÁCIANA CARLA CORREIA DA SILVA", valor: 55, metodo: "Dinheiro", data: "06/05/2026, 17:29:41", ts: new Date(2026, 4, 6).getTime()},
-    {nome: "LAERCIO JOSÉ LEMOS", valor: 50, metodo: "Dinheiro", data: "06/05/2026, 17:29:07", ts: new Date(2026, 4, 6).getTime()},
-    {nome: "JOSIAS JORGE DA SILVA", valor: 55, metodo: "Dinheiro", data: "06/05/2026, 17:28:24", ts: new Date(2026, 4, 6).getTime()},
-    {nome: "ALDAIR TOMÉ DOS SANTOS", valor: 75, metodo: "Dinheiro", data: "06/05/2026, 17:27:55", ts: new Date(2026, 4, 6).getTime()},
-    {nome: "MARIA DO SOCORRO PEREIRA", valor: 60, metodo: "Dinheiro", data: "06/05/2026, 17:27:11", ts: new Date(2026, 4, 6).getTime()},
-    {nome: "JULIO ALGUSTOLINS DE ARAÚJO", valor: 80, metodo: "Dinheiro", data: "06/05/2026, 17:26:32", ts: new Date(2026, 4, 6).getTime()},
-    {nome: "MARIA APARECIDA DA SILVA", valor: 55, metodo: "Dinheiro", data: "06/05/2026, 17:25:52", ts: new Date(2026, 4, 6).getTime()},
-    {nome: "EDNALVA VIEIRA DA SILVA", valor: 70, metodo: "Dinheiro", data: "06/05/2026, 17:25:20", ts: new Date(2026, 4, 6).getTime()},
-    {nome: "EDMILSON SOARES DA SILVA", valor: 70, metodo: "Crédito", data: "06/05/2026, 17:23:32", ts: new Date(2026, 4, 6).getTime()},
-    {nome: "MARIA JOSEFA DA CONCEIÇÃO", valor: 55, metodo: "Dinheiro", data: "08/05/2026, 18:13:09", ts: new Date(2026, 4, 8).getTime()},
-    {nome: "MARILEIDE SEVERO DE SOUZA", valor: 55, metodo: "Dinheiro", data: "08/05/2026, 17:59:58", ts: new Date(2026, 4, 8).getTime()},
-    {nome: "SONIA MARIA DA SILVA", valor: 85, metodo: "Dinheiro", data: "08/05/2026, 17:59:25", ts: new Date(2026, 4, 8).getTime()},
-    {nome: "MIRIAN VICENTE DA SILVA", valor: 65, metodo: "Dinheiro", data: "08/05/2026, 17:58:52", ts: new Date(2026, 4, 8).getTime()},
-    {nome: "MARIA CORINA DA SILVA SANTOS", valor: 70, metodo: "Dinheiro", data: "08/05/2026, 17:58:25", ts: new Date(2026, 4, 8).getTime()},
-    {nome: "CICERO CAMILO DA SILVA", valor: 60, metodo: "Dinheiro", data: "08/05/2026, 17:57:26", ts: new Date(2026, 4, 8).getTime()},
-    {nome: "DJAIR BASTOS DA COSTA", valor: 70, metodo: "Dinheiro", data: "08/05/2026, 17:57:06", ts: new Date(2026, 4, 8).getTime()},
-    {nome: "ADSON FRANCISCO DA SILVA", valor: 65, metodo: "Dinheiro", data: "08/05/2026, 17:56:46", ts: new Date(2026, 4, 8).getTime()},
-    {nome: "ADSON FRANCISCO DA SILVA", valor: 55, metodo: "Dinheiro", data: "08/05/2026, 17:56:28", ts: new Date(2026, 4, 8).getTime()},
-    {nome: "CLOVIS RIBEIRO ORESTES", valor: 75, metodo: "Dinheiro", data: "08/05/2026, 17:56:01", ts: new Date(2026, 4, 8).getTime()},
-    {nome: "NELIDE FELIX DA SILVA", valor: 60, metodo: "Dinheiro", data: "08/05/2026, 17:55:26", ts: new Date(2026, 4, 8).getTime()},
-    {nome: "MARIA JOSÉ DE SOUZA", valor: 55, metodo: "Dinheiro", data: "08/05/2026, 17:54:59", ts: new Date(2026, 4, 8).getTime()},
-    {nome: "LUCIANO GOMES DA SILVA", valor: 60, metodo: "Dinheiro", data: "08/05/2026, 17:54:37", ts: new Date(2026, 4, 8).getTime()},
-    {nome: "EDNALDO FRANCISCO DA SILVA", valor: 55, metodo: "Dinheiro", data: "08/05/2026, 17:54:15", ts: new Date(2026, 4, 8).getTime()},
-    {nome: "EDSANGELA MARIA CASSIANO DE OLIVEIRA", valor: 150, metodo: "Dinheiro", data: "09/05/2026, 12:20:09", ts: new Date(2026, 4, 9).getTime()},
-    {nome: "JOSÉ AURELIANO DE SOUZA", valor: 55, metodo: "Dinheiro", data: "09/05/2026, 12:18:52", ts: new Date(2026, 4, 9).getTime()},
-    {nome: "MARIA NAZARÉ DA CONCEIÇÃO", valor: 55, metodo: "Dinheiro", data: "09/05/2026, 12:18:21", ts: new Date(2026, 4, 9).getTime()},
-    {nome: "FRANCISCO GONÇALVES DA SILVA", valor: 60, metodo: "Dinheiro", data: "09/05/2026, 12:17:45", ts: new Date(2026, 4, 9).getTime()},
-    {nome: "MARCOS IVAN FERREIRA DA SILVA", valor: 55, metodo: "Dinheiro", data: "09/05/2026, 12:16:57", ts: new Date(2026, 4, 9).getTime()},
-    {nome: "MARIA SIMONE FERREIRA CALADO", valor: 60, metodo: "Dinheiro", data: "09/05/2026, 12:16:28", ts: new Date(2026, 4, 9).getTime()},
-    {nome: "QUITERIA MOREIRA", valor: 60, metodo: "Dinheiro", data: "09/05/2026, 12:16:04", ts: new Date(2026, 4, 9).getTime()},
-    {nome: "JEANE MARIA DA SILVA", valor: 70, metodo: "Dinheiro", data: "09/05/2026, 12:15:24", ts: new Date(2026, 4, 9).getTime()},
-    {nome: "ELIZANGELA MARIA DA SILVA", valor: 60, metodo: "Dinheiro", data: "09/05/2026, 12:14:49", ts: new Date(2026, 4, 9).getTime()},
-    {nome: "MAURENICE LIMA ROCHA DA SILVA", valor: 55, metodo: "Dinheiro", data: "09/05/2026, 12:13:42", ts: new Date(2026, 4, 9).getTime()},
-    {nome: "EVERALDO JOSÉ DA SILVA", valor: 70, metodo: "Dinheiro", data: "09/05/2026, 11:39:07", ts: new Date(2026, 4, 9).getTime()},
-    {nome: "CÍCERO LOIRO DA SILVA", valor: 65, metodo: "Dinheiro", data: "12/05/2026, 17:44:41", ts: new Date(2026, 4, 12).getTime()},
-    {nome: "DENIZ ADRIEL ALVES DA SILVA", valor: 65, metodo: "Dinheiro", data: "12/05/2026, 17:43:39", ts: new Date(2026, 4, 12).getTime()},
-    {nome: "CARLA ADRIANE ALEXANDRE SEVERO", valor: 65, metodo: "Dinheiro", data: "12/05/2026, 17:42:51", ts: new Date(2026, 4, 12).getTime()},
-    {nome: "CÍCERA SEVERO DA SILVA", valor: 65, metodo: "Dinheiro", data: "12/05/2026, 17:41:34", ts: new Date(2026, 4, 12).getTime()},
-    {nome: "MARIA TEREZINHA DA SILVA GOMES", valor: 55, metodo: "Dinheiro", data: "12/05/2026, 17:40:35", ts: new Date(2026, 4, 12).getTime()},
-    {nome: "MARIA DE FÁTIMA LIMA OLIVEIRA", valor: 110, metodo: "Pix", data: "12/05/2026, 17:39:24", ts: new Date(2026, 4, 12).getTime()},
-    {nome: "MARIA LINDINALVA FERREIRA DE OLIVEIRA", valor: 55, metodo: "Dinheiro", data: "12/05/2026, 17:38:16", ts: new Date(2026, 4, 12).getTime()},
-    {nome: "RENATA APARECIDA DA SILVA", valor: 150, metodo: "Misto", mistoData: [{metodo: "Dinheiro", valor: 75}, {metodo: "Dinheiro", valor: 75}], data: "12/05/2026, 17:37:40", ts: new Date(2026, 4, 12).getTime()},
-    {nome: "NAZARÉ FERREIRA DA SILVA", valor: 70, metodo: "Dinheiro", data: "12/05/2026, 17:36:18", ts: new Date(2026, 4, 12).getTime()},
-    {nome: "JOSÉ APARECIDO R DA SILVA", valor: 75, metodo: "Dinheiro", data: "12/05/2026, 17:35:54", ts: new Date(2026, 4, 12).getTime()},
-    {nome: "AGNALDO DE BARROS", valor: 55, metodo: "Dinheiro", data: "12/05/2026, 17:34:26", ts: new Date(2026, 4, 12).getTime()},
-    {nome: "GILBERTO BARBOSA DE MORAES FILHO", valor: 175, metodo: "Crédito", data: "12/05/2026, 17:33:40", ts: new Date(2026, 4, 12).getTime()},
-    {nome: "CAMILA PINHEIRO SILVA", valor: 60, metodo: "Débito", data: "12/05/2026, 17:28:49", ts: new Date(2026, 4, 12).getTime()},
-    {nome: "MARIA JOSÉ SABINO DA SILVA", valor: 100, metodo: "Dinheiro", data: "13/05/2026, 17:53:16", ts: new Date(2026, 4, 13).getTime()},
-    {nome: "ANA PAULA DA SILVA", valor: 60, metodo: "Dinheiro", data: "13/05/2026, 17:52:35", ts: new Date(2026, 4, 13).getTime()},
-    {nome: "FLAVIA PINHEIRO DA COSTA SILVA", valor: 55, metodo: "Dinheiro", data: "13/05/2026, 17:50:18", ts: new Date(2026, 4, 13).getTime()},
-    {nome: "GILSON TOMÉ DOS SANTOS", valor: 70, metodo: "Dinheiro", data: "13/05/2026, 17:49:30", ts: new Date(2026, 4, 13).getTime()},
-    {nome: "JOEL SANTOS DE OLIVEIRA", valor: 100, metodo: "Dinheiro", data: "14/05/2026, 17:52:18", ts: new Date(2026, 4, 14).getTime()},
-    {nome: "PETRÚCIA ALVES DA SILVA", valor: 60, metodo: "Dinheiro", data: "14/05/2026, 16:02:21", ts: new Date(2026, 4, 14).getTime()},
-    {nome: "KATIA FERREIRA DA SILVA", valor: 55, metodo: "Dinheiro", data: "14/05/2026, 15:59:50", ts: new Date(2026, 4, 14).getTime()},
-    {nome: "MACIEL DIAS DA SILVA", valor: 55, metodo: "Dinheiro", data: "14/05/2026, 15:59:16", ts: new Date(2026, 4, 14).getTime()},
-    {nome: "ANA CARLA SANTOS DA SILVA", valor: 60, metodo: "Pix", data: "14/05/2026, 14:57:44", ts: new Date(2026, 4, 14).getTime()},
-    {nome: "MARIA DE FATIMA PINHEIRO DA SILVA", valor: 55, metodo: "Dinheiro", data: "14/05/2026, 14:27:46", ts: new Date(2026, 4, 14).getTime()},
-    {nome: "LINDINALVA GERMANO DA ROCHA", valor: 55, metodo: "Dinheiro", data: "14/05/2026, 11:21:53", ts: new Date(2026, 4, 14).getTime()},
-    {nome: "EDENILZA ADELINO DA SILVA", valor: 50, metodo: "Dinheiro", data: "14/05/2026, 08:29:42", ts: new Date(2026, 4, 14).getTime()},
-    {nome: "JOÃO BOSCO FERREIRA", valor: 120, metodo: "Débito", data: "15/05/2026, 15:47:31", ts: new Date(2026, 4, 15).getTime()},
-    {nome: "ROSEANE MARIA DA SILVA", valor: 60, metodo: "Dinheiro", data: "15/05/2026, 15:21:20", ts: new Date(2026, 4, 15).getTime()},
-    {nome: "CLEMILDA FERREIRA LEANDRO", valor: 55, metodo: "Dinheiro", data: "15/05/2026, 15:20:44", ts: new Date(2026, 4, 15).getTime()},
-    {nome: "ELVIS EDUARDO DE LIMA", valor: 60, metodo: "Dinheiro", data: "15/05/2026, 14:15:02", ts: new Date(2026, 4, 15).getTime()},
-    {nome: "ERNANDES JOSÉ DA SILVA", valor: 60, metodo: "Crédito", data: "15/05/2026, 14:08:12", ts: new Date(2026, 4, 15).getTime()},
-    {nome: "ERONILDA PEREIRA DE OLIVEIRA", valor: 55, metodo: "Dinheiro", data: "15/05/2026, 14:04:31", ts: new Date(2026, 4, 15).getTime()},
-    {nome: "MARIA DE LOURDES DE MELO", valor: 80, metodo: "Crédito", data: "15/05/2026, 11:13:42", ts: new Date(2026, 4, 15).getTime()},
-    {nome: "SILVANIA TAVARES DOS SANTOS", valor: 60, metodo: "Dinheiro", data: "15/05/2026, 10:52:55", ts: new Date(2026, 4, 15).getTime()},
-    {nome: "FRANCISCO AUGUSTO DA SILVA", valor: 60, metodo: "Crédito", data: "15/05/2026, 10:42:33", ts: new Date(2026, 4, 15).getTime()},
-    {nome: "MARIA DAS DORES DE ARAÚJO", valor: 60, metodo: "Dinheiro", data: "15/05/2026, 10:02:24", ts: new Date(2026, 4, 15).getTime()},
-    {nome: "JUSSIARA GALDINO DA SILVA", valor: 75, metodo: "Dinheiro", data: "15/05/2026, 10:01:56", ts: new Date(2026, 4, 15).getTime()},
-    {nome: "LUCAS JOSÉ CELESTINO DA SILVA", valor: 75, metodo: "Dinheiro", data: "16/05/2026, 10:06:28", ts: new Date(2026, 4, 16).getTime()},
-    {nome: "CLAUDIO LOURENÇO NASCIMENTO", valor: 65, metodo: "Dinheiro", data: "16/05/2026, 09:50:58", ts: new Date(2026, 4, 16).getTime()},
-    {nome: "DJAIR BENTO DA SILVA", valor: 75, metodo: "Dinheiro", data: "16/05/2026, 08:58:34", ts: new Date(2026, 4, 16).getTime()},
-    {nome: "SIMONE MARQUES DA SILVA", valor: 75, metodo: "Débito", data: "18/05/2026, 10:38:27", ts: new Date(2026, 4, 18).getTime()},
-    {nome: "VERONICE SOARES DO NASCIMENTO MARQUES", valor: 120, metodo: "Dinheiro", data: "18/05/2026, 10:32:30", ts: new Date(2026, 4, 18).getTime()},
-    {nome: "FAGNO JULIO DA SILVA", valor: 55, metodo: "Dinheiro", data: "18/05/2026, 10:24:19", ts: new Date(2026, 4, 18).getTime()},
-    {nome: "MAURICIO SALVINO DA SILVA", valor: 65, metodo: "Dinheiro", data: "18/05/2026, 10:19:16", ts: new Date(2026, 4, 18).getTime()},
-    {nome: "AGNALDO FERREIRA DE AMORIM", valor: 65, metodo: "Dinheiro", data: "18/05/2026, 10:11:58", ts: new Date(2026, 4, 18).getTime()},
-    {nome: "GENIVAL DE MELO FERREIRA", valor: 65, metodo: "Dinheiro", data: "18/05/2026, 09:03:05", ts: new Date(2026, 4, 18).getTime()},
-    {nome: "JORGE FAUSTINO BEZERRA", valor: 55, metodo: "Dinheiro", data: "18/05/2026, 08:49:24", ts: new Date(2026, 4, 18).getTime()},
-    {nome: "EDJANE FRANCISCA DA SILVA", valor: 45, metodo: "Dinheiro", data: "18/05/2026, 08:43:54", ts: new Date(2026, 4, 18).getTime()},
-    {nome: "EDJANE FRANCISCA DA SILVA", valor: 70, metodo: "Dinheiro", data: "18/05/2026, 08:43:07", ts: new Date(2026, 4, 18).getTime()},
-    {nome: "JOSÉ JOVENCIO DA SILVA", valor: 55, metodo: "Dinheiro", data: "18/05/2026, 08:34:53", ts: new Date(2026, 4, 18).getTime()},
-    {nome: "JOSÉ CARLOS DA SILVA", valor: 55, metodo: "Dinheiro", data: "19/05/2026, 16:02:03", ts: new Date(2026, 4, 19).getTime()},
-    {nome: "SEVERINO CAETANO DA SILVA", valor: 55, metodo: "Dinheiro", data: "19/05/2026, 14:35:44", ts: new Date(2026, 4, 19).getTime()},
-    {nome: "JOSÉ JOVENCIO DA SILVA", valor: 55, metodo: "Dinheiro", data: "19/05/2026, 14:12:47", ts: new Date(2026, 4, 19).getTime()},
-    {nome: "ALESSANDRA MARIA DA SILVA", valor: 70, metodo: "Dinheiro", data: "19/05/2026, 14:10:27", ts: new Date(2026, 4, 19).getTime()},
-    {nome: "CLEIDE CANDIDO SILVA", valor: 60, metodo: "Dinheiro", data: "19/05/2026, 14:09:39", ts: new Date(2026, 4, 19).getTime()},
-    {nome: "JOÃO FERREIRA LINS", valor: 65, metodo: "Dinheiro", data: "19/05/2026, 08:33:31", ts: new Date(2026, 4, 19).getTime()},
-    {nome: "MARILUCIA MARIA DA SILVA", valor: 60, metodo: "Dinheiro", data: "19/05/2026, 08:07:17", ts: new Date(2026, 4, 19).getTime()},
-    {nome: "LUCI HORA SILVA", valor: 250, metodo: "Misto", mistoData: [{metodo: "Pix", valor: 50}, {metodo: "Dinheiro", valor: 200}], data: "20/05/2026, 17:17:40", ts: new Date(2026, 4, 20).getTime()},
-    {nome: "LIDIANE LIMA DA SILVA", valor: 60, metodo: "Dinheiro", data: "20/05/2026, 17:15:16", ts: new Date(2026, 4, 20).getTime()},
-    {nome: "ANA LUCIA FERREIRA DE MORAIS", valor: 75, metodo: "Dinheiro", data: "20/05/2026, 15:00:55", ts: new Date(2026, 4, 20).getTime()},
-    {nome: "LUCIANO CARLOS DA SILVA", valor: 55, metodo: "Dinheiro", data: "20/05/2026, 14:28:37", ts: new Date(2026, 4, 20).getTime()},
-    {nome: "GILMAR COSME MARTINS", valor: 60, metodo: "Dinheiro", data: "20/05/2026, 10:54:03", ts: new Date(2026, 4, 20).getTime()},
-    {nome: "VALDEMIR FELIPE DOS PASSOS", valor: 55, metodo: "Pix", data: "20/05/2026, 10:40:12", ts: new Date(2026, 4, 20).getTime()},
-    {nome: "CARLA ROBERTA DA COSTA CHIMENDES", valor: 70, metodo: "Pix", data: "20/05/2026, 09:04:15", ts: new Date(2026, 4, 20).getTime()},
-    {nome: "MARIA CICERA DA SILVA", valor: 60, metodo: "Débito", data: "20/05/2026, 08:51:08", ts: new Date(2026, 4, 20).getTime()}
-];
-
-window.pagamentos = JSON.parse(localStorage.getItem('pg') || '[]');
-window.despesas = JSON.parse(localStorage.getItem('dp') || '[]');
+window.pagamentos = [];
+window.despesas = [];
 let clientesDB = [];
 let chartInstance = null;
 let modoMisto = false;
 let dashFilter = 'dia'; 
 
-// MESCLA OS DADOS RECUPERADOS COM OS ATUAIS EVITANDO DUPLICADOS
-dadosRecuperados.forEach(dr => {
-    if(!window.pagamentos.find(p => p.nome === dr.nome && p.ts === dr.ts)) {
-        window.pagamentos.push({id: Date.now() + Math.random(), ...dr});
-    }
-});
-window.pagamentos.sort((a, b) => b.ts - a.ts);
+// FUNÇÃO MATADORA DE DUPLICADOS (DEDUPLICAÇÃO POR NOME, VALOR E DATA)
+function limparDuplicados(array) {
+    const vistos = new Set();
+    return array.filter(item => {
+        const chave = `${item.nome || item.descricao}-${item.valor}-${item.data}`;
+        if(vistos.has(chave)) return false;
+        vistos.add(chave);
+        return true;
+    });
+}
+
+// FORMATADOR AUTOMÁTICO DE MOEDA (MÁSCARA DINÂMICA)
+function mascararMoeda(input) {
+    let valor = input.value.replace(/\D/g, "");
+    valor = (valor / 100).toFixed(2) + "";
+    valor = valor.replace(".", ",");
+    valor = valor.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+    input.value = valor;
+}
 
 function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('collapsed');
@@ -600,11 +427,7 @@ function getMesAtual() {
 }
 
 const hoje = new Date();
-const anoHj = hoje.getFullYear();
-const mesHj = String(hoje.getMonth() + 1).padStart(2, '0');
-const diaHj = String(hoje.getDate()).padStart(2, '0');
-const dataPadrao = anoHj + '-' + mesHj + '-' + diaHj;
-document.getElementById('filtroDataLista').value = dataPadrao;
+document.getElementById('filtroDataLista').value = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0') + '-' + String(hoje.getDate()).padStart(2, '0');
 document.getElementById('dataAtual').innerText = hoje.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
 document.getElementById('referencia').value = getMesAtual();
 
@@ -612,52 +435,41 @@ window.atualizarBaseClientes = function() {
     clientesDB = [];
     window.pagamentos.forEach(p => {
         if(p.nome && !clientesDB.find(c => c.nome === p.nome && c.contrato === p.contrato)) {
-            clientesDB.push({ nome: p.nome, contrato: p.contrato || '' });
+            clientesDB.push({ nome: p.nome, contrato: p.contrato || '', ultimoValor: p.valor });
         }
     });
-    
     const dlNomes = document.getElementById('listaNomes');
     const dlContratos = document.getElementById('listaContratos');
     dlNomes.innerHTML = [...new Set(clientesDB.map(c => c.nome))].map(n => `<option value="${n}">`).join('');
     dlContratos.innerHTML = [...new Set(clientesDB.map(c => c.contrato).filter(c=>c))].map(c => `<option value="${c}">`).join('');
 }
 
-window.atualizarBaseClientes();
-
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'F2') {
-        e.preventDefault(); 
-        navegar('pagamentos');
-        document.getElementById('nomeCliente').focus();
-    } else if (e.key === 'Escape') {
-        cancelarEdicao();
-        document.getElementById('descDespesa').value = ''; 
-        document.getElementById('valorDespesa').value = '';
-    }
-});
-
-function checkEnter(event, callback) {
-    if(event.key === 'Enter') callback();
-}
-
+// AUTO-PREENCHIMENTO COMPLETO: NOME + CONTRATO + ÚLTIMO VALOR COBRADO
 function autoPreencher(origem) {
     const nomeInp = document.getElementById('nomeCliente');
     const contInp = document.getElementById('contrato');
-    
+    const valorInp = document.getElementById('valorPago');
+    let cliente = null;
+
     if (origem === 'nome' && nomeInp.value) {
-        const cliente = clientesDB.find(c => c.nome === nomeInp.value);
+        cliente = clientesDB.find(c => c.nome === nomeInp.value);
         if (cliente && cliente.contrato && !contInp.value) contInp.value = cliente.contrato;
     } else if (origem === 'contrato' && contInp.value) {
-        const cliente = clientesDB.find(c => c.contrato === contInp.value);
+        cliente = clientesDB.find(c => c.contrato === contInp.value);
         if (cliente && cliente.nome && !nomeInp.value) nomeInp.value = cliente.nome;
+    }
+
+    if(cliente && cliente.ultimoValor && !valorInp.value) {
+        valorInp.value = (cliente.ultimoValor * 100).toFixed(0);
+        mascararMoeda(valorInp);
     }
 }
 
 window.renderClientes = function() {
     const termo = document.getElementById('pesquisaClienteDB').value.toLowerCase();
     const grid = document.getElementById('clientesGrid');
-    
     const cliMap = {};
+    
     window.pagamentos.forEach(p => {
         const key = p.nome + '|' + (p.contrato || '');
         if(!cliMap[key]) cliMap[key] = { nome: p.nome, contrato: p.contrato, total: 0, historico: [] };
@@ -691,10 +503,7 @@ function abrirDetalhesCliente(nome, contrato) {
     document.getElementById('painelClientesLista').classList.add('hidden');
     const box = document.getElementById('clienteDetalhes');
     box.classList.remove('hidden');
-    
-    const pgCliente = window.pagamentos.filter(p => p.nome === nome && (p.contrato || '') === contrato);
-    pgCliente.sort((a,b) => b.ts - a.ts);
-    
+    const pgCliente = window.pagamentos.filter(p => p.nome === nome && (p.contrato || '') === contrato).sort((a,b) => b.ts - a.ts);
     const total = pgCliente.reduce((acc, curr) => acc + curr.valor, 0);
     
     document.getElementById('cdNome').innerText = nome;
@@ -714,10 +523,8 @@ function abrirDetalhesCliente(nome, contrato) {
             <div style="text-align:right">
                 <span style="color:var(--accent-green); font-weight:600; font-size:0.9rem;">+ ${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
             </div>
-        </li>
-    `}).join('');
-    
-    window.scrollTo({top:0, behavior:'smooth'});
+        </li>`
+    }).join('');
 }
 
 function fecharDetalhesCliente() {
@@ -725,101 +532,18 @@ function fecharDetalhesCliente() {
     document.getElementById('painelClientesLista').classList.remove('hidden');
 }
 
-function imprimirRecibo(id) {
-    const p = window.pagamentos.find(x => x.id == id);
-    if(!p) return;
-    
-    let pgtoHtml = `<div class="item"><span class="label">Pgto:</span> ${p.metodo}</div>`;
-    if(p.metodo === 'Misto' && p.mistoData) {
-        pgtoHtml = `
-        <div class="item"><span class="label">Pgto:</span> MISTO</div>
-        <div class="item" style="font-size: 11px; margin-top:-3px;">(${p.mistoData[0].metodo}: R$ ${p.mistoData[0].valor.toFixed(2).replace('.',',')} | ${p.mistoData[1].metodo}: R$ ${p.mistoData[1].valor.toFixed(2).replace('.',',')})</div>
-        `;
-    }
-    
-    const printWindow = window.open('', '_blank', 'width=350,height=600');
-    const html = `
-    <html>
-    <head>
-        <title>Recibo - ${p.nome}</title>
-        <style>
-            @page { margin: 0; }
-            body { 
-                font-family: Arial, Helvetica, sans-serif; 
-                width: 100%; 
-                max-width: 72mm; 
-                margin: 0; 
-                padding: 2mm 3mm;
-                font-size: 13px; 
-                color: #000 !important; 
-                line-height: 1.4;
-            }
-            .center { text-align: center; }
-            .subtitle { font-size: 16px; font-weight: bold; margin: 0 0 8px 0; padding-top: 2mm; }
-            .dashed-line { border-top: 1px dashed #000; margin: 8px 0; }
-            .solid-line { border-top: 1px solid #000; margin: 15px 0 5px 0; }
-            .item { margin-bottom: 4px; word-wrap: break-word; }
-            .label { font-weight: bold; }
-            .stamp-space { height: 15mm; } 
-        </style>
-    </head>
-    <body>
-        <div class="center subtitle">RECIBO DE PAGAMENTO</div>
-        <div class="dashed-line"></div>
-        <div class="item"><span class="label">Cliente:</span> ${p.nome}</div>
-        ${p.contrato ? `<div class="item"><span class="label">Contrato:</span> ${p.contrato}</div>` : ''}
-        <div class="item"><span class="label">Valor:</span> R$ ${p.valor.toFixed(2).replace('.', ',')}</div>
-        ${p.ref ? `<div class="item"><span class="label">Ref:</span> ${p.ref}</div>` : ''}
-        ${pgtoHtml}
-        <div class="item"><span class="label">Emissão:</span> ${p.data}</div>
-        <div class="dashed-line"></div>
-        <div class="stamp-space"></div>
-        <div class="solid-line"></div>
-        <div class="center" style="font-size: 12px; font-weight: bold;">IBANET FIBRA - ASSINATURA</div>
-        <script>window.onload=function(){window.print();setTimeout(function(){window.close();},500);}<\/script>
-    </body>
-    </html>`;
-    printWindow.document.open();
-    printWindow.document.write(html);
-    printWindow.document.close();
-}
-
 function navegar(sec) {
     document.querySelectorAll('section').forEach(s => { s.classList.add('hidden'); s.classList.remove('active-section'); });
     document.getElementById(sec).classList.remove('hidden'); 
     document.getElementById(sec).classList.add('active-section');
-    
-    if(sec === 'clientes') {
-        window.renderClientes();
-        document.getElementById('painelClientesLista').classList.remove('hidden');
-        document.getElementById('clienteDetalhes').classList.add('hidden');
-    }
-    
+    if(sec === 'clientes') window.renderClientes();
     const titulos = {'dashboard': 'Dashboard', 'pagamentos': 'Contas a Receber', 'despesas': 'Saídas e Sangrias', 'clientes': 'Base de Clientes', 'config': 'Configurações'};
     document.getElementById('pageTitle').innerText = titulos[sec];
     document.querySelectorAll('.nav-btn, .mobile-btn').forEach(b => b.classList.remove('active'));
-    
     const deskBtn = document.getElementById('btn-' + (sec === 'pagamentos' ? 'pag' : sec === 'despesas' ? 'desp' : sec === 'clientes' ? 'cli' : sec === 'config' ? 'conf' : 'dash'));
-    const mobBtn = document.getElementById('mob-' + sec);
     if(deskBtn) deskBtn.classList.add('active');
-    if(mobBtn) mobBtn.classList.add('active');
-    
     if(sec === 'dashboard') window.atualizarDashboard();
     if(sec === 'pagamentos' || sec === 'despesas') window.renderizarListas();
-}
-
-async function saveNuvem() {
-    localStorage.setItem('pg', JSON.stringify(window.pagamentos));
-    localStorage.setItem('dp', JSON.stringify(window.despesas));
-    
-    if(window.auth && window.auth.currentUser) {
-        try {
-            await window.db.collection("users").doc(window.auth.currentUser.uid).set({
-                pagamentos: window.pagamentos,
-                despesas: window.despesas
-            });
-        } catch (e) { console.error("Erro na nuvem: ", e); }
-    }
 }
 
 function toggleMisto() {
@@ -836,7 +560,8 @@ function salvarPagamento() {
     const contrato = document.getElementById('contrato').value.toUpperCase().trim();
     const ref = document.getElementById('referencia').value.toUpperCase().trim();
     
-    const v1 = parseFloat(document.getElementById('valorPago').value);
+    // Transforma string com máscara de volta em número real para o cálculo
+    const v1 = parseFloat(document.getElementById('valorPago').value.replace(/\./g, "").replace(",", "."));
     const m1 = document.getElementById('metodo').value;
     
     if(!nome || isNaN(v1)) return showToast("Preencha Nome e Valor!", "error");
@@ -846,7 +571,7 @@ function salvarPagamento() {
     let mistoArr = null;
     
     if(modoMisto) {
-        const v2 = parseFloat(document.getElementById('valorPago2').value);
+        const v2 = parseFloat(document.getElementById('valorPago2').value.replace(/\./g, "").replace(",", "."));
         const m2 = document.getElementById('metodo2').value;
         if(!isNaN(v2) && v2 > 0) {
             valorSalvar = v1 + v2;
@@ -858,14 +583,9 @@ function salvarPagamento() {
     if(idEdit) {
         const idx = window.pagamentos.findIndex(p => p.id == idEdit);
         if(idx > -1) {
-            window.pagamentos[idx].nome = nome; 
-            window.pagamentos[idx].contrato = contrato; 
-            window.pagamentos[idx].ref = ref; 
-            window.pagamentos[idx].valor = valorSalvar; 
-            window.pagamentos[idx].metodo = metodoSalvar;
-            window.pagamentos[idx].mistoData = mistoArr;
-            showToast("Atualizado!"); 
-            cancelarEdicao();
+            window.pagamentos[idx].nome = nome; window.pagamentos[idx].contrato = contrato; window.pagamentos[idx].ref = ref; 
+            window.pagamentos[idx].valor = valorSalvar; window.pagamentos[idx].metodo = metodoSalvar; window.pagamentos[idx].mistoData = mistoArr;
+            showToast("Atualizado!"); cancelarEdicao();
         }
     } else {
         const agora = new Date();
@@ -876,22 +596,20 @@ function salvarPagamento() {
         showToast("Recebido!");
     }
     
-    saveNuvem(); 
-    window.atualizarBaseClientes();
-    limparFormPag(); 
-    window.renderizarListas();
+    window.pagamentos = limparDuplicados(window.pagamentos);
+    saveNuvem(); window.atualizarBaseClientes(); limparFormPag(); window.renderizarListas();
     document.getElementById('nomeCliente').focus();
 }
 
 function salvarDespesa() {
     const tipo = document.getElementById('tipoSaida').value;
     const desc = document.getElementById('descDespesa').value.toUpperCase().trim();
-    const val = parseFloat(document.getElementById('valorDespesa').value);
+    const val = parseFloat(document.getElementById('valorDespesa').value.replace(/\./g, "").replace(",", "."));
     if(!desc || isNaN(val)) return showToast("Preencha tudo!", "error");
     const agora = new Date();
     window.despesas.unshift({ id: Date.now(), tipo: tipo, descricao: desc, valor: val, data: agora.toLocaleString('pt-BR'), ts: agora.getTime() });
-    saveNuvem(); 
-    showToast(tipo + " registrada!");
+    window.despesas = limparDuplicados(window.despesas);
+    saveNuvem(); showToast(tipo + " registrada!");
     document.getElementById('descDespesa').value = ''; document.getElementById('valorDespesa').value = ''; window.renderizarListas();
     document.getElementById('descDespesa').focus();
 }
@@ -904,21 +622,19 @@ function editarPagamento(id) {
     document.getElementById('referencia').value = p.ref || '';
     
     if(p.metodo === 'Misto' && p.mistoData) {
-        document.getElementById('valorPago').value = p.mistoData[0].valor; 
+        document.getElementById('valorPago').value = (p.mistoData[0].valor * 100).toFixed(0); mascararMoeda(document.getElementById('valorPago'));
         document.getElementById('metodo').value = p.mistoData[0].metodo;
         if(!modoMisto) toggleMisto();
-        document.getElementById('valorPago2').value = p.mistoData[1].valor; 
+        document.getElementById('valorPago2').value = (p.mistoData[1].valor * 100).toFixed(0); mascararMoeda(document.getElementById('valorPago2'));
         document.getElementById('metodo2').value = p.mistoData[1].metodo;
     } else {
-        document.getElementById('valorPago').value = p.valor; 
+        document.getElementById('valorPago').value = (p.valor * 100).toFixed(0); mascararMoeda(document.getElementById('valorPago'));
         document.getElementById('metodo').value = p.metodo;
         if(modoMisto) toggleMisto();
     }
-    
     document.getElementById('idEmEdicao').value = p.id;
     document.getElementById('btnSalvar').innerText = "Atualizar Entrada"; 
     document.getElementById('btnCancelarEdit').classList.remove('hidden');
-    window.scrollTo({top:0, behavior:'smooth'});
 }
 
 function cancelarEdicao() {
@@ -927,15 +643,13 @@ function cancelarEdicao() {
 }
 
 function limparFormPag() {
-    document.getElementById('nomeCliente').value = ''; 
-    document.getElementById('contrato').value = ''; 
-    document.getElementById('referencia').value = getMesAtual();
-    document.getElementById('valorPago').value = '';
+    document.getElementById('nomeCliente').value = ''; document.getElementById('contrato').value = ''; 
+    document.getElementById('referencia').value = getMesAtual(); document.getElementById('valorPago').value = '';
     if(modoMisto) toggleMisto();
 }
 
 function deletar(type, id) {
-    if(!confirm("Tem certeza que deseja apagar permanentemente?")) return;
+    if(!confirm("Tem certeza?")) return;
     if(type === 'pg') window.pagamentos = window.pagamentos.filter(p => p.id != id); else window.despesas = window.despesas.filter(d => d.id != id);
     saveNuvem(); window.atualizarBaseClientes(); window.renderizarListas(); window.atualizarDashboard();
 }
@@ -950,105 +664,60 @@ window.renderizarListas = function() {
         const partes = dataFiltroInput.split('-');
         const inicioDia = new Date(partes[0], partes[1]-1, partes[2], 0, 0, 0).getTime();
         const fimDia = new Date(partes[0], partes[1]-1, partes[2], 23, 59, 59).getTime();
-        listaPg = listaPg.filter(p => { if(!p.ts) return false; return p.ts >= inicioDia && p.ts <= fimDia; });
+        listaPg = listaPg.filter(p => p.ts && p.ts >= inicioDia && p.ts <= fimDia);
     }
     listaPg = listaPg.filter(p => p.nome.toLowerCase().includes(termo) || (p.contrato && p.contrato.toLowerCase().includes(termo)));
     
-    const ulPg = document.getElementById('listaPagamentos');
-    
-    ulPg.innerHTML = listaPg.length ? listaPg.map(p => {
+    document.getElementById('listaPagamentos').innerHTML = listaPg.map(p => {
         let metodoBadge = p.metodo;
-        if(p.metodo === 'Misto' && p.mistoData) {
-            metodoBadge = `Misto <span class="badge-misto">${p.mistoData[0].metodo} + ${p.mistoData[1].metodo}</span>`;
-        }
+        if(p.metodo === 'Misto' && p.mistoData) metodoBadge = `Misto <span class="badge-misto">${p.mistoData[0].metodo} + ${p.mistoData[1].metodo}</span>`;
         return `
         <li class="transaction-item t-entrada">
             <div style="flex:1">
-                <strong style="color:var(--text-main)">${p.nome}</strong> 
-                <span style="font-size:0.8rem; color:var(--text-secondary); margin-left:5px">(${metodoBadge})</span><br>
+                <strong style="color:var(--text-main)">${p.nome}</strong> <span style="font-size:0.8rem; color:var(--text-secondary)">(${metodoBadge})</span><br>
                 <small style="color:var(--text-secondary)">${p.data} ${p.contrato ? '• CT: '+p.contrato : ''} ${p.ref ? '• '+p.ref : ''}</small>
             </div>
             <div style="text-align:right">
                 <span style="color:var(--accent-green); font-weight:700;">+ ${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
                 <div style="margin-top:5px; display:flex; gap:12px; justify-content:flex-end;">
-                    <i class="fas fa-print" onclick="imprimirRecibo(${p.id})" style="cursor:pointer; color:var(--text-main); font-size:1rem" title="Imprimir Recibo"></i>
-                    <i class="fas fa-pen" onclick="editarPagamento(${p.id})" style="cursor:pointer; color:var(--primary); font-size:1rem"></i>
-                    <i class="fas fa-trash" onclick="deletar('pg', ${p.id})" style="cursor:pointer; color:var(--danger); font-size:1rem"></i>
+                    <i class="fas fa-pen" onclick="editarPagamento(${p.id})" style="cursor:pointer; color:var(--primary);"></i>
+                    <i class="fas fa-trash" onclick="deletar('pg', ${p.id})" style="cursor:pointer; color:var(--danger);"></i>
                 </div>
-            </div>
-        </li>
-    `}).join('') : '<li style="text-align:center; padding:20px; color:var(--text-secondary)">Nenhum registro encontrado.</li>';
-    
-    document.getElementById('listaDespesas').innerHTML = window.despesas.map(d => {
-        const isDep = d.tipo === 'Depósito';
-        const colorClass = isDep ? 'text-blue' : 'text-red';
-        const borderClass = isDep ? 't-deposito' : 't-saida';
-        const icon = isDep ? '<i class="fas fa-university" style="color:var(--deposit); margin-right:5px"></i>' : '';
-        return `
-        <li class="transaction-item ${borderClass}">
-            <div>
-                <strong>${icon}${d.descricao}</strong><br>
-                <small style="color:var(--text-secondary)">${d.data} • ${d.tipo || 'Sangria'}</small>
-            </div>
-            <div style="text-align:right">
-                <span class="${colorClass}" style="font-weight:700;">- ${d.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
-                <i class="fas fa-trash" onclick="deletar('dp', ${d.id})" style="cursor:pointer; color:var(--danger); margin-left:10px;"></i>
             </div>
         </li>`
     }).join('');
-}
-
-function setDashFilter(periodo) {
-    dashFilter = periodo;
-    document.querySelectorAll('#dashboard .df-btn').forEach(b => b.classList.remove('active'));
     
-    let txt = '';
-    if(periodo !== 'data') {
-        document.getElementById('d-btn-' + periodo).classList.add('active');
-        document.getElementById('dashDateFilter').value = '';
-        document.getElementById('lblDataEscolhida').innerText = 'Data';
-        if(periodo === 'dia') txt = 'Hoje';
-        else if(periodo === 'semana') txt = 'Semana';
-        else if(periodo === 'mes') txt = 'Mês';
-        else if(periodo === 'ano') txt = 'Ano';
-    } else {
-        document.getElementById('d-btn-data').classList.add('active');
-        const val = document.getElementById('dashDateFilter').value;
-        if(!val) return setDashFilter('dia');
-        const partes = val.split('-');
-        txt = `${partes[2]}/${partes[1]}/${partes[0]}`;
-        document.getElementById('lblDataEscolhida').innerText = txt;
-    }
-    
-    document.getElementById('lblPeriodo').innerText = txt; 
-    document.getElementById('lblPeriodo2').innerText = txt;
-    window.atualizarDashboard();
+    document.getElementById('listaDespesas').innerHTML = window.despesas.map(d => `
+        <li class="transaction-item t-saida">
+            <div><strong>${d.descricao}</strong><br><small style="color:var(--text-secondary)">${d.data}</small></div>
+            <div style="text-align:right">
+                <span class="text-red" style="font-weight:700;">- ${d.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+                <i class="fas fa-trash" onclick="deletar('dp', ${d.id})" style="cursor:pointer; color:var(--danger); margin-left:10px;"></i>
+            </div>
+        </li>`).join('');
 }
 
 window.atualizarDashboard = function() {
     const agora = new Date();
-    let inicio = 0;
-    let fim = agora.getTime();
+    let inicio = 0; let fim = agora.getTime();
 
     if(dashFilter === 'dia') {
         inicio = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 0, 0, 0).getTime();
         fim = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 23, 59, 59).getTime();
-    }
-    else if(dashFilter === 'data') {
+    } else if(dashFilter === 'data') {
         const val = document.getElementById('dashDateFilter').value;
         const partes = val.split('-');
         inicio = new Date(partes[0], partes[1]-1, partes[2], 0, 0, 0).getTime();
         fim = new Date(partes[0], partes[1]-1, partes[2], 23, 59, 59).getTime();
-    }
-    else if(dashFilter === 'semana') { const d = new Date(agora); d.setDate(agora.getDate() - agora.getDay()); d.setHours(0,0,0,0); inicio = d.getTime(); }
-    else if (dashFilter === 'mes') inicio = new Date(agora.getFullYear(), agora.getMonth(), 1).getTime();
+    } else if(dashFilter === 'semana') { 
+        const d = new Date(agora); d.setDate(agora.getDate() - agora.getDay()); d.setHours(0,0,0,0); inicio = d.getTime(); 
+    } else if (dashFilter === 'mes') inicio = new Date(agora.getFullYear(), agora.getMonth(), 1).getTime();
     else if (dashFilter === 'ano') inicio = new Date(agora.getFullYear(), 0, 1).getTime();
     
     const pgFiltro = window.pagamentos.filter(p => (p.ts || 0) >= inicio && (p.ts || 0) <= fim);
     const dpFiltro = window.despesas.filter(d => (d.ts || 0) >= inicio && (d.ts || 0) <= fim);
     
-    const totalE = pgFiltro.reduce((a,b)=>a+b.valor,0);
-    const totalS = dpFiltro.reduce((a,b)=>a+b.valor,0);
+    const totalE = pgFiltro.reduce((a,b)=>a+b.valor,0); const totalS = dpFiltro.reduce((a,b)=>a+b.valor,0);
     
     document.getElementById('dashEntradas').innerText = totalE.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
     document.getElementById('dashSaidas').innerText = totalS.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
@@ -1058,30 +727,27 @@ window.atualizarDashboard = function() {
     pgFiltro.forEach(p => { 
         if(p.metodo === 'Misto' && p.mistoData) {
             p.mistoData.forEach(md => { metodos[md.metodo] = (metodos[md.metodo]||0) + md.valor; });
-        } else {
-            metodos[p.metodo] = (metodos[p.metodo]||0) + p.valor; 
-        }
+        } else { metodos[p.metodo] = (metodos[p.metodo]||0) + p.valor; }
     });
     
     if(chartInstance) chartInstance.destroy();
     const ctx = document.getElementById('financeChart').getContext('2d');
-    const labels = Object.keys(metodos);
     chartInstance = new Chart(ctx, {
         type: 'doughnut',
-        data: { labels: labels, datasets: [{ data: Object.values(metodos), backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'], borderWidth: 0 }] },
+        data: { labels: Object.keys(metodos), datasets: [{ data: Object.values(metodos), backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'], borderWidth: 0 }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#94a3b8' } } } }
     });
     
-    document.getElementById('detalhesMetodos').innerHTML = labels.map(k => `
+    document.getElementById('detalhesMetodos').innerHTML = Object.keys(metodos).map(k => `
         <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05); color:var(--text-secondary)">
             <span>${k}</span> <span style="color:var(--text-main); font-weight:600">${metodos[k].toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
-        </div>`).join('') || '<div style="text-align:center; color:#64748b; padding:10px">Sem dados no período</div>';
+        </div>`).join('');
 }
 
+// EXPORTAÇÃO DIÁRIA DETALHADA
 function exportarWhatsApp() {
     const dataFiltroInput = document.getElementById('filtroDataLista').value; 
     let inicioDia, fimDia, dataTexto;
-
     if(dataFiltroInput) {
         const partes = dataFiltroInput.split('-');
         inicioDia = new Date(partes[0], partes[1]-1, partes[2], 0, 0, 0).getTime();
@@ -1097,98 +763,113 @@ function exportarWhatsApp() {
     const pgFiltrados = window.pagamentos.filter(p => p.ts >= inicioDia && p.ts <= fimDia);
     const dpFiltrados = window.despesas.filter(d => d.ts >= inicioDia && d.ts <= fimDia);
     
-    if(pgFiltrados.length === 0 && dpFiltrados.length === 0) {
-        showToast("Não há dados nessa data para exportar.", "error");
-        return;
-    }
-
     let relatorio = `*FECHAMENTO DE CAIXA - ${dataTexto}*\n\n`;
     let totalDinheiro = 0, totalPix = 0, totalCredito = 0, totalDebito = 0, totalEntradas = 0;
     
-    if(pgFiltrados.length > 0) {
-        relatorio += `*ENTRADAS:*\n`;
-        pgFiltrados.forEach(p => {
-            if(p.metodo === 'Misto' && p.mistoData) {
-                p.mistoData.forEach(md => {
-                    if(md.metodo === 'Dinheiro') totalDinheiro += md.valor;
-                    else if(md.metodo === 'Pix') totalPix += md.valor;
-                    else if(md.metodo === 'Crédito') totalCredito += md.valor;
-                    else if(md.metodo === 'Débito') totalDebito += md.valor;
-                });
-            } else {
-                if(p.metodo === 'Dinheiro') totalDinheiro += p.valor;
-                else if(p.metodo === 'Pix') totalPix += p.valor;
-                else if(p.metodo === 'Crédito') totalCredito += p.valor;
-                else if(p.metodo === 'Débito') totalDebito += p.valor;
-            }
-            totalEntradas += p.valor;
-            const valorFormat = p.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-            let txtMetodo = p.metodo;
-            if(p.metodo === 'Misto' && p.mistoData) txtMetodo = `Misto: ${p.mistoData[0].metodo} e ${p.mistoData[1].metodo}`;
-            relatorio += `• *${p.nome.trim()}* (${txtMetodo})\n${p.data} ${p.contrato ? '• CT: ' + p.contrato.trim() : ''} ${p.ref ? '• ' + p.ref.trim() : ''}\n+ R$ ${valorFormat}\n\n`;
-        });
-        relatorio += `*RESUMO DOS RECEBIMENTOS:*\n`;
-        if(totalDinheiro > 0) relatorio += `💵 *Dinheiro:* R$ ${totalDinheiro.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
-        if(totalPix > 0) relatorio += `📱 *Pix:* R$ ${totalPix.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
-        if(totalCredito > 0) relatorio += `💳 *Crédito:* R$ ${totalCredito.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
-        if(totalDebito > 0) relatorio += `💳 *Débito:* R$ ${totalDebito.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
-        relatorio += `\n*TOTAL GERAL:* R$ ${totalEntradas.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n\n`;
-    }
+    pgFiltrados.forEach(p => {
+        if(p.metodo === 'Misto' && p.mistoData) {
+            p.mistoData.forEach(md => {
+                if(md.metodo === 'Dinheiro') totalDinheiro += md.valor;
+                else if(md.metodo === 'Pix') totalPix += md.valor;
+                else if(md.metodo === 'Crédito') totalCredito += md.valor;
+                else if(md.metodo === 'Débito') totalDebito += md.valor;
+            });
+        } else {
+            if(p.metodo === 'Dinheiro') totalDinheiro += p.valor;
+            else if(p.metodo === 'Pix') totalPix += p.valor;
+            else if(p.metodo === 'Crédito') totalCredito += p.valor;
+            else if(p.metodo === 'Débito') totalDebito += p.valor;
+        }
+        totalEntradas += p.valor;
+        relatorio += `• *${p.nome}* (${p.metodo})\n+ R$ ${p.valor.toFixed(2)}\n\n`;
+    });
     
-    if(dpFiltrados.length > 0) {
-        relatorio += `*SAÍDAS / SANGRIAS:*\n`;
-        let totalSaidas = 0;
-        dpFiltrados.forEach(d => {
-            relatorio += `• *${d.descricao.trim()}* (${d.tipo})\n- R$ ${d.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n\n`;
-            totalSaidas += d.valor;
-        });
-        relatorio += `*TOTAL SAÍDAS:* R$ ${totalSaidas.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n\n`;
-        const saldoGaveta = totalDinheiro - totalSaidas;
-        relatorio += `*SALDO FÍSICO NA GAVETA (Dinheiro - Saídas):* R$ ${saldoGaveta.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n\n`;
-    }
-    const zapLink = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(relatorio);
-    window.open(zapLink, '_blank');
+    let totalSaidas = dpFiltrados.reduce((a, b) => a + b.valor, 0);
+    relatorio += `*RESUMO DO DIA:*\n💵 Dinheiro: R$ ${totalDinheiro.toFixed(2)}\n📱 Pix: R$ ${totalPix.toFixed(2)}\n💳 Cartões: R$ ${(totalCredito+totalDebito).toFixed(2)}\n🔻 Saídas: R$ ${totalSaidas.toFixed(2)}\n*TOTAL GERAL CAIXA:* R$ ${(totalEntradas - totalSaidas).toFixed(2)}`;
+    
+    window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(relatorio), '_blank');
 }
 
-function showToast(msg, type='success') {
-    const t = document.createElement('div'); 
-    t.className = 'toast' + (type === 'error' ? ' error-toast' : '');
-    t.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle" style="color:${type==='error'?'var(--danger)':'var(--accent-green)'}"></i> <span>${msg}</span>`;
-    document.getElementById('toast-container').appendChild(t); 
-    setTimeout(()=>t.remove(), 3000);
+// EXPORTAÇÃO MENSAL RESUMIDA POR VALORES E MÉTODOS (SOLICITADO)
+function exportarMensalWhatsApp() {
+    const agora = new Date();
+    const inicioMes = new Date(agora.getFullYear(), agora.getMonth(), 1).getTime();
+    const fimMes = new Date(agora.getFullYear(), agora.getMonth() + 1, 0, 23, 59, 59).getTime();
+    
+    const pgMes = window.pagamentos.filter(p => p.ts && p.ts >= inicioMes && p.ts <= fimMes);
+    const dpMes = window.despesas.filter(d => d.ts && d.ts >= inicioMes && d.ts <= fimMes);
+    
+    let totalDinheiro = 0, totalPix = 0, totalCredito = 0, totalDebito = 0, totalEntradas = 0;
+    
+    pgMes.forEach(p => {
+        if(p.metodo === 'Misto' && p.mistoData) {
+            p.mistoData.forEach(md => {
+                if(md.metodo === 'Dinheiro') totalDinheiro += md.valor;
+                else if(md.metodo === 'Pix') totalPix += md.valor;
+                else if(md.metodo === 'Crédito') totalCredito += md.valor;
+                else if(md.metodo === 'Débito') totalDebito += md.valor;
+            });
+        } else {
+            if(p.metodo === 'Dinheiro') totalDinheiro += p.valor;
+            else if(p.metodo === 'Pix') totalPix += p.valor;
+            else if(p.metodo === 'Crédito') totalCredito += p.valor;
+            else if(p.metodo === 'Débito') totalDebito += p.valor;
+        }
+        totalEntradas += p.valor;
+    });
+    
+    let totalSaidas = dpMes.reduce((a, b) => a + b.valor, 0);
+    const mesesNome = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
+    
+    let relatorio = `*BALANÇO FINANCEIRO MENSAL - ${mesesNome[agora.getMonth()]} / ${agora.getFullYear()}*\n\n`;
+    relatorio += `*FATURAMENTO POR MÉTODO:*\n`;
+    relatorio += `💵 *Dinheiro:* R$ ${totalDinheiro.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
+    relatorio += `📱 *Pix:* R$ ${totalPix.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
+    relatorio += `💳 *Crédito:* R$ ${totalCredito.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
+    relatorio += `💳 *Débito:* R$ ${totalDebito.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n\n`;
+    relatorio += `📈 *TOTAL BRUTO DE ENTRADAS:* R$ ${totalEntradas.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
+    relatorio += `📉 *TOTAL DE RETIRADAS/SANGRIAS:* R$ ${totalSaidas.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
+    relatorio += `💰 *SALDO LÍQUIDO NO PERÍODO:* R$ ${(totalEntradas - totalSaidas).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+
+    window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(relatorio), '_blank');
 }
 
-// SINCRONIZAÇÃO EM TEMPO REAL
+// CONEXÃO COM BANCO DE DADOS
 auth.onAuthStateChanged((user) => {
     if (user) {
         document.getElementById('login-container').style.display = 'none';
         db.collection("users").doc(user.uid).onSnapshot((doc) => {
             if (doc.exists()) {
                 const data = doc.data();
-                window.pagamentos = data.pagamentos || [];
-                window.despesas = data.despesas || [];
+                window.pagamentos = limparDuplicados(data.pagamentos || []);
+                window.despesas = limparDuplicados(data.despesas || []);
                 localStorage.setItem('pg', JSON.stringify(window.pagamentos));
                 localStorage.setItem('dp', JSON.stringify(window.despesas));
             } else {
                 saveNuvem();
             }
-            atualizarBaseClientes();
-            navegar('dashboard');
+            window.atualizarBaseClientes(); window.renderizarListas(); window.atualizarDashboard();
         });
-    } else {
-        document.getElementById('login-container').style.display = 'flex';
-    }
+    } else { document.getElementById('login-container').style.display = 'flex'; }
 });
+
+function saveNuvem() {
+    window.pagamentos = limparDuplicados(window.pagamentos);
+    window.despesas = limparDuplicados(window.despesas);
+    localStorage.setItem('pg', JSON.stringify(window.pagamentos));
+    localStorage.setItem('dp', JSON.stringify(window.despesas));
+    const user = auth.currentUser;
+    if (user) {
+        db.collection("users").doc(user.uid).set({ pagamentos: window.pagamentos, despesas: window.despesas });
+    }
+}
 
 function fazerLogin() {
     const email = document.getElementById('login-email').value;
     const senha = document.getElementById('login-senha').value;
     auth.signInWithEmailAndPassword(email, senha).catch(e => showToast("Erro: " + e.message, "error"));
 }
-
-function fazerLogout() {
-    if(confirm("Deseja sair?")) auth.signOut().then(() => location.reload());
-}
+function fazerLogout() { if(confirm("Sair?")) auth.signOut().then(() => location.reload()); }
 </script>
 </body>
 </html>
