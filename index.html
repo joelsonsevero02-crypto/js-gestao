@@ -388,6 +388,20 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); curso
 <div id="toast-container"></div>
 
 <script>
+// AGORA SIM, A CHAVE DO BANCO DE DADOS ESTÁ NO LUGAR CERTO!
+firebase.initializeApp({
+    apiKey: "AIzaSyCcHnGvzxlPr1U9g_6lHkVstfu7VFFk3PA",
+    authDomain: "js-gestao-dcebb.firebaseapp.com",
+    projectId: "js-gestao-dcebb",
+    storageBucket: "js-gestao-dcebb.firebasestorage.app",
+    messagingSenderId: "718080158101",
+    appId: "1:718080158101:web:aa12635957e21f7df46e9c",
+    measurementId: "G-PCCZ9G2WQM"
+});
+
+window.auth = firebase.auth();
+window.db = firebase.firestore();
+
 window.pagamentos = [];
 window.despesas = [];
 let clientesDB = [];
@@ -395,7 +409,7 @@ let chartInstance = null;
 let modoMisto = false;
 let dashFilter = 'dia'; 
 
-// FUNÇÃO MATADORA DE DUPLICADOS (DEDUPLICAÇÃO POR NOME, VALOR E DATA)
+// FUNÇÃO MATADORA DE DUPLICADOS
 function limparDuplicados(array) {
     const vistos = new Set();
     return array.filter(item => {
@@ -444,7 +458,7 @@ window.atualizarBaseClientes = function() {
     dlContratos.innerHTML = [...new Set(clientesDB.map(c => c.contrato).filter(c=>c))].map(c => `<option value="${c}">`).join('');
 }
 
-// AUTO-PREENCHIMENTO COMPLETO: NOME + CONTRATO + ÚLTIMO VALOR COBRADO
+// AUTO-PREENCHIMENTO COMPLETO
 function autoPreencher(origem) {
     const nomeInp = document.getElementById('nomeCliente');
     const contInp = document.getElementById('contrato');
@@ -790,7 +804,7 @@ function exportarWhatsApp() {
     window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(relatorio), '_blank');
 }
 
-// EXPORTAÇÃO MENSAL RESUMIDA POR VALORES E MÉTODOS (SOLICITADO)
+// EXPORTAÇÃO MENSAL RESUMIDA POR VALORES E MÉTODOS
 function exportarMensalWhatsApp() {
     const agora = new Date();
     const inicioMes = new Date(agora.getFullYear(), agora.getMonth(), 1).getTime();
@@ -834,11 +848,21 @@ function exportarMensalWhatsApp() {
     window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(relatorio), '_blank');
 }
 
+function showToast(msg, type='success') {
+    const t = document.createElement('div'); 
+    t.className = 'toast' + (type === 'error' ? ' error-toast' : '');
+    t.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle" style="color:${type==='error'?'var(--danger)':'var(--accent-green)'}"></i> <span>${msg}</span>`;
+    document.getElementById('toast-container').appendChild(t); 
+    setTimeout(()=>t.remove(), 3000);
+}
+
+function checkEnter(event, callback) { if(event.key === 'Enter') callback(); }
+
 // CONEXÃO COM BANCO DE DADOS
-auth.onAuthStateChanged((user) => {
+window.auth.onAuthStateChanged((user) => {
     if (user) {
         document.getElementById('login-container').style.display = 'none';
-        db.collection("users").doc(user.uid).onSnapshot((doc) => {
+        window.db.collection("users").doc(user.uid).onSnapshot((doc) => {
             if (doc.exists()) {
                 const data = doc.data();
                 window.pagamentos = limparDuplicados(data.pagamentos || []);
@@ -858,18 +882,18 @@ function saveNuvem() {
     window.despesas = limparDuplicados(window.despesas);
     localStorage.setItem('pg', JSON.stringify(window.pagamentos));
     localStorage.setItem('dp', JSON.stringify(window.despesas));
-    const user = auth.currentUser;
+    const user = window.auth.currentUser;
     if (user) {
-        db.collection("users").doc(user.uid).set({ pagamentos: window.pagamentos, despesas: window.despesas });
+        window.db.collection("users").doc(user.uid).set({ pagamentos: window.pagamentos, despesas: window.despesas });
     }
 }
 
 function fazerLogin() {
     const email = document.getElementById('login-email').value;
     const senha = document.getElementById('login-senha').value;
-    auth.signInWithEmailAndPassword(email, senha).catch(e => showToast("Erro: " + e.message, "error"));
+    window.auth.signInWithEmailAndPassword(email, senha).catch(e => showToast("Erro: " + e.message, "error"));
 }
-function fazerLogout() { if(confirm("Sair?")) auth.signOut().then(() => location.reload()); }
+function fazerLogout() { if(confirm("Sair?")) window.auth.signOut().then(() => location.reload()); }
 </script>
 </body>
 </html>
