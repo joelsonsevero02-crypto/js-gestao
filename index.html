@@ -863,7 +863,7 @@ window.auth.onAuthStateChanged((user) => {
     if (user) {
         document.getElementById('login-container').style.display = 'none';
         window.db.collection("users").doc(user.uid).onSnapshot((doc) => {
-            if (doc.exists()) {
+            if (doc.exists) {  // <-- O ERRO ESTAVA AQUI! Parênteses removidos.
                 const data = doc.data();
                 window.pagamentos = limparDuplicados(data.pagamentos || []);
                 window.despesas = limparDuplicados(data.despesas || []);
