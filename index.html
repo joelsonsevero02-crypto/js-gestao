@@ -23,110 +23,69 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
 <style>
-/* ================= CSS VISUAL ELITE ================= */
 :root {
-    --bg-body: #0f172a;        
-    --bg-sidebar: rgba(17, 24, 39, 0.75);    
-    --surface: rgba(30, 41, 59, 0.65);        
-    --border: rgba(255, 255, 255, 0.08);        
-    --text-main: #f8fafc;     
-    --text-secondary: #94a3b8; 
-    --primary: #3b82f6;        
-    --accent-purple: #8b5cf6; 
-    --accent-green: #10b981;  
-    --accent-pink: #ec4899;   
-    --danger: #ef4444;        
-    --deposit: #0ea5e9;
-    --radius: 12px;
-    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-    --transition: all 0.3s ease;
+    --bg-body: #0f172a; var(--bg-sidebar): rgba(17, 24, 39, 0.75); var(--surface): rgba(30, 41, 59, 0.65); var(--border): rgba(255, 255, 255, 0.08);        
+    --text-main: #f8fafc; --text-secondary: #94a3b8; --primary: #3b82f6; --accent-purple: #8b5cf6; 
+    --accent-green: #10b981; --accent-pink: #ec4899; --danger: #ef4444; --deposit: #0ea5e9;
+    --radius: 12px; --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); --transition: all 0.3s ease;
 }
 * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-body { 
-    margin: 0; font-family: 'Inter', sans-serif; 
-    background: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%); 
-    background-attachment: fixed;
-    color: var(--text-main); display: flex; min-height: 100vh; overscroll-behavior-y: none; 
-}
+body { margin: 0; font-family: 'Inter', sans-serif; background: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%); background-attachment: fixed; color: var(--text-main); display: flex; min-height: 100vh; overscroll-behavior-y: none; }
 .app-wrapper { display: flex; width: 100%; }
-
-aside { 
-    width: 250px; background: var(--bg-sidebar); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-    border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px; position: fixed; height: 100vh; z-index: 100;
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s;
-}
+aside { width: 250px; background: rgba(17, 24, 39, 0.75); backdrop-filter: blur(15px); border-right: 1px solid rgba(255, 255, 255, 0.08); display: flex; flex-direction: column; padding: 20px; position: fixed; height: 100vh; z-index: 100; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s; }
 aside.collapsed { width: 80px; padding: 20px 15px; }
 aside.collapsed .brand-text, aside.collapsed .nav-btn span { display: none; }
 aside.collapsed .toggle-icon { transform: rotate(180deg); }
-
 .brand { font-size: 1.4rem; font-weight: 800; color: var(--text-main); margin-bottom: 40px; display: flex; align-items: center; justify-content: space-between; }
 .brand span { color: var(--primary); } 
 .toggle-icon { cursor: pointer; font-size: 1rem; color: var(--text-secondary); transition: var(--transition); padding: 5px; }
 .toggle-icon:hover { color: var(--text-main); }
-
 .nav-menu { display: flex; flex-direction: column; gap: 10px; }
 .nav-btn { background: transparent; border: none; padding: 12px 15px; border-radius: var(--radius); color: var(--text-secondary); font-weight: 500; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 12px; font-size: 0.95rem; transition: var(--transition); overflow: hidden; white-space: nowrap; }
 .nav-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
 .nav-btn.active { background: linear-gradient(90deg, rgba(59,130,246,0.2) 0%, rgba(0,0,0,0) 100%); color: var(--primary); border-left: 3px solid var(--primary); }
 .nav-btn i { min-width: 20px; text-align: center; }
-
 main { flex: 1; padding: 30px; overflow-y: auto; padding-bottom: 100px; transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-
-@media (min-width: 769px) { 
-    .mobile-nav { display: none !important; } 
-    main { margin-left: 250px; }
-    main.collapsed { margin-left: 80px; }
-}
+@media (min-width: 769px) { .mobile-nav { display: none !important; } main { margin-left: 250px; } main.collapsed { margin-left: 80px; } }
 @media (max-width: 768px) {
-    aside { display: none; } 
-    main { margin-left: 0; padding: 15px; padding-bottom: 90px; }
-    .mobile-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg-sidebar); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
+    aside { display: none; } main { margin-left: 0; padding: 15px; padding-bottom: 90px; }
+    .mobile-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(17, 24, 39, 0.75); backdrop-filter: blur(15px); border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; justify-content: space-around; padding: 10px; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
     .mobile-btn { background: transparent; border: none; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 0.70rem; }
-    .mobile-btn.active { color: var(--primary); }
-    .mobile-btn i { font-size: 1.1rem; }
+    .mobile-btn.active { color: var(--primary); } .mobile-btn i { font-size: 1.1rem; }
 }
-
 .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
 .page-title { font-size: 1.5rem; font-weight: 700; }
-.date-display { font-size: 0.9rem; color: var(--text-secondary); background: var(--surface); backdrop-filter: blur(15px); padding: 8px 15px; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); }
-
-.card { background: var(--surface); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: var(--radius); padding: 25px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); }
-
+.date-display { font-size: 0.9rem; color: var(--text-secondary); background: rgba(30, 41, 59, 0.65); backdrop-filter: blur(15px); padding: 8px 15px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: var(--shadow); }
+.card { background: rgba(30, 41, 59, 0.65); backdrop-filter: blur(15px); border-radius: var(--radius); padding: 25px; margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: var(--shadow); }
 input, select, textarea { width: 100%; padding: 12px 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white; font-size: 0.9rem; transition: var(--transition); font-family: 'Inter', sans-serif;}
 input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(59,130,246,0.3); background: rgba(0,0,0,0.4); }
 input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; opacity: 0.7; }
-
 .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 0.95rem; transition: var(--transition); }
 .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(59,130,246,0.4); }
 .btn-success { background: var(--accent-green); color: white; box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
 .btn-danger { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
-.btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-main); }
-
-.dash-filters { display: flex; background: var(--surface); backdrop-filter: blur(15px); padding: 5px; border-radius: 12px; width: fit-content; margin-bottom: 20px; border: 1px solid var(--border); overflow-x: auto; max-width: 100%; align-items: center; box-shadow: var(--shadow); }
+.btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid rgba(255, 255, 255, 0.08); color: var(--text-main); }
+.dash-filters { display: flex; background: rgba(30, 41, 59, 0.65); backdrop-filter: blur(15px); padding: 5px; border-radius: 12px; width: fit-content; margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.08); overflow-x: auto; max-width: 100%; align-items: center; box-shadow: var(--shadow); }
 .df-btn { background: transparent; border: none; color: var(--text-secondary); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; white-space: nowrap; }
 .df-btn.active { background: var(--primary); color: white; box-shadow: 0 2px 10px rgba(59,130,246,0.4); }
-
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px; }
 .stat-widget { display: flex; align-items: center; gap: 20px; }
 .icon-box { width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
 .bg-purple { background: linear-gradient(135deg, #a855f7, #7e22ce); box-shadow: 0 0 15px rgba(139,92,246,0.3); }
 .bg-green { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 0 15px rgba(16,185,129,0.3); }
 .bg-pink { background: linear-gradient(135deg, #ec4899, #db2777); box-shadow: 0 0 15px rgba(236,72,153,0.3); }
-
 .text-green { color: var(--accent-green); text-shadow: 0 0 12px rgba(16,185,129,0.5); }
 .text-red { color: var(--danger); text-shadow: 0 0 12px rgba(239,68,68,0.5); }
 .text-blue { color: var(--deposit); text-shadow: 0 0 12px rgba(14,165,233,0.5); }
 .stat-info h3 { margin: 0; font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
 .stat-info p { margin: 5px 0 0 0; font-size: 1.6rem; font-weight: 700; color: var(--text-main); text-shadow: 0 0 10px rgba(255,255,255,0.1); }
-
 .transaction-list { list-style: none; padding: 0; margin: 0; }
 .transaction-item { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid transparent; transition: 0.2s; border: 1px solid transparent; }
 .transaction-item:hover { background: rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.05); transform: translateX(2px); }
 .t-entrada { border-left-color: var(--accent-green); }
 .t-saida { border-left-color: var(--danger); }
 .t-deposito { border-left-color: var(--deposit); }
-
 .filter-wrapper { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
 .search-box { flex: 1; position: relative; }
 .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
@@ -134,12 +93,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); curso
 .hidden { display: none !important; }
 .active-section { display: block; animation: fadeUp 0.4s ease; }
 @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-
-.toast { 
-    position: fixed; top: 20px; right: 20px; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(10px); 
-    border: 1px solid var(--border); padding: 15px 20px; border-radius: 8px; z-index: 2000; box-shadow: var(--shadow); 
-    display: flex; align-items: center; gap: 12px; font-weight: 500; animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
+.toast { position: fixed; top: 20px; right: 20px; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); padding: 15px 20px; border-radius: 8px; z-index: 2000; box-shadow: var(--shadow); display: flex; align-items: center; gap: 12px; font-weight: 500; animation: slideIn 0.4s forwards; }
 @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 .split-box { background: rgba(59,130,246,0.05); border: 1px dashed rgba(59,130,246,0.3); padding: 15px; border-radius: 8px; margin-top: 10px; }
 .uppercase-input { text-transform: uppercase; }
@@ -388,7 +342,6 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); curso
 <div id="toast-container"></div>
 
 <script>
-// AGORA SIM, A CHAVE DO BANCO DE DADOS ESTÁ NO LUGAR CERTO!
 firebase.initializeApp({
     apiKey: "AIzaSyCcHnGvzxlPr1U9g_6lHkVstfu7VFFk3PA",
     authDomain: "js-gestao-dcebb.firebaseapp.com",
@@ -402,6 +355,169 @@ firebase.initializeApp({
 window.auth = firebase.auth();
 window.db = firebase.firestore();
 
+// O RESGATE ESTÁ EMBUTIDO DIRETAMENTE AQUI
+const recPgRaw = [
+    {nome: "GILBERTO LEITÃO DE LIMA", valor: 55, metodo: "Dinheiro", data: "02/05/2026, 12:01:46"},
+    {nome: "JOSUÉ NASCIMENTO DA SILVA", valor: 60, metodo: "Dinheiro", data: "02/05/2026, 12:01:17"},
+    {nome: "JOSÉ RONALDO DE LIMA", valor: 70, metodo: "Dinheiro", data: "02/05/2026, 12:00:48"},
+    {nome: "ANDREIS DUDA DUARTE", valor: 60, metodo: "Dinheiro", data: "02/05/2026, 12:00:13"},
+    {nome: "ANTONIO APARECIDO FELIX", valor: 55, metodo: "Dinheiro", data: "02/05/2026, 11:59:46"},
+    {nome: "GEOVÁ PEREIRA DA SILVA", valor: 130, metodo: "Dinheiro", data: "02/05/2026, 11:59:11"},
+    {nome: "ELENILDO SEBASTIÃO DA SILVA", valor: 130, metodo: "Débito", data: "02/05/2026, 11:58:29"},
+    {nome: "JOELMA COSMO PEREIRA", valor: 60, metodo: "Dinheiro", data: "02/05/2026, 11:56:51"},
+    {nome: "EDVANIO FERREIRA DE AMORIM", valor: 60, metodo: "Dinheiro", data: "02/05/2026, 11:55:49"},
+    {nome: "ROSA FRANCISCO DE OLIVEIRA", valor: 55, metodo: "Dinheiro", data: "02/05/2026, 11:55:20"},
+    {nome: "SERGIVALDO HELENO DA SILVA", valor: 70, metodo: "Dinheiro", data: "02/05/2026, 11:54:07"},
+    {nome: "JANAINA MARTINS DA SILVA", valor: 70, metodo: "Dinheiro", data: "02/05/2026, 11:53:18"},
+    {nome: "CARLA PATRICIA MARQUES BELARMINO DA SILVA", valor: 70, metodo: "Dinheiro", data: "02/05/2026, 11:52:50"},
+    {nome: "RUBIANA MARIA BASTOS", valor: 55, metodo: "Dinheiro", data: "02/05/2026, 11:52:05"},
+    {nome: "VIVIANE DE SOUZA PAIVA", valor: 220, metodo: "Dinheiro", data: "02/05/2026, 11:51:07"},
+    {nome: "ROBERTO ARAÚJO DA SILVA", valor: 80, metodo: "Dinheiro", data: "02/05/2026, 11:49:55"},
+    {nome: "HELENA MARIA LEOPOLDO DA SILVA", valor: 60, metodo: "Dinheiro", data: "02/05/2026, 11:49:38"},
+    {nome: "JOSÉ IVAN DE SOUZA BEZERRA", valor: 70, metodo: "Crédito", data: "02/05/2026, 11:45:14"},
+    {nome: "TERCILIA RAQUEL DA SILVA", valor: 55, metodo: "Dinheiro", data: "02/05/2026, 11:42:43"},
+    {nome: "MARIA AUXILIADORA SOARES DA SILVA", valor: 75, metodo: "Dinheiro", data: "02/05/2026, 08:39:20"},
+    {nome: "GILIARD JOSÉ CORREIA DE ALMEIDA", valor: 60, metodo: "Dinheiro", data: "04/05/2026, 11:35:24"},
+    {nome: "EDIVAN LEOBINO PEREIRA", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 11:34:40"},
+    {nome: "ARLINDA MIGUEL DOS SANTOS", valor: 60, metodo: "Dinheiro", data: "04/05/2026, 10:43:17"},
+    {nome: "MARIA EDUARDA DA SILVA", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 10:22:25"},
+    {nome: "LUCIANA MOTA DE LIMA", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 10:15:40"},
+    {nome: "CLAUDENICE CAETANO DA SILVA", valor: 75, metodo: "Dinheiro", data: "04/05/2026, 09:58:11"},
+    {nome: "CLEMILDA MARIA DA SILVA", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 09:57:34"},
+    {nome: "JANDSON LUCIANO DA SILVA", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 09:57:12"},
+    {nome: "JOSEZITO VICENTE DE LIMA", valor: 75, metodo: "Dinheiro", data: "04/05/2026, 09:56:17"},
+    {nome: "PEDRO SILVA DE MOURA", valor: 60, metodo: "Dinheiro", data: "04/05/2026, 09:55:46"},
+    {nome: "MARIA JOSIETE FELICIANO DA SILVA", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 09:55:25"},
+    {nome: "ANA PAULA PEREIRA DA SILVA LOPES", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 09:54:52"},
+    {nome: "JACIANE CAETANO SOARES DA SILVA", valor: 75, metodo: "Dinheiro", data: "04/05/2026, 09:54:22"},
+    {nome: "JOSEANE CAETANO DA SILVA", valor: 75, metodo: "Dinheiro", data: "04/05/2026, 09:53:57"},
+    {nome: "BENEDITO VIEIRA DA SILVA", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 09:53:26"},
+    {nome: "QUITÉRIA MARIA DA SILVA", valor: 60, metodo: "Dinheiro", data: "04/05/2026, 09:52:37"},
+    {nome: "GILSON FERREIRA DE OLIVEIRA", valor: 65, metodo: "Dinheiro", data: "04/05/2026, 09:49:36"},
+    {nome: "SILVANEIDE VENTURA DE ALBUQUERQUE", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 09:46:06"},
+    {nome: "DENIS ARTHUR DA SILVA", valor: 125, metodo: "Crédito", data: "04/05/2026, 08:45:06"},
+    {nome: "DOMINGOS LOURENÇO CUSTÓDIO", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 08:28:06"},
+    {nome: "CARLOS ANDRÉ FERREIRA", valor: 130, metodo: "Dinheiro", data: "04/05/2026, 17:50:36"},
+    {nome: "ELIAS RODRIGUES DA SILVA", valor: 80, metodo: "Dinheiro", data: "04/05/2026, 17:50:07"},
+    {nome: "ELIENE OLIVEIRA DA SILVA", valor: 60, metodo: "Dinheiro", data: "04/05/2026, 17:49:39"},
+    {nome: "JOZIANE JORGE DE OLIVEIRA", valor: 75, metodo: "Débito", data: "04/05/2026, 16:33:51"},
+    {nome: "JOZIANE JORGE DE OLIVEIRA", valor: 65, metodo: "Débito", data: "04/05/2026, 16:33:38"},
+    {nome: "QUITERIA JOSE DA SILVA", valor: 65, metodo: "Dinheiro", data: "04/05/2026, 16:26:28"},
+    {nome: "CICERO LAURINDO POSSIANO", valor: 60, metodo: "Dinheiro", data: "04/05/2026, 16:21:58"},
+    {nome: "TERESINHA GONÇALVES SOARES", valor: 55, metodo: "Dinheiro", data: "04/05/2026, 16:15:02"},
+    {nome: "ALTEMIR HOLANDA DA FONSECA", valor: 75, metodo: "Dinheiro", data: "04/05/2026, 14:52:37"},
+    {nome: "MARIA HELENA ALVES DA SILVA", valor: 55, metodo: "Débito", data: "04/05/2026, 14:52:11"},
+    {nome: "JOSÉ ADEILTON BARBOSA DOS SANTOS", valor: 60, metodo: "Débito", data: "06/05/2026, 17:32:04"},
+    {nome: "NÚBIA MARIA DA SILVA BATISTA", valor: 65, metodo: "Crédito", data: "06/05/2026, 17:31:26"},
+    {nome: "EUFRAZIA ALMEIDA SILVA FLOR", valor: 55, metodo: "Dinheiro", data: "06/05/2026, 17:30:47"},
+    {nome: "TÁCIANA CARLA CORREIA DA SILVA", valor: 55, metodo: "Dinheiro", data: "06/05/2026, 17:29:41"},
+    {nome: "LAERCIO JOSÉ LEMOS", valor: 50, metodo: "Dinheiro", data: "06/05/2026, 17:29:07"},
+    {nome: "JOSIAS JORGE DA SILVA", valor: 55, metodo: "Dinheiro", data: "06/05/2026, 17:28:24"},
+    {nome: "ALDAIR TOMÉ DOS SANTOS", valor: 75, metodo: "Dinheiro", data: "06/05/2026, 17:27:55"},
+    {nome: "MARIA DO SOCORRO PEREIRA", valor: 60, metodo: "Dinheiro", data: "06/05/2026, 17:27:11"},
+    {nome: "JULIO ALGUSTOLINS DE ARAÚJO", valor: 80, metodo: "Dinheiro", data: "06/05/2026, 17:26:32"},
+    {nome: "MARIA APARECIDA DA SILVA", valor: 55, metodo: "Dinheiro", data: "06/05/2026, 17:25:52"},
+    {nome: "EDNALVA VIEIRA DA SILVA", valor: 70, metodo: "Dinheiro", data: "06/05/2026, 17:25:20"},
+    {nome: "EDMILSON SOARES DA SILVA", valor: 70, metodo: "Crédito", data: "06/05/2026, 17:23:32"},
+    {nome: "MARIA JOSEFA DA CONCEIÇÃO", valor: 55, metodo: "Dinheiro", data: "08/05/2026, 18:13:09"},
+    {nome: "MARILEIDE SEVERO DE SOUZA", valor: 55, metodo: "Dinheiro", data: "08/05/2026, 17:59:58"},
+    {nome: "SONIA MARIA DA SILVA", valor: 85, metodo: "Dinheiro", data: "08/05/2026, 17:59:25"},
+    {nome: "MIRIAN VICENTE DA SILVA", valor: 65, metodo: "Dinheiro", data: "08/05/2026, 17:58:52"},
+    {nome: "MARIA CORINA DA SILVA SANTOS", valor: 70, metodo: "Dinheiro", data: "08/05/2026, 17:58:25"},
+    {nome: "CICERO CAMILO DA SILVA", valor: 60, metodo: "Dinheiro", data: "08/05/2026, 17:57:26"},
+    {nome: "DJAIR BASTOS DA COSTA", valor: 70, metodo: "Dinheiro", data: "08/05/2026, 17:57:06"},
+    {nome: "ADSON FRANCISCO DA SILVA", valor: 65, metodo: "Dinheiro", data: "08/05/2026, 17:56:46"},
+    {nome: "ADSON FRANCISCO DA SILVA", valor: 55, metodo: "Dinheiro", data: "08/05/2026, 17:56:28"},
+    {nome: "CLOVIS RIBEIRO ORESTES", valor: 75, metodo: "Dinheiro", data: "08/05/2026, 17:56:01"},
+    {nome: "NELIDE FELIX DA SILVA", valor: 60, metodo: "Dinheiro", data: "08/05/2026, 17:55:26"},
+    {nome: "MARIA JOSÉ DE SOUZA", valor: 55, metodo: "Dinheiro", data: "08/05/2026, 17:54:59"},
+    {nome: "LUCIANO GOMES DA SILVA", valor: 60, metodo: "Dinheiro", data: "08/05/2026, 17:54:37"},
+    {nome: "EDNALDO FRANCISCO DA SILVA", valor: 55, metodo: "Dinheiro", data: "08/05/2026, 17:54:15"},
+    {nome: "EDSANGELA MARIA CASSIANO DE OLIVEIRA", valor: 150, metodo: "Dinheiro", data: "09/05/2026, 12:20:09"},
+    {nome: "JOSÉ AURELIANO DE SOUZA", valor: 55, metodo: "Dinheiro", data: "09/05/2026, 12:18:52"},
+    {nome: "MARIA NAZARÉ DA CONCEIÇÃO", valor: 55, metodo: "Dinheiro", data: "09/05/2026, 12:18:21"},
+    {nome: "FRANCISCO GONÇALVES DA SILVA", valor: 60, metodo: "Dinheiro", data: "09/05/2026, 12:17:45"},
+    {nome: "MARCOS IVAN FERREIRA DA SILVA", valor: 55, metodo: "Dinheiro", data: "09/05/2026, 12:16:57"},
+    {nome: "MARIA SIMONE FERREIRA CALADO", valor: 60, metodo: "Dinheiro", data: "09/05/2026, 12:16:28"},
+    {nome: "QUITERIA MOREIRA", valor: 60, metodo: "Dinheiro", data: "09/05/2026, 12:16:04"},
+    {nome: "JEANE MARIA DA SILVA", valor: 70, metodo: "Dinheiro", data: "09/05/2026, 12:15:24"},
+    {nome: "ELIZANGELA MARIA DA SILVA", valor: 60, metodo: "Dinheiro", data: "09/05/2026, 12:14:49"},
+    {nome: "MAURENICE LIMA ROCHA DA SILVA", valor: 55, metodo: "Dinheiro", data: "09/05/2026, 12:13:42"},
+    {nome: "EVERALDO JOSÉ DA SILVA", valor: 70, metodo: "Dinheiro", data: "09/05/2026, 11:39:07"},
+    {nome: "CÍCERO LOIRO DA SILVA", valor: 65, metodo: "Dinheiro", data: "12/05/2026, 17:44:41"},
+    {nome: "DENIZ ADRIEL ALVES DA SILVA", valor: 65, metodo: "Dinheiro", data: "12/05/2026, 17:43:39"},
+    {nome: "CARLA ADRIANE ALEXANDRE SEVERO", valor: 65, metodo: "Dinheiro", data: "12/05/2026, 17:42:51"},
+    {nome: "CÍCERA SEVERO DA SILVA", valor: 65, metodo: "Dinheiro", data: "12/05/2026, 17:41:34"},
+    {nome: "MARIA TEREZINHA DA SILVA GOMES", valor: 55, metodo: "Dinheiro", data: "12/05/2026, 17:40:35"},
+    {nome: "MARIA DE FÁTIMA LIMA OLIVEIRA", valor: 110, metodo: "Pix", data: "12/05/2026, 17:39:24"},
+    {nome: "MARIA LINDINALVA FERREIRA DE OLIVEIRA", valor: 55, metodo: "Dinheiro", data: "12/05/2026, 17:38:16"},
+    {nome: "RENATA APARECIDA DA SILVA", valor: 150, metodo: "Misto", mistoData: [{metodo: "Dinheiro", valor: 75}, {metodo: "Dinheiro", valor: 75}], data: "12/05/2026, 17:37:40"},
+    {nome: "NAZARÉ FERREIRA DA SILVA", valor: 70, metodo: "Dinheiro", data: "12/05/2026, 17:36:18"},
+    {nome: "JOSÉ APARECIDO R DA SILVA", valor: 75, metodo: "Dinheiro", data: "12/05/2026, 17:35:54"},
+    {nome: "AGNALDO DE BARROS", valor: 55, metodo: "Dinheiro", data: "12/05/2026, 17:34:26"},
+    {nome: "GILBERTO BARBOSA DE MORAES FILHO", valor: 175, metodo: "Crédito", data: "12/05/2026, 17:33:40"},
+    {nome: "CAMILA PINHEIRO SILVA", valor: 60, metodo: "Débito", data: "12/05/2026, 17:28:49"},
+    {nome: "MARIA JOSÉ SABINO DA SILVA", valor: 100, metodo: "Dinheiro", data: "13/05/2026, 17:53:16"},
+    {nome: "ANA PAULA DA SILVA", valor: 60, metodo: "Dinheiro", data: "13/05/2026, 17:52:35"},
+    {nome: "FLAVIA PINHEIRO DA COSTA SILVA", valor: 55, metodo: "Dinheiro", data: "13/05/2026, 17:50:18"},
+    {nome: "GILSON TOMÉ DOS SANTOS", valor: 70, metodo: "Dinheiro", data: "13/05/2026, 17:49:30"},
+    {nome: "JOEL SANTOS DE OLIVEIRA", valor: 100, metodo: "Dinheiro", data: "14/05/2026, 17:52:18"},
+    {nome: "PETRÚCIA ALVES DA SILVA", valor: 60, metodo: "Dinheiro", data: "14/05/2026, 16:02:21"},
+    {nome: "KATIA FERREIRA DA SILVA", valor: 55, metodo: "Dinheiro", data: "14/05/2026, 15:59:50"},
+    {nome: "MACIEL DIAS DA SILVA", valor: 55, metodo: "Dinheiro", data: "14/05/2026, 15:59:16"},
+    {nome: "ANA CARLA SANTOS DA SILVA", valor: 60, metodo: "Pix", data: "14/05/2026, 14:57:44"},
+    {nome: "MARIA DE FATIMA PINHEIRO DA SILVA", valor: 55, metodo: "Dinheiro", data: "14/05/2026, 14:27:46"},
+    {nome: "LINDINALVA GERMANO DA ROCHA", valor: 55, metodo: "Dinheiro", data: "14/05/2026, 11:21:53"},
+    {nome: "EDENILZA ADELINO DA SILVA", valor: 50, metodo: "Dinheiro", data: "14/05/2026, 08:29:42"},
+    {nome: "JOÃO BOSCO FERREIRA", valor: 120, metodo: "Débito", data: "15/05/2026, 15:47:31"},
+    {nome: "ROSEANE MARIA DA SILVA", valor: 60, metodo: "Dinheiro", data: "15/05/2026, 15:21:20"},
+    {nome: "CLEMILDA FERREIRA LEANDRO", valor: 55, metodo: "Dinheiro", data: "15/05/2026, 15:20:44"},
+    {nome: "ELVIS EDUARDO DE LIMA", valor: 60, metodo: "Dinheiro", data: "15/05/2026, 14:15:02"},
+    {nome: "ERNANDES JOSÉ DA SILVA", valor: 60, metodo: "Crédito", data: "15/05/2026, 14:08:12"},
+    {nome: "ERONILDA PEREIRA DE OLIVEIRA", valor: 55, metodo: "Dinheiro", data: "15/05/2026, 14:04:31"},
+    {nome: "MARIA DE LOURDES DE MELO", valor: 80, metodo: "Crédito", data: "15/05/2026, 11:13:42"},
+    {nome: "SILVANIA TAVARES DOS SANTOS", valor: 60, metodo: "Dinheiro", data: "15/05/2026, 10:52:55"},
+    {nome: "FRANCISCO AUGUSTO DA SILVA", valor: 60, metodo: "Crédito", data: "15/05/2026, 10:42:33"},
+    {nome: "MARIA DAS DORES DE ARAÚJO", valor: 60, metodo: "Dinheiro", data: "15/05/2026, 10:02:24"},
+    {nome: "JUSSIARA GALDINO DA SILVA", valor: 75, metodo: "Dinheiro", data: "15/05/2026, 10:01:56"},
+    {nome: "LUCAS JOSÉ CELESTINO DA SILVA", valor: 75, metodo: "Dinheiro", data: "16/05/2026, 10:06:28"},
+    {nome: "CLAUDIO LOURENÇO NASCIMENTO", valor: 65, metodo: "Dinheiro", data: "16/05/2026, 09:50:58"},
+    {nome: "DJAIR BENTO DA SILVA", valor: 75, metodo: "Dinheiro", data: "16/05/2026, 08:58:34"},
+    {nome: "SIMONE MARQUES DA SILVA", valor: 75, metodo: "Débito", data: "18/05/2026, 10:38:27"},
+    {nome: "VERONICE SOARES DO NASCIMENTO MARQUES", valor: 120, metodo: "Dinheiro", data: "18/05/2026, 10:32:30"},
+    {nome: "FAGNO JULIO DA SILVA", valor: 55, metodo: "Dinheiro", data: "18/05/2026, 10:24:19"},
+    {nome: "MAURICIO SALVINO DA SILVA", valor: 65, metodo: "Dinheiro", data: "18/05/2026, 10:19:16"},
+    {nome: "AGNALDO FERREIRA DE AMORIM", valor: 65, metodo: "Dinheiro", data: "18/05/2026, 10:11:58"},
+    {nome: "GENIVAL DE MELO FERREIRA", valor: 65, metodo: "Dinheiro", data: "18/05/2026, 09:03:05"},
+    {nome: "JORGE FAUSTINO BEZERRA", valor: 55, metodo: "Dinheiro", data: "18/05/2026, 08:49:24"},
+    {nome: "EDJANE FRANCISCA DA SILVA", valor: 45, metodo: "Dinheiro", data: "18/05/2026, 08:43:54"},
+    {nome: "EDJANE FRANCISCA DA SILVA", valor: 70, metodo: "Dinheiro", data: "18/05/2026, 08:43:07"},
+    {nome: "JOSÉ JOVENCIO DA SILVA", valor: 55, metodo: "Dinheiro", data: "18/05/2026, 08:34:53"},
+    {nome: "JOSÉ CARLOS DA SILVA", valor: 55, metodo: "Dinheiro", data: "19/05/2026, 16:02:03"},
+    {nome: "SEVERINO CAETANO DA SILVA", valor: 55, metodo: "Dinheiro", data: "19/05/2026, 14:35:44"},
+    {nome: "JOSÉ JOVENCIO DA SILVA", valor: 55, metodo: "Dinheiro", data: "19/05/2026, 14:12:47"},
+    {nome: "ALESSANDRA MARIA DA SILVA", valor: 70, metodo: "Dinheiro", data: "19/05/2026, 14:10:27"},
+    {nome: "CLEIDE CANDIDO SILVA", valor: 60, metodo: "Dinheiro", data: "19/05/2026, 14:09:39"},
+    {nome: "JOÃO FERREIRA LINS", valor: 65, metodo: "Dinheiro", data: "19/05/2026, 08:33:31"},
+    {nome: "MARILUCIA MARIA DA SILVA", valor: 60, metodo: "Dinheiro", data: "19/05/2026, 08:07:17"},
+    {nome: "LUCI HORA SILVA", valor: 250, metodo: "Misto", mistoData: [{metodo: "Pix", valor: 50}, {metodo: "Dinheiro", valor: 200}], data: "20/05/2026, 17:17:40"},
+    {nome: "LIDIANE LIMA DA SILVA", valor: 60, metodo: "Dinheiro", data: "20/05/2026, 17:15:16"},
+    {nome: "ANA LUCIA FERREIRA DE MORAIS", valor: 75, metodo: "Dinheiro", data: "20/05/2026, 15:00:55"},
+    {nome: "LUCIANO CARLOS DA SILVA", valor: 55, metodo: "Dinheiro", data: "20/05/2026, 14:28:37"},
+    {nome: "GILMAR COSME MARTINS", valor: 60, metodo: "Dinheiro", data: "20/05/2026, 10:54:03"},
+    {nome: "VALDEMIR FELIPE DOS PASSOS", valor: 55, metodo: "Pix", data: "20/05/2026, 10:40:12"},
+    {nome: "CARLA ROBERTA DA COSTA CHIMENDES", valor: 70, metodo: "Pix", data: "20/05/2026, 09:04:15"},
+    {nome: "MARIA CICERA DA SILVA", valor: 60, metodo: "Débito", data: "20/05/2026, 08:51:08"}
+].map((p, i) => {
+    const partes = p.data.split(',')[0].split('/');
+    return {...p, id: Date.now() + i, ts: new Date(partes[2], partes[1]-1, partes[0]).getTime()};
+});
+
+const recDpRaw = [
+    { id: Date.now()+1001, tipo: "Sangria / Despesa", descricao: "COMPRA DA GUILHOTINA", valor: 74, data: "14/05/2026, 12:00:00", ts: new Date(2026, 4, 14).getTime() },
+    { id: Date.now()+1002, tipo: "Sangria / Despesa", descricao: "ABASTECIMENTO DA POP", valor: 10, data: "20/05/2026, 12:00:00", ts: new Date(2026, 4, 20).getTime() }
+];
+
 window.pagamentos = [];
 window.despesas = [];
 let clientesDB = [];
@@ -409,36 +525,22 @@ let chartInstance = null;
 let modoMisto = false;
 let dashFilter = 'dia'; 
 
-// FUNÇÃO MATADORA DE DUPLICADOS
 function limparDuplicados(array) {
     const vistos = new Set();
     return array.filter(item => {
         const chave = `${item.nome || item.descricao}-${item.valor}-${item.data}`;
-        if(vistos.has(chave)) return false;
-        vistos.add(chave);
-        return true;
+        if(vistos.has(chave)) return false; vistos.add(chave); return true;
     });
 }
 
-// FORMATADOR AUTOMÁTICO DE MOEDA (MÁSCARA DINÂMICA)
 function mascararMoeda(input) {
     let valor = input.value.replace(/\D/g, "");
-    valor = (valor / 100).toFixed(2) + "";
-    valor = valor.replace(".", ",");
-    valor = valor.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-    input.value = valor;
+    valor = (valor / 100).toFixed(2) + ""; valor = valor.replace(".", ",");
+    valor = valor.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."); input.value = valor;
 }
 
-function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('collapsed');
-    document.getElementById('main-content').classList.toggle('collapsed');
-}
-
-function getMesAtual() {
-    const meses = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
-    const d = new Date();
-    return meses[d.getMonth()] + '/' + d.getFullYear();
-}
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); document.getElementById('main-content').classList.toggle('collapsed'); }
+function getMesAtual() { const meses = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ']; const d = new Date(); return meses[d.getMonth()] + '/' + d.getFullYear(); }
 
 const hoje = new Date();
 document.getElementById('filtroDataLista').value = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0') + '-' + String(hoje.getDate()).padStart(2, '0');
@@ -447,429 +549,140 @@ document.getElementById('referencia').value = getMesAtual();
 
 window.atualizarBaseClientes = function() {
     clientesDB = [];
-    window.pagamentos.forEach(p => {
-        if(p.nome && !clientesDB.find(c => c.nome === p.nome && c.contrato === p.contrato)) {
-            clientesDB.push({ nome: p.nome, contrato: p.contrato || '', ultimoValor: p.valor });
-        }
-    });
-    const dlNomes = document.getElementById('listaNomes');
-    const dlContratos = document.getElementById('listaContratos');
+    window.pagamentos.forEach(p => { if(p.nome && !clientesDB.find(c => c.nome === p.nome && c.contrato === p.contrato)) { clientesDB.push({ nome: p.nome, contrato: p.contrato || '', ultimoValor: p.valor }); } });
+    const dlNomes = document.getElementById('listaNomes'); const dlContratos = document.getElementById('listaContratos');
     dlNomes.innerHTML = [...new Set(clientesDB.map(c => c.nome))].map(n => `<option value="${n}">`).join('');
     dlContratos.innerHTML = [...new Set(clientesDB.map(c => c.contrato).filter(c=>c))].map(c => `<option value="${c}">`).join('');
 }
 
-// AUTO-PREENCHIMENTO COMPLETO
 function autoPreencher(origem) {
-    const nomeInp = document.getElementById('nomeCliente');
-    const contInp = document.getElementById('contrato');
-    const valorInp = document.getElementById('valorPago');
+    const nomeInp = document.getElementById('nomeCliente'); const contInp = document.getElementById('contrato'); const valorInp = document.getElementById('valorPago');
     let cliente = null;
-
-    if (origem === 'nome' && nomeInp.value) {
-        cliente = clientesDB.find(c => c.nome === nomeInp.value);
-        if (cliente && cliente.contrato && !contInp.value) contInp.value = cliente.contrato;
-    } else if (origem === 'contrato' && contInp.value) {
-        cliente = clientesDB.find(c => c.contrato === contInp.value);
-        if (cliente && cliente.nome && !nomeInp.value) nomeInp.value = cliente.nome;
-    }
-
-    if(cliente && cliente.ultimoValor && !valorInp.value) {
-        valorInp.value = (cliente.ultimoValor * 100).toFixed(0);
-        mascararMoeda(valorInp);
-    }
+    if (origem === 'nome' && nomeInp.value) { cliente = clientesDB.find(c => c.nome === nomeInp.value); if (cliente && cliente.contrato && !contInp.value) contInp.value = cliente.contrato; } 
+    else if (origem === 'contrato' && contInp.value) { cliente = clientesDB.find(c => c.contrato === contInp.value); if (cliente && cliente.nome && !nomeInp.value) nomeInp.value = cliente.nome; }
+    if(cliente && cliente.ultimoValor && !valorInp.value) { valorInp.value = (cliente.ultimoValor * 100).toFixed(0); mascararMoeda(valorInp); }
 }
 
 window.renderClientes = function() {
     const termo = document.getElementById('pesquisaClienteDB').value.toLowerCase();
     const grid = document.getElementById('clientesGrid');
     const cliMap = {};
-    
-    window.pagamentos.forEach(p => {
-        const key = p.nome + '|' + (p.contrato || '');
-        if(!cliMap[key]) cliMap[key] = { nome: p.nome, contrato: p.contrato, total: 0, historico: [] };
-        cliMap[key].total += p.valor;
-        cliMap[key].historico.push(p);
-    });
-    
-    const arr = Object.values(cliMap).filter(c => c.nome.toLowerCase().includes(termo) || (c.contrato && c.contrato.toLowerCase().includes(termo)));
-    arr.sort((a,b) => a.nome.localeCompare(b.nome));
-    
-    if(arr.length === 0) {
-        grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Nenhum cliente encontrado.</div>';
-        return;
-    }
-    
-    grid.innerHTML = arr.map(c => `
-        <div class="transaction-item" style="cursor:pointer; border-left: 3px solid var(--primary);" onclick="abrirDetalhesCliente('${c.nome}', '${c.contrato || ''}')">
-            <div>
-                <strong style="color: white;">${c.nome}</strong><br>
-                <small style="color:var(--text-secondary)">${c.contrato ? 'CT: ' + c.contrato : 'Sem contrato'}</small>
-            </div>
-            <div style="text-align:right">
-                <span style="color:var(--text-secondary); font-size:0.8rem;">${c.historico.length} pgto(s)</span><br>
-                <strong class="text-green">${c.total.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</strong>
-            </div>
-        </div>
-    `).join('');
+    window.pagamentos.forEach(p => { const key = p.nome + '|' + (p.contrato || ''); if(!cliMap[key]) cliMap[key] = { nome: p.nome, contrato: p.contrato, total: 0, historico: [] }; cliMap[key].total += p.valor; cliMap[key].historico.push(p); });
+    const arr = Object.values(cliMap).filter(c => c.nome.toLowerCase().includes(termo) || (c.contrato && c.contrato.toLowerCase().includes(termo))).sort((a,b) => a.nome.localeCompare(b.nome));
+    if(arr.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Nenhum cliente encontrado.</div>'; return; }
+    grid.innerHTML = arr.map(c => `<div class="transaction-item" style="cursor:pointer; border-left: 3px solid var(--primary);" onclick="abrirDetalhesCliente('${c.nome}', '${c.contrato || ''}')"><div><strong style="color: white;">${c.nome}</strong><br><small style="color:var(--text-secondary)">${c.contrato ? 'CT: ' + c.contrato : 'Sem contrato'}</small></div><div style="text-align:right"><span style="color:var(--text-secondary); font-size:0.8rem;">${c.historico.length} pgto(s)</span><br><strong class="text-green">${c.total.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</strong></div></div>`).join('');
 }
 
 function abrirDetalhesCliente(nome, contrato) {
-    document.getElementById('painelClientesLista').classList.add('hidden');
-    const box = document.getElementById('clienteDetalhes');
-    box.classList.remove('hidden');
+    document.getElementById('painelClientesLista').classList.add('hidden'); document.getElementById('clienteDetalhes').classList.remove('hidden');
     const pgCliente = window.pagamentos.filter(p => p.nome === nome && (p.contrato || '') === contrato).sort((a,b) => b.ts - a.ts);
-    const total = pgCliente.reduce((acc, curr) => acc + curr.valor, 0);
-    
-    document.getElementById('cdNome').innerText = nome;
-    document.getElementById('cdContrato').innerText = contrato ? 'CT: ' + contrato : 'Sem contrato registrado';
-    document.getElementById('cdTotal').innerText = total.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+    document.getElementById('cdNome').innerText = nome; document.getElementById('cdContrato').innerText = contrato ? 'CT: ' + contrato : 'Sem contrato registrado';
+    document.getElementById('cdTotal').innerText = pgCliente.reduce((acc, curr) => acc + curr.valor, 0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
     document.getElementById('cdQtd').innerText = pgCliente.length;
-    
-    document.getElementById('cdHistorico').innerHTML = pgCliente.map(p => {
-        let metodoStr = p.metodo;
-        if(p.metodo === 'Misto' && p.mistoData) metodoStr = `Misto (${p.mistoData[0].metodo} + ${p.mistoData[1].metodo})`;
-        return `
-        <li class="transaction-item t-entrada" style="padding:10px;">
-            <div>
-                <strong style="color:var(--text-main); font-size:0.9rem;">${p.data}</strong><br>
-                <small style="color:var(--text-secondary); font-size:0.75rem;">${p.ref ? 'Ref: '+p.ref : ''} • ${metodoStr}</small>
-            </div>
-            <div style="text-align:right">
-                <span style="color:var(--accent-green); font-weight:600; font-size:0.9rem;">+ ${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
-            </div>
-        </li>`
-    }).join('');
+    document.getElementById('cdHistorico').innerHTML = pgCliente.map(p => { let mStr = p.metodo; if(p.metodo === 'Misto' && p.mistoData) mStr = `Misto (${p.mistoData[0].metodo} + ${p.mistoData[1].metodo})`; return `<li class="transaction-item t-entrada" style="padding:10px;"><div><strong style="color:var(--text-main); font-size:0.9rem;">${p.data}</strong><br><small style="color:var(--text-secondary); font-size:0.75rem;">${p.ref ? 'Ref: '+p.ref : ''} • ${mStr}</small></div><div style="text-align:right"><span style="color:var(--accent-green); font-weight:600; font-size:0.9rem;">+ ${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span></div></li>`}).join('');
 }
 
-function fecharDetalhesCliente() {
-    document.getElementById('clienteDetalhes').classList.add('hidden');
-    document.getElementById('painelClientesLista').classList.remove('hidden');
-}
-
-function navegar(sec) {
-    document.querySelectorAll('section').forEach(s => { s.classList.add('hidden'); s.classList.remove('active-section'); });
-    document.getElementById(sec).classList.remove('hidden'); 
-    document.getElementById(sec).classList.add('active-section');
-    if(sec === 'clientes') window.renderClientes();
-    const titulos = {'dashboard': 'Dashboard', 'pagamentos': 'Contas a Receber', 'despesas': 'Saídas e Sangrias', 'clientes': 'Base de Clientes', 'config': 'Configurações'};
-    document.getElementById('pageTitle').innerText = titulos[sec];
-    document.querySelectorAll('.nav-btn, .mobile-btn').forEach(b => b.classList.remove('active'));
-    const deskBtn = document.getElementById('btn-' + (sec === 'pagamentos' ? 'pag' : sec === 'despesas' ? 'desp' : sec === 'clientes' ? 'cli' : sec === 'config' ? 'conf' : 'dash'));
-    if(deskBtn) deskBtn.classList.add('active');
-    if(sec === 'dashboard') window.atualizarDashboard();
-    if(sec === 'pagamentos' || sec === 'despesas') window.renderizarListas();
-}
-
-function toggleMisto() {
-    modoMisto = !modoMisto;
-    const box = document.getElementById('boxMisto');
-    const icon = document.getElementById('iconMisto');
-    if(modoMisto) { box.classList.remove('hidden'); icon.className = "far fa-check-square"; } 
-    else { box.classList.add('hidden'); icon.className = "far fa-square"; document.getElementById('valorPago2').value = ''; }
-}
+function fecharDetalhesCliente() { document.getElementById('clienteDetalhes').classList.add('hidden'); document.getElementById('painelClientesLista').classList.remove('hidden'); }
+function navegar(sec) { document.querySelectorAll('section').forEach(s => { s.classList.add('hidden'); s.classList.remove('active-section'); }); document.getElementById(sec).classList.remove('hidden'); document.getElementById(sec).classList.add('active-section'); if(sec === 'clientes') window.renderClientes(); const titulos = {'dashboard': 'Dashboard', 'pagamentos': 'Contas a Receber', 'despesas': 'Saídas e Sangrias', 'clientes': 'Base de Clientes', 'config': 'Configurações'}; document.getElementById('pageTitle').innerText = titulos[sec]; document.querySelectorAll('.nav-btn, .mobile-btn').forEach(b => b.classList.remove('active')); const deskBtn = document.getElementById('btn-' + (sec === 'pagamentos' ? 'pag' : sec === 'despesas' ? 'desp' : sec === 'clientes' ? 'cli' : sec === 'config' ? 'conf' : 'dash')); if(deskBtn) deskBtn.classList.add('active'); if(sec === 'dashboard') window.atualizarDashboard(); if(sec === 'pagamentos' || sec === 'despesas') window.renderizarListas(); }
+function toggleMisto() { modoMisto = !modoMisto; const box = document.getElementById('boxMisto'); const icon = document.getElementById('iconMisto'); if(modoMisto) { box.classList.remove('hidden'); icon.className = "far fa-check-square"; } else { box.classList.add('hidden'); icon.className = "far fa-square"; document.getElementById('valorPago2').value = ''; } }
 
 function salvarPagamento() {
-    const idEdit = document.getElementById('idEmEdicao').value;
-    const nome = document.getElementById('nomeCliente').value.toUpperCase().trim();
-    const contrato = document.getElementById('contrato').value.toUpperCase().trim();
-    const ref = document.getElementById('referencia').value.toUpperCase().trim();
-    
-    // Transforma string com máscara de volta em número real para o cálculo
-    const v1 = parseFloat(document.getElementById('valorPago').value.replace(/\./g, "").replace(",", "."));
-    const m1 = document.getElementById('metodo').value;
-    
+    const idEdit = document.getElementById('idEmEdicao').value; const nome = document.getElementById('nomeCliente').value.toUpperCase().trim(); const contrato = document.getElementById('contrato').value.toUpperCase().trim(); const ref = document.getElementById('referencia').value.toUpperCase().trim();
+    const v1 = parseFloat(document.getElementById('valorPago').value.replace(/\./g, "").replace(",", ".")); const m1 = document.getElementById('metodo').value;
     if(!nome || isNaN(v1)) return showToast("Preencha Nome e Valor!", "error");
-    
-    let valorSalvar = v1;
-    let metodoSalvar = m1;
-    let mistoArr = null;
-    
-    if(modoMisto) {
-        const v2 = parseFloat(document.getElementById('valorPago2').value.replace(/\./g, "").replace(",", "."));
-        const m2 = document.getElementById('metodo2').value;
-        if(!isNaN(v2) && v2 > 0) {
-            valorSalvar = v1 + v2;
-            metodoSalvar = 'Misto';
-            mistoArr = [ {metodo: m1, valor: v1}, {metodo: m2, valor: v2} ];
-        }
-    }
-    
-    if(idEdit) {
-        const idx = window.pagamentos.findIndex(p => p.id == idEdit);
-        if(idx > -1) {
-            window.pagamentos[idx].nome = nome; window.pagamentos[idx].contrato = contrato; window.pagamentos[idx].ref = ref; 
-            window.pagamentos[idx].valor = valorSalvar; window.pagamentos[idx].metodo = metodoSalvar; window.pagamentos[idx].mistoData = mistoArr;
-            showToast("Atualizado!"); cancelarEdicao();
-        }
-    } else {
-        const agora = new Date();
-        window.pagamentos.unshift({ 
-            id: Date.now(), nome, contrato, valor: valorSalvar, metodo: metodoSalvar, mistoData: mistoArr,
-            ref, data: agora.toLocaleString('pt-BR'), ts: agora.getTime() 
-        });
-        showToast("Recebido!");
-    }
-    
-    window.pagamentos = limparDuplicados(window.pagamentos);
-    saveNuvem(); window.atualizarBaseClientes(); limparFormPag(); window.renderizarListas();
-    document.getElementById('nomeCliente').focus();
+    let valorSalvar = v1; let metodoSalvar = m1; let mistoArr = null;
+    if(modoMisto) { const v2 = parseFloat(document.getElementById('valorPago2').value.replace(/\./g, "").replace(",", ".")); const m2 = document.getElementById('metodo2').value; if(!isNaN(v2) && v2 > 0) { valorSalvar = v1 + v2; metodoSalvar = 'Misto'; mistoArr = [ {metodo: m1, valor: v1}, {metodo: m2, valor: v2} ]; } }
+    if(idEdit) { const idx = window.pagamentos.findIndex(p => p.id == idEdit); if(idx > -1) { window.pagamentos[idx].nome = nome; window.pagamentos[idx].contrato = contrato; window.pagamentos[idx].ref = ref; window.pagamentos[idx].valor = valorSalvar; window.pagamentos[idx].metodo = metodoSalvar; window.pagamentos[idx].mistoData = mistoArr; showToast("Atualizado!"); cancelarEdicao(); } } 
+    else { const agora = new Date(); window.pagamentos.unshift({ id: Date.now(), nome, contrato, valor: valorSalvar, metodo: metodoSalvar, mistoData: mistoArr, ref, data: agora.toLocaleString('pt-BR'), ts: agora.getTime() }); showToast("Recebido!"); }
+    window.pagamentos = limparDuplicados(window.pagamentos); saveNuvem(); window.atualizarBaseClientes(); limparFormPag(); window.renderizarListas(); document.getElementById('nomeCliente').focus();
 }
 
 function salvarDespesa() {
-    const tipo = document.getElementById('tipoSaida').value;
-    const desc = document.getElementById('descDespesa').value.toUpperCase().trim();
-    const val = parseFloat(document.getElementById('valorDespesa').value.replace(/\./g, "").replace(",", "."));
+    const tipo = document.getElementById('tipoSaida').value; const desc = document.getElementById('descDespesa').value.toUpperCase().trim(); const val = parseFloat(document.getElementById('valorDespesa').value.replace(/\./g, "").replace(",", "."));
     if(!desc || isNaN(val)) return showToast("Preencha tudo!", "error");
-    const agora = new Date();
-    window.despesas.unshift({ id: Date.now(), tipo: tipo, descricao: desc, valor: val, data: agora.toLocaleString('pt-BR'), ts: agora.getTime() });
-    window.despesas = limparDuplicados(window.despesas);
-    saveNuvem(); showToast(tipo + " registrada!");
-    document.getElementById('descDespesa').value = ''; document.getElementById('valorDespesa').value = ''; window.renderizarListas();
-    document.getElementById('descDespesa').focus();
+    const agora = new Date(); window.despesas.unshift({ id: Date.now(), tipo: tipo, descricao: desc, valor: val, data: agora.toLocaleString('pt-BR'), ts: agora.getTime() });
+    window.despesas = limparDuplicados(window.despesas); saveNuvem(); showToast(tipo + " registrada!"); document.getElementById('descDespesa').value = ''; document.getElementById('valorDespesa').value = ''; window.renderizarListas(); document.getElementById('descDespesa').focus();
 }
 
 function editarPagamento(id) {
-    const p = window.pagamentos.find(x => x.id == id);
-    if(!p) return;
-    document.getElementById('nomeCliente').value = p.nome; 
-    document.getElementById('contrato').value = p.contrato || '';
-    document.getElementById('referencia').value = p.ref || '';
-    
-    if(p.metodo === 'Misto' && p.mistoData) {
-        document.getElementById('valorPago').value = (p.mistoData[0].valor * 100).toFixed(0); mascararMoeda(document.getElementById('valorPago'));
-        document.getElementById('metodo').value = p.mistoData[0].metodo;
-        if(!modoMisto) toggleMisto();
-        document.getElementById('valorPago2').value = (p.mistoData[1].valor * 100).toFixed(0); mascararMoeda(document.getElementById('valorPago2'));
-        document.getElementById('metodo2').value = p.mistoData[1].metodo;
-    } else {
-        document.getElementById('valorPago').value = (p.valor * 100).toFixed(0); mascararMoeda(document.getElementById('valorPago'));
-        document.getElementById('metodo').value = p.metodo;
-        if(modoMisto) toggleMisto();
-    }
-    document.getElementById('idEmEdicao').value = p.id;
-    document.getElementById('btnSalvar').innerText = "Atualizar Entrada"; 
-    document.getElementById('btnCancelarEdit').classList.remove('hidden');
+    const p = window.pagamentos.find(x => x.id == id); if(!p) return;
+    document.getElementById('nomeCliente').value = p.nome; document.getElementById('contrato').value = p.contrato || ''; document.getElementById('referencia').value = p.ref || '';
+    if(p.metodo === 'Misto' && p.mistoData) { document.getElementById('valorPago').value = (p.mistoData[0].valor * 100).toFixed(0); mascararMoeda(document.getElementById('valorPago')); document.getElementById('metodo').value = p.mistoData[0].metodo; if(!modoMisto) toggleMisto(); document.getElementById('valorPago2').value = (p.mistoData[1].valor * 100).toFixed(0); mascararMoeda(document.getElementById('valorPago2')); document.getElementById('metodo2').value = p.mistoData[1].metodo; } 
+    else { document.getElementById('valorPago').value = (p.valor * 100).toFixed(0); mascararMoeda(document.getElementById('valorPago')); document.getElementById('metodo').value = p.metodo; if(modoMisto) toggleMisto(); }
+    document.getElementById('idEmEdicao').value = p.id; document.getElementById('btnSalvar').innerText = "Atualizar Entrada"; document.getElementById('btnCancelarEdit').classList.remove('hidden');
 }
 
-function cancelarEdicao() {
-    limparFormPag(); document.getElementById('idEmEdicao').value = '';
-    document.getElementById('btnSalvar').innerText = "Confirmar Entrada"; document.getElementById('btnCancelarEdit').classList.add('hidden');
-}
-
-function limparFormPag() {
-    document.getElementById('nomeCliente').value = ''; document.getElementById('contrato').value = ''; 
-    document.getElementById('referencia').value = getMesAtual(); document.getElementById('valorPago').value = '';
-    if(modoMisto) toggleMisto();
-}
-
-function deletar(type, id) {
-    if(!confirm("Tem certeza?")) return;
-    if(type === 'pg') window.pagamentos = window.pagamentos.filter(p => p.id != id); else window.despesas = window.despesas.filter(d => d.id != id);
-    saveNuvem(); window.atualizarBaseClientes(); window.renderizarListas(); window.atualizarDashboard();
-}
-
+function cancelarEdicao() { limparFormPag(); document.getElementById('idEmEdicao').value = ''; document.getElementById('btnSalvar').innerText = "Confirmar Entrada"; document.getElementById('btnCancelarEdit').classList.add('hidden'); }
+function limparFormPag() { document.getElementById('nomeCliente').value = ''; document.getElementById('contrato').value = ''; document.getElementById('referencia').value = getMesAtual(); document.getElementById('valorPago').value = ''; if(modoMisto) toggleMisto(); }
+function deletar(type, id) { if(!confirm("Tem certeza?")) return; if(type === 'pg') window.pagamentos = window.pagamentos.filter(p => p.id != id); else window.despesas = window.despesas.filter(d => d.id != id); saveNuvem(); window.atualizarBaseClientes(); window.renderizarListas(); window.atualizarDashboard(); }
 function limparFiltroData() { document.getElementById('filtroDataLista').value = ''; window.renderizarListas(); }
 
 window.renderizarListas = function() {
-    const termo = document.getElementById('buscaPagamentos').value.toLowerCase();
-    const dataFiltroInput = document.getElementById('filtroDataLista').value; 
-    let listaPg = window.pagamentos;
-    if(dataFiltroInput) {
-        const partes = dataFiltroInput.split('-');
-        const inicioDia = new Date(partes[0], partes[1]-1, partes[2], 0, 0, 0).getTime();
-        const fimDia = new Date(partes[0], partes[1]-1, partes[2], 23, 59, 59).getTime();
-        listaPg = listaPg.filter(p => p.ts && p.ts >= inicioDia && p.ts <= fimDia);
-    }
+    const termo = document.getElementById('buscaPagamentos').value.toLowerCase(); const dataFiltroInput = document.getElementById('filtroDataLista').value; let listaPg = window.pagamentos;
+    if(dataFiltroInput) { const partes = dataFiltroInput.split('-'); const inicioDia = new Date(partes[0], partes[1]-1, partes[2], 0, 0, 0).getTime(); const fimDia = new Date(partes[0], partes[1]-1, partes[2], 23, 59, 59).getTime(); listaPg = listaPg.filter(p => p.ts && p.ts >= inicioDia && p.ts <= fimDia); }
     listaPg = listaPg.filter(p => p.nome.toLowerCase().includes(termo) || (p.contrato && p.contrato.toLowerCase().includes(termo)));
-    
-    document.getElementById('listaPagamentos').innerHTML = listaPg.map(p => {
-        let metodoBadge = p.metodo;
-        if(p.metodo === 'Misto' && p.mistoData) metodoBadge = `Misto <span class="badge-misto">${p.mistoData[0].metodo} + ${p.mistoData[1].metodo}</span>`;
-        return `
-        <li class="transaction-item t-entrada">
-            <div style="flex:1">
-                <strong style="color:var(--text-main)">${p.nome}</strong> <span style="font-size:0.8rem; color:var(--text-secondary)">(${metodoBadge})</span><br>
-                <small style="color:var(--text-secondary)">${p.data} ${p.contrato ? '• CT: '+p.contrato : ''} ${p.ref ? '• '+p.ref : ''}</small>
-            </div>
-            <div style="text-align:right">
-                <span style="color:var(--accent-green); font-weight:700;">+ ${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
-                <div style="margin-top:5px; display:flex; gap:12px; justify-content:flex-end;">
-                    <i class="fas fa-pen" onclick="editarPagamento(${p.id})" style="cursor:pointer; color:var(--primary);"></i>
-                    <i class="fas fa-trash" onclick="deletar('pg', ${p.id})" style="cursor:pointer; color:var(--danger);"></i>
-                </div>
-            </div>
-        </li>`
-    }).join('');
-    
-    document.getElementById('listaDespesas').innerHTML = window.despesas.map(d => `
-        <li class="transaction-item t-saida">
-            <div><strong>${d.descricao}</strong><br><small style="color:var(--text-secondary)">${d.data}</small></div>
-            <div style="text-align:right">
-                <span class="text-red" style="font-weight:700;">- ${d.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
-                <i class="fas fa-trash" onclick="deletar('dp', ${d.id})" style="cursor:pointer; color:var(--danger); margin-left:10px;"></i>
-            </div>
-        </li>`).join('');
+    document.getElementById('listaPagamentos').innerHTML = listaPg.map(p => { let metodoBadge = p.metodo; if(p.metodo === 'Misto' && p.mistoData) metodoBadge = `Misto <span class="badge-misto">${p.mistoData[0].metodo} + ${p.mistoData[1].metodo}</span>`; return `<li class="transaction-item t-entrada"><div style="flex:1"><strong style="color:var(--text-main)">${p.nome}</strong> <span style="font-size:0.8rem; color:var(--text-secondary)">(${metodoBadge})</span><br><small style="color:var(--text-secondary)">${p.data} ${p.contrato ? '• CT: '+p.contrato : ''} ${p.ref ? '• '+p.ref : ''}</small></div><div style="text-align:right"><span style="color:var(--accent-green); font-weight:700;">+ ${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span><div style="margin-top:5px; display:flex; gap:12px; justify-content:flex-end;"><i class="fas fa-pen" onclick="editarPagamento(${p.id})" style="cursor:pointer; color:var(--primary);"></i><i class="fas fa-trash" onclick="deletar('pg', ${p.id})" style="cursor:pointer; color:var(--danger);"></i></div></div></li>` }).join('');
+    document.getElementById('listaDespesas').innerHTML = window.despesas.map(d => `<li class="transaction-item t-saida"><div><strong>${d.descricao}</strong><br><small style="color:var(--text-secondary)">${d.data}</small></div><div style="text-align:right"><span class="text-red" style="font-weight:700;">- ${d.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span><i class="fas fa-trash" onclick="deletar('dp', ${d.id})" style="cursor:pointer; color:var(--danger); margin-left:10px;"></i></div></li>`).join('');
 }
 
 window.atualizarDashboard = function() {
-    const agora = new Date();
-    let inicio = 0; let fim = agora.getTime();
-
-    if(dashFilter === 'dia') {
-        inicio = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 0, 0, 0).getTime();
-        fim = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 23, 59, 59).getTime();
-    } else if(dashFilter === 'data') {
-        const val = document.getElementById('dashDateFilter').value;
-        const partes = val.split('-');
-        inicio = new Date(partes[0], partes[1]-1, partes[2], 0, 0, 0).getTime();
-        fim = new Date(partes[0], partes[1]-1, partes[2], 23, 59, 59).getTime();
-    } else if(dashFilter === 'semana') { 
-        const d = new Date(agora); d.setDate(agora.getDate() - agora.getDay()); d.setHours(0,0,0,0); inicio = d.getTime(); 
-    } else if (dashFilter === 'mes') inicio = new Date(agora.getFullYear(), agora.getMonth(), 1).getTime();
-    else if (dashFilter === 'ano') inicio = new Date(agora.getFullYear(), 0, 1).getTime();
-    
-    const pgFiltro = window.pagamentos.filter(p => (p.ts || 0) >= inicio && (p.ts || 0) <= fim);
-    const dpFiltro = window.despesas.filter(d => (d.ts || 0) >= inicio && (d.ts || 0) <= fim);
-    
+    const agora = new Date(); let inicio = 0; let fim = agora.getTime();
+    if(dashFilter === 'dia') { inicio = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 0, 0, 0).getTime(); fim = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 23, 59, 59).getTime(); } 
+    else if(dashFilter === 'data') { const val = document.getElementById('dashDateFilter').value; const partes = val.split('-'); inicio = new Date(partes[0], partes[1]-1, partes[2], 0, 0, 0).getTime(); fim = new Date(partes[0], partes[1]-1, partes[2], 23, 59, 59).getTime(); } 
+    else if(dashFilter === 'semana') { const d = new Date(agora); d.setDate(agora.getDate() - agora.getDay()); d.setHours(0,0,0,0); inicio = d.getTime(); } 
+    else if (dashFilter === 'mes') inicio = new Date(agora.getFullYear(), agora.getMonth(), 1).getTime(); else if (dashFilter === 'ano') inicio = new Date(agora.getFullYear(), 0, 1).getTime();
+    const pgFiltro = window.pagamentos.filter(p => (p.ts || 0) >= inicio && (p.ts || 0) <= fim); const dpFiltro = window.despesas.filter(d => (d.ts || 0) >= inicio && (d.ts || 0) <= fim);
     const totalE = pgFiltro.reduce((a,b)=>a+b.valor,0); const totalS = dpFiltro.reduce((a,b)=>a+b.valor,0);
-    
-    document.getElementById('dashEntradas').innerText = totalE.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('dashSaidas').innerText = totalS.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('dashSaldo').innerText = (totalE - totalS).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-
-    const metodos = {};
-    pgFiltro.forEach(p => { 
-        if(p.metodo === 'Misto' && p.mistoData) {
-            p.mistoData.forEach(md => { metodos[md.metodo] = (metodos[md.metodo]||0) + md.valor; });
-        } else { metodos[p.metodo] = (metodos[p.metodo]||0) + p.valor; }
-    });
-    
-    if(chartInstance) chartInstance.destroy();
-    const ctx = document.getElementById('financeChart').getContext('2d');
-    chartInstance = new Chart(ctx, {
-        type: 'doughnut',
-        data: { labels: Object.keys(metodos), datasets: [{ data: Object.values(metodos), backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'], borderWidth: 0 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#94a3b8' } } } }
-    });
-    
-    document.getElementById('detalhesMetodos').innerHTML = Object.keys(metodos).map(k => `
-        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05); color:var(--text-secondary)">
-            <span>${k}</span> <span style="color:var(--text-main); font-weight:600">${metodos[k].toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
-        </div>`).join('');
+    document.getElementById('dashEntradas').innerText = totalE.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); document.getElementById('dashSaidas').innerText = totalS.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); document.getElementById('dashSaldo').innerText = (totalE - totalS).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+    const metodos = {}; pgFiltro.forEach(p => { if(p.metodo === 'Misto' && p.mistoData) { p.mistoData.forEach(md => { metodos[md.metodo] = (metodos[md.metodo]||0) + md.valor; }); } else { metodos[p.metodo] = (metodos[p.metodo]||0) + p.valor; } });
+    if(chartInstance) chartInstance.destroy(); const ctx = document.getElementById('financeChart').getContext('2d'); chartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: Object.keys(metodos), datasets: [{ data: Object.values(metodos), backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#94a3b8' } } } } });
+    document.getElementById('detalhesMetodos').innerHTML = Object.keys(metodos).map(k => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05); color:var(--text-secondary)"><span>${k}</span> <span style="color:var(--text-main); font-weight:600">${metodos[k].toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span></div>`).join('');
 }
 
-// EXPORTAÇÃO DIÁRIA DETALHADA
 function exportarWhatsApp() {
-    const dataFiltroInput = document.getElementById('filtroDataLista').value; 
-    let inicioDia, fimDia, dataTexto;
-    if(dataFiltroInput) {
-        const partes = dataFiltroInput.split('-');
-        inicioDia = new Date(partes[0], partes[1]-1, partes[2], 0, 0, 0).getTime();
-        fimDia = new Date(partes[0], partes[1]-1, partes[2], 23, 59, 59).getTime();
-        dataTexto = `${partes[2]}/${partes[1]}/${partes[0]}`;
-    } else {
-        const agora = new Date();
-        inicioDia = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 0, 0, 0).getTime();
-        fimDia = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 23, 59, 59).getTime();
-        dataTexto = agora.toLocaleDateString('pt-BR');
-    }
-    
-    const pgFiltrados = window.pagamentos.filter(p => p.ts >= inicioDia && p.ts <= fimDia);
-    const dpFiltrados = window.despesas.filter(d => d.ts >= inicioDia && d.ts <= fimDia);
-    
-    let relatorio = `*FECHAMENTO DE CAIXA - ${dataTexto}*\n\n`;
-    let totalDinheiro = 0, totalPix = 0, totalCredito = 0, totalDebito = 0, totalEntradas = 0;
-    
-    pgFiltrados.forEach(p => {
-        if(p.metodo === 'Misto' && p.mistoData) {
-            p.mistoData.forEach(md => {
-                if(md.metodo === 'Dinheiro') totalDinheiro += md.valor;
-                else if(md.metodo === 'Pix') totalPix += md.valor;
-                else if(md.metodo === 'Crédito') totalCredito += md.valor;
-                else if(md.metodo === 'Débito') totalDebito += md.valor;
-            });
-        } else {
-            if(p.metodo === 'Dinheiro') totalDinheiro += p.valor;
-            else if(p.metodo === 'Pix') totalPix += p.valor;
-            else if(p.metodo === 'Crédito') totalCredito += p.valor;
-            else if(p.metodo === 'Débito') totalDebito += p.valor;
-        }
-        totalEntradas += p.valor;
-        relatorio += `• *${p.nome}* (${p.metodo})\n+ R$ ${p.valor.toFixed(2)}\n\n`;
-    });
-    
-    let totalSaidas = dpFiltrados.reduce((a, b) => a + b.valor, 0);
-    relatorio += `*RESUMO DO DIA:*\n💵 Dinheiro: R$ ${totalDinheiro.toFixed(2)}\n📱 Pix: R$ ${totalPix.toFixed(2)}\n💳 Cartões: R$ ${(totalCredito+totalDebito).toFixed(2)}\n🔻 Saídas: R$ ${totalSaidas.toFixed(2)}\n*TOTAL GERAL CAIXA:* R$ ${(totalEntradas - totalSaidas).toFixed(2)}`;
-    
-    window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(relatorio), '_blank');
+    const dataFiltroInput = document.getElementById('filtroDataLista').value; let inicioDia, fimDia, dataTexto;
+    if(dataFiltroInput) { const partes = dataFiltroInput.split('-'); inicioDia = new Date(partes[0], partes[1]-1, partes[2], 0, 0, 0).getTime(); fimDia = new Date(partes[0], partes[1]-1, partes[2], 23, 59, 59).getTime(); dataTexto = `${partes[2]}/${partes[1]}/${partes[0]}`; } 
+    else { const agora = new Date(); inicioDia = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 0, 0, 0).getTime(); fimDia = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 23, 59, 59).getTime(); dataTexto = agora.toLocaleDateString('pt-BR'); }
+    const pgFiltrados = window.pagamentos.filter(p => p.ts >= inicioDia && p.ts <= fimDia); const dpFiltrados = window.despesas.filter(d => d.ts >= inicioDia && d.ts <= fimDia);
+    let relatorio = `*FECHAMENTO DE CAIXA - ${dataTexto}*\n\n`; let totalDinheiro = 0, totalPix = 0, totalCredito = 0, totalDebito = 0, totalEntradas = 0;
+    pgFiltrados.forEach(p => { if(p.metodo === 'Misto' && p.mistoData) { p.mistoData.forEach(md => { if(md.metodo === 'Dinheiro') totalDinheiro += md.valor; else if(md.metodo === 'Pix') totalPix += md.valor; else if(md.metodo === 'Crédito') totalCredito += md.valor; else if(md.metodo === 'Débito') totalDebito += md.valor; }); } else { if(p.metodo === 'Dinheiro') totalDinheiro += p.valor; else if(p.metodo === 'Pix') totalPix += p.valor; else if(p.metodo === 'Crédito') totalCredito += p.valor; else if(p.metodo === 'Débito') totalDebito += p.valor; } totalEntradas += p.valor; relatorio += `• *${p.nome}* (${p.metodo})\n+ R$ ${p.valor.toFixed(2)}\n\n`; });
+    let totalSaidas = dpFiltrados.reduce((a, b) => a + b.valor, 0); relatorio += `*RESUMO DO DIA:*\n💵 Dinheiro: R$ ${totalDinheiro.toFixed(2)}\n📱 Pix: R$ ${totalPix.toFixed(2)}\n💳 Cartões: R$ ${(totalCredito+totalDebito).toFixed(2)}\n🔻 Saídas: R$ ${totalSaidas.toFixed(2)}\n*TOTAL GERAL CAIXA:* R$ ${(totalEntradas - totalSaidas).toFixed(2)}`; window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(relatorio), '_blank');
 }
 
-// EXPORTAÇÃO MENSAL RESUMIDA POR VALORES E MÉTODOS
 function exportarMensalWhatsApp() {
-    const agora = new Date();
-    const inicioMes = new Date(agora.getFullYear(), agora.getMonth(), 1).getTime();
-    const fimMes = new Date(agora.getFullYear(), agora.getMonth() + 1, 0, 23, 59, 59).getTime();
-    
-    const pgMes = window.pagamentos.filter(p => p.ts && p.ts >= inicioMes && p.ts <= fimMes);
-    const dpMes = window.despesas.filter(d => d.ts && d.ts >= inicioMes && d.ts <= fimMes);
-    
+    const agora = new Date(); const inicioMes = new Date(agora.getFullYear(), agora.getMonth(), 1).getTime(); const fimMes = new Date(agora.getFullYear(), agora.getMonth() + 1, 0, 23, 59, 59).getTime();
+    const pgMes = window.pagamentos.filter(p => p.ts && p.ts >= inicioMes && p.ts <= fimMes); const dpMes = window.despesas.filter(d => d.ts && d.ts >= inicioMes && d.ts <= fimMes);
     let totalDinheiro = 0, totalPix = 0, totalCredito = 0, totalDebito = 0, totalEntradas = 0;
-    
-    pgMes.forEach(p => {
-        if(p.metodo === 'Misto' && p.mistoData) {
-            p.mistoData.forEach(md => {
-                if(md.metodo === 'Dinheiro') totalDinheiro += md.valor;
-                else if(md.metodo === 'Pix') totalPix += md.valor;
-                else if(md.metodo === 'Crédito') totalCredito += md.valor;
-                else if(md.metodo === 'Débito') totalDebito += md.valor;
-            });
-        } else {
-            if(p.metodo === 'Dinheiro') totalDinheiro += p.valor;
-            else if(p.metodo === 'Pix') totalPix += p.valor;
-            else if(p.metodo === 'Crédito') totalCredito += p.valor;
-            else if(p.metodo === 'Débito') totalDebito += p.valor;
-        }
-        totalEntradas += p.valor;
-    });
-    
-    let totalSaidas = dpMes.reduce((a, b) => a + b.valor, 0);
-    const mesesNome = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
-    
-    let relatorio = `*BALANÇO FINANCEIRO MENSAL - ${mesesNome[agora.getMonth()]} / ${agora.getFullYear()}*\n\n`;
-    relatorio += `*FATURAMENTO POR MÉTODO:*\n`;
-    relatorio += `💵 *Dinheiro:* R$ ${totalDinheiro.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
-    relatorio += `📱 *Pix:* R$ ${totalPix.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
-    relatorio += `💳 *Crédito:* R$ ${totalCredito.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
-    relatorio += `💳 *Débito:* R$ ${totalDebito.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n\n`;
-    relatorio += `📈 *TOTAL BRUTO DE ENTRADAS:* R$ ${totalEntradas.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
-    relatorio += `📉 *TOTAL DE RETIRADAS/SANGRIAS:* R$ ${totalSaidas.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
-    relatorio += `💰 *SALDO LÍQUIDO NO PERÍODO:* R$ ${(totalEntradas - totalSaidas).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-
+    pgMes.forEach(p => { if(p.metodo === 'Misto' && p.mistoData) { p.mistoData.forEach(md => { if(md.metodo === 'Dinheiro') totalDinheiro += md.valor; else if(md.metodo === 'Pix') totalPix += md.valor; else if(md.metodo === 'Crédito') totalCredito += md.valor; else if(md.metodo === 'Débito') totalDebito += md.valor; }); } else { if(p.metodo === 'Dinheiro') totalDinheiro += p.valor; else if(p.metodo === 'Pix') totalPix += p.valor; else if(p.metodo === 'Crédito') totalCredito += p.valor; else if(p.metodo === 'Débito') totalDebito += p.valor; } totalEntradas += p.valor; });
+    let totalSaidas = dpMes.reduce((a, b) => a + b.valor, 0); const mesesNome = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
+    let relatorio = `*BALANÇO FINANCEIRO MENSAL - ${mesesNome[agora.getMonth()]} / ${agora.getFullYear()}*\n\n*FATURAMENTO POR MÉTODO:*\n💵 *Dinheiro:* R$ ${totalDinheiro.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n📱 *Pix:* R$ ${totalPix.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n💳 *Crédito:* R$ ${totalCredito.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n💳 *Débito:* R$ ${totalDebito.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n\n📈 *TOTAL BRUTO DE ENTRADAS:* R$ ${totalEntradas.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n📉 *TOTAL DE RETIRADAS/SANGRIAS:* R$ ${totalSaidas.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n💰 *SALDO LÍQUIDO NO PERÍODO:* R$ ${(totalEntradas - totalSaidas).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
     window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(relatorio), '_blank');
 }
 
-function showToast(msg, type='success') {
-    const t = document.createElement('div'); 
-    t.className = 'toast' + (type === 'error' ? ' error-toast' : '');
-    t.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle" style="color:${type==='error'?'var(--danger)':'var(--accent-green)'}"></i> <span>${msg}</span>`;
-    document.getElementById('toast-container').appendChild(t); 
-    setTimeout(()=>t.remove(), 3000);
-}
-
+function showToast(msg, type='success') { const t = document.createElement('div'); t.className = 'toast' + (type === 'error' ? ' error-toast' : ''); t.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle" style="color:${type==='error'?'var(--danger)':'var(--accent-green)'}"></i> <span>${msg}</span>`; document.getElementById('toast-container').appendChild(t); setTimeout(()=>t.remove(), 3000); }
 function checkEnter(event, callback) { if(event.key === 'Enter') callback(); }
 
-// CONEXÃO COM BANCO DE DADOS
+// CONEXÃO COM BANCO DE DADOS AUTOCORRIGÍVEL
 window.auth.onAuthStateChanged((user) => {
     if (user) {
         document.getElementById('login-container').style.display = 'none';
         window.db.collection("users").doc(user.uid).onSnapshot((doc) => {
-            if (doc.exists) {  // <-- O ERRO ESTAVA AQUI! Parênteses removidos.
+            if (doc.exists) {
                 const data = doc.data();
                 window.pagamentos = limparDuplicados(data.pagamentos || []);
                 window.despesas = limparDuplicados(data.despesas || []);
+                
+                if (window.pagamentos.length === 0 && recPgRaw.length > 0) {
+                    window.pagamentos = recPgRaw;
+                    window.despesas = recDpRaw;
+                    saveNuvem();
+                }
+                
                 localStorage.setItem('pg', JSON.stringify(window.pagamentos));
                 localStorage.setItem('dp', JSON.stringify(window.despesas));
             } else {
+                window.pagamentos = recPgRaw;
+                window.despesas = recDpRaw;
                 saveNuvem();
             }
             window.atualizarBaseClientes(); window.renderizarListas(); window.atualizarDashboard();
@@ -877,22 +690,8 @@ window.auth.onAuthStateChanged((user) => {
     } else { document.getElementById('login-container').style.display = 'flex'; }
 });
 
-function saveNuvem() {
-    window.pagamentos = limparDuplicados(window.pagamentos);
-    window.despesas = limparDuplicados(window.despesas);
-    localStorage.setItem('pg', JSON.stringify(window.pagamentos));
-    localStorage.setItem('dp', JSON.stringify(window.despesas));
-    const user = window.auth.currentUser;
-    if (user) {
-        window.db.collection("users").doc(user.uid).set({ pagamentos: window.pagamentos, despesas: window.despesas });
-    }
-}
-
-function fazerLogin() {
-    const email = document.getElementById('login-email').value;
-    const senha = document.getElementById('login-senha').value;
-    window.auth.signInWithEmailAndPassword(email, senha).catch(e => showToast("Erro: " + e.message, "error"));
-}
+function saveNuvem() { window.pagamentos = limparDuplicados(window.pagamentos); window.despesas = limparDuplicados(window.despesas); localStorage.setItem('pg', JSON.stringify(window.pagamentos)); localStorage.setItem('dp', JSON.stringify(window.despesas)); const user = window.auth.currentUser; if (user) { window.db.collection("users").doc(user.uid).set({ pagamentos: window.pagamentos, despesas: window.despesas }); } }
+function fazerLogin() { const email = document.getElementById('login-email').value; const senha = document.getElementById('login-senha').value; window.auth.signInWithEmailAndPassword(email, senha).catch(e => showToast("Erro: " + e.message, "error")); }
 function fazerLogout() { if(confirm("Sair?")) window.auth.signOut().then(() => location.reload()); }
 </script>
 </body>
