@@ -46,7 +46,6 @@ body {
 }
 .app-wrapper { display: flex; width: 100%; }
 
-/* GLASSMORPHISM & SIDEBAR COLLAPSE */
 aside { 
     width: 250px; background: var(--bg-sidebar); 
     backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
@@ -55,11 +54,13 @@ aside {
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s;
 }
 aside.collapsed { width: 80px; padding: 20px 15px; }
-aside.collapsed .brand-text, aside.collapsed .nav-btn span { display: none; }
+aside.collapsed .brand-text, aside.collapsed .nav-btn span, aside.collapsed .logo-box { display: none; }
 aside.collapsed .toggle-icon { transform: rotate(180deg); }
 
-.brand { font-size: 1.4rem; font-weight: 800; color: var(--text-main); margin-bottom: 40px; display: flex; align-items: center; justify-content: space-between; }
-.brand span { color: var(--primary); } 
+.brand { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; }
+.logo-box { background: rgba(59,130,246,0.15); padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(59,130,246,0.3); display:flex; align-items:center; justify-content:center; }
+.brand-text { font-size: 1.4rem; font-weight: 800; color: var(--text-main); letter-spacing: 1px; margin-left: 12px; }
+.brand-text span { color: var(--text-secondary); font-weight: 300; }
 .toggle-icon { cursor: pointer; font-size: 1rem; color: var(--text-secondary); transition: var(--transition); padding: 5px; }
 .toggle-icon:hover { color: var(--text-main); }
 
@@ -91,10 +92,11 @@ main { flex: 1; padding: 30px; overflow-y: auto; padding-bottom: 100px; transiti
 
 .card { background: var(--surface); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: var(--radius); padding: 25px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); }
 
-input, select, textarea { width: 100%; padding: 12px 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white; font-size: 0.9rem; transition: var(--transition); font-family: 'Inter', sans-serif;}
+input, select, textarea { min-height: 50px; width: 100%; padding: 12px 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white; font-size: 0.9rem; transition: var(--transition); font-family: 'Inter', sans-serif;}
 input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(59,130,246,0.3); background: rgba(0,0,0,0.4); }
 input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; opacity: 0.7; }
 textarea { resize: vertical; min-height: 80px; }
+#valorPago { font-size: 1.5rem; font-weight: 700; text-align: center; }
 
 .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 0.95rem; transition: var(--transition); }
 .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
@@ -103,7 +105,8 @@ textarea { resize: vertical; min-height: 80px; }
 .btn-danger { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
 .btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-main); }
 
-.dash-filters { display: flex; background: var(--surface); backdrop-filter: blur(15px); padding: 5px; border-radius: 12px; width: fit-content; margin-bottom: 20px; border: 1px solid var(--border); overflow-x: auto; max-width: 100%; align-items: center; box-shadow: var(--shadow); }
+/* Melhoria no scroll do Dashboard - Resolvido */
+.dash-filters { display: flex; flex-wrap: wrap; gap: 8px; background: var(--surface); backdrop-filter: blur(15px); padding: 8px; border-radius: 12px; width: fit-content; margin-bottom: 20px; border: 1px solid var(--border); align-items: center; box-shadow: var(--shadow); }
 .df-btn { background: transparent; border: none; color: var(--text-secondary); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; white-space: nowrap; }
 .df-btn.active { background: var(--primary); color: white; box-shadow: 0 2px 10px rgba(59,130,246,0.4); }
 
@@ -114,7 +117,6 @@ textarea { resize: vertical; min-height: 80px; }
 .bg-green { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 0 15px rgba(16,185,129,0.3); }
 .bg-pink { background: linear-gradient(135deg, #ec4899, #db2777); box-shadow: 0 0 15px rgba(236,72,153,0.3); }
 
-/* GLOW EFFECT NA FONTE */
 .text-green { color: var(--accent-green); text-shadow: 0 0 12px rgba(16,185,129,0.5); }
 .text-red { color: var(--danger); text-shadow: 0 0 12px rgba(239,68,68,0.5); }
 .text-blue { color: var(--deposit); text-shadow: 0 0 12px rgba(14,165,233,0.5); }
@@ -129,14 +131,13 @@ textarea { resize: vertical; min-height: 80px; }
 .t-deposito { border-left-color: var(--deposit); }
 
 .filter-wrapper { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
-.search-box { flex: 1; position: relative; }
+.search-box { flex: 1; position: relative; min-width: 200px; }
 .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
 .search-box input { padding-left: 40px; }
 .hidden { display: none !important; }
 .active-section { display: block; animation: fadeUp 0.4s ease; }
 @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 
-/* ANIMATED TOAST COM PROGRESS BAR */
 .toast { 
     position: fixed; top: 20px; right: 20px; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); 
     border: 1px solid var(--border); padding: 15px 20px; border-radius: 8px; z-index: 2000; box-shadow: var(--shadow); 
@@ -145,10 +146,7 @@ textarea { resize: vertical; min-height: 80px; }
     overflow: hidden;
 }
 .toast i { font-size: 1.2rem; }
-.toast::after {
-    content: ''; position: absolute; bottom: 0; left: 0; height: 3px; background: var(--accent-green);
-    width: 100%; animation: toastProgress 3s linear forwards;
-}
+.toast::after { content: ''; position: absolute; bottom: 0; left: 0; height: 3px; background: var(--accent-green); width: 100%; animation: toastProgress 3s linear forwards; }
 .toast.error-toast::after { background: var(--danger); }
 @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 @keyframes toastProgress { from { width: 100%; } to { width: 0; } }
@@ -167,8 +165,9 @@ textarea { resize: vertical; min-height: 80px; }
 <div class="app-wrapper">
     <aside id="sidebar">
         <div class="brand">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <i class="fas fa-chart-line"></i> <span class="brand-text">JS<span>GESTÃO</span></span>
+            <div style="display:flex; align-items:center;">
+                <div class="logo-box"><i class="fas fa-bolt" style="color: var(--primary);"></i></div>
+                <span class="brand-text">JS <span>GESTÃO</span></span>
             </div>
             <i class="fas fa-chevron-left toggle-icon" onclick="toggleSidebar()" title="Recolher Menu"></i>
         </div>
@@ -188,20 +187,18 @@ textarea { resize: vertical; min-height: 80px; }
         </div>
 
         <section id="dashboard" class="active-section">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                <div class="dash-filters">
-                    <button class="df-btn active" onclick="setDashFilter('dia')" id="d-btn-dia">Hoje</button>
-                    <button class="df-btn" onclick="setDashFilter('semana')" id="d-btn-semana">Semana</button>
-                    <button class="df-btn" onclick="setDashFilter('mes')" id="d-btn-mes">Mês</button>
-                    <button class="df-btn" onclick="setDashFilter('ano')" id="d-btn-ano">Ano</button>
-                    
-                    <div style="width: 1px; height: 18px; background: rgba(255,255,255,0.1); margin: 0 5px;"></div>
-                    
-                    <button class="df-btn" onclick="document.getElementById('dashDateFilter').showPicker()" id="d-btn-data" title="Escolher data específica">
-                        <i class="fas fa-calendar-alt"></i> <span id="lblDataEscolhida" style="margin-left: 5px;">Data</span>
-                    </button>
-                    <input type="date" id="dashDateFilter" class="hidden-date-input" onchange="setDashFilter('data')">
-                </div>
+            <div class="dash-filters">
+                <button class="df-btn active" onclick="setDashFilter('dia')" id="d-btn-dia">Hoje</button>
+                <button class="df-btn" onclick="setDashFilter('semana')" id="d-btn-semana">Semana</button>
+                <button class="df-btn" onclick="setDashFilter('mes')" id="d-btn-mes">Mês</button>
+                <button class="df-btn" onclick="setDashFilter('ano')" id="d-btn-ano">Ano</button>
+                
+                <div style="width: 1px; height: 18px; background: rgba(255,255,255,0.1); margin: 0 5px;"></div>
+                
+                <button class="df-btn" onclick="document.getElementById('dashDateFilter').showPicker()" id="d-btn-data" title="Escolher data específica">
+                    <i class="fas fa-calendar-alt"></i> <span id="lblDataEscolhida" style="margin-left: 5px;">Data</span>
+                </button>
+                <input type="date" id="dashDateFilter" class="hidden-date-input" onchange="setDashFilter('data')">
             </div>
             
             <div class="stats-grid">
@@ -228,7 +225,29 @@ textarea { resize: vertical; min-height: 80px; }
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <div class="card">
+                <h3 style="margin-top:0">Situação do Caixa</h3>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:15px; margin-top:20px;">
+                    <div style="background:rgba(16,185,129,0.08); padding:15px; border-radius:10px;">
+                        <small style="color:var(--text-secondary)">💵 Dinheiro (Gaveta)</small>
+                        <h2 id="saldoDinheiro" class="text-green">R$ 0,00</h2>
+                    </div>
+                    <div style="background:rgba(14,165,233,0.08); padding:15px; border-radius:10px;">
+                        <small style="color:var(--text-secondary)">📱 Pix</small>
+                        <h2 id="saldoPix" class="text-blue">R$ 0,00</h2>
+                    </div>
+                    <div style="background:rgba(236,72,153,0.08); padding:15px; border-radius:10px;">
+                        <small style="color:var(--text-secondary)">💳 Cartões</small>
+                        <h2 id="saldoCartao">R$ 0,00</h2>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-success" onclick="gerarFechamento()" style="margin-top:20px; width:100%;">
+                <i class="fab fa-whatsapp"></i> Gerar Fechamento Diário
+            </button>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
                 <div class="card">
                     <h3 style="margin-top:0"><i class="fas fa-chart-bar"></i> Visão Geral de Entradas</h3>
                     <div style="height: 250px;"><canvas id="financeChart"></canvas></div>
@@ -246,19 +265,23 @@ textarea { resize: vertical; min-height: 80px; }
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div style="grid-column: span 2;">
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Cliente</label>
-                        <input id="nomeCliente" class="uppercase-input" list="listaNomes" placeholder="NOME DO CLIENTE" oninput="this.value = this.value.toUpperCase(); autoPreencher('nome')" onkeyup="checkEnter(event, salvarPagamento)" autocomplete="off" />
+                        <input id="nomeCliente" class="uppercase-input" list="listaNomes" placeholder="NOME DO CLIENTE" oninput="this.value = this.value.toUpperCase(); verificarDuplicidade(); autoPreencher('nome')" onkeyup="checkEnter(event, salvarPagamento)" autocomplete="off" />
                     </div>
                     <div>
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Contrato</label>
-                        <input id="contrato" class="uppercase-input" list="listaContratos" placeholder="Nº CONTRATO" oninput="this.value = this.value.toUpperCase(); autoPreencher('contrato')" onkeyup="checkEnter(event, salvarPagamento)" autocomplete="off" />
+                        <input id="contrato" class="uppercase-input" list="listaContratos" placeholder="Nº CONTRATO" oninput="this.value = this.value.toUpperCase(); verificarDuplicidade(); autoPreencher('contrato')" autocomplete="off" />
                     </div>
                     <div>
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Referência</label>
-                        <input id="referencia" class="uppercase-input" placeholder="EX: MAI/2026" oninput="this.value = this.value.toUpperCase()" onkeyup="checkEnter(event, salvarPagamento)" />
+                        <input id="referencia" class="uppercase-input" placeholder="EX: MAI/2026" oninput="this.value = this.value.toUpperCase(); verificarDuplicidade()" onkeyup="checkEnter(event, salvarPagamento)" />
                     </div>
+                    
+                    <div id="avisoDuplicidade" class="hidden" style="grid-column: span 2; background: rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); padding:10px; border-radius:8px; color:#fca5a5; font-size:0.85rem; margin-top:5px;"></div>
+                    <div id="ultimoPagamentoInfo" class="hidden" style="grid-column: span 2; background: rgba(59,130,246,0.08); border:1px solid rgba(59,130,246,0.2); padding:12px; border-radius:10px; font-size:0.85rem; color:#bfdbfe; margin-top:5px;"></div>
+
                     <div style="grid-column: span 2;">
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Valor (R$)</label>
-                        <input id="valorPago" type="number" step="0.01" placeholder="0.00" onkeyup="checkEnter(event, salvarPagamento)" />
+                        <input id="valorPago" type="text" placeholder="0,00" oninput="mascararMoeda(this)" onkeyup="checkEnter(event, salvarPagamento)" />
                     </div>
                     <div style="grid-column: span 2;">
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Método</label>
@@ -269,12 +292,18 @@ textarea { resize: vertical; min-height: 80px; }
                             <option value="Débito">Débito</option>
                         </select>
                     </div>
+                    
+                    <div style="grid-column: span 2;">
+                        <label style="font-size:0.8rem; color:var(--text-secondary)">Observação</label>
+                        <textarea id="obsPagamento" placeholder="OBSERVAÇÃO RÁPIDA..." oninput="this.value = this.value.toUpperCase()"></textarea>
+                    </div>
+
                     <div style="grid-column: span 2;">
                          <div onclick="toggleMisto()" style="cursor:pointer; color:var(--primary); font-size:0.9rem; margin-bottom:10px; transition: var(--transition);">
                             <i class="far fa-square" id="iconMisto"></i> Pagamento Misto?
                         </div>
                         <div id="boxMisto" class="split-box hidden">
-                            <input id="valorPago2" type="number" placeholder="Valor da 2ª Parte (R$)" style="margin-bottom:10px;" onkeyup="checkEnter(event, salvarPagamento)" />
+                            <input id="valorPago2" type="text" placeholder="Valor da 2ª Parte (R$)" style="margin-bottom:10px;" oninput="mascararMoeda(this)" onkeyup="checkEnter(event, salvarPagamento)" />
                             <select id="metodo2" onkeyup="checkEnter(event, salvarPagamento)">
                                 <option value="Pix">Pix</option>
                                 <option value="Dinheiro">Dinheiro</option>
@@ -287,6 +316,7 @@ textarea { resize: vertical; min-height: 80px; }
                         <input type="hidden" id="idEmEdicao">
                         <button id="btnSalvar" class="btn btn-primary" onclick="salvarPagamento()">Confirmar Entrada</button>
                         <button id="btnCancelarEdit" class="btn btn-secondary hidden" onclick="cancelarEdicao()" style="margin-top:10px">Cancelar</button>
+                        <button class="btn btn-secondary" onclick="desfazerUltimoLancamento()" style="margin-top:10px"><i class="fas fa-rotate-left"></i> Desfazer Último</button>
                     </div>
                 </div>
             </div>
@@ -298,15 +328,21 @@ textarea { resize: vertical; min-height: 80px; }
                 <div class="filter-wrapper">
                     <div class="search-box">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="buscaPagamentos" placeholder="Buscar cliente ou contrato..." onkeyup="renderizarListas()">
+                        <input type="text" id="buscaPagamentos" placeholder="Buscar cliente..." onkeyup="renderizarListas()">
                     </div>
-                    <div style="flex-basis: 150px; display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding-right: 5px;">
-                        <input type="date" id="filtroDataLista" onchange="renderizarListas()" title="Filtrar por data específica" style="border: none; background: transparent; padding: 12px 10px;">
+                    <div style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding-right: 5px;">
+                        <input type="date" id="filtroDataLista" onchange="renderizarListas()" title="Data Base para Filtros" style="border: none; background: transparent; padding: 12px 10px;">
                     </div>
-                    <button class="btn btn-secondary" onclick="limparFiltroData()" style="width:auto; padding:0 15px;" title="Limpar Filtro"><i class="fas fa-eraser"></i></button>
+                    <button class="btn btn-secondary" onclick="limparFiltroData()" style="width:auto; padding:0 15px;" title="Limpar Data"><i class="fas fa-eraser"></i></button>
                     
-                    <button class="btn btn-success" onclick="exportarWhatsApp()" style="width:auto; padding:0 15px;" title="Exportar Relatório do dia selecionado">
-                        <i class="fab fa-whatsapp"></i> Exportar Caixa
+                    <select id="periodoExportacao" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 10px; color: white;">
+                        <option value="dia">Diário</option>
+                        <option value="semana">Semanal</option>
+                        <option value="mes">Mensal</option>
+                        <option value="ano">Anual</option>
+                    </select>
+                    <button class="btn btn-success" onclick="exportarWhatsAppAvancado()" style="width:auto; padding:0 15px;" title="Exportar Relatório">
+                        <i class="fab fa-whatsapp"></i> Exportar
                     </button>
                 </div>
 
@@ -331,7 +367,7 @@ textarea { resize: vertical; min-height: 80px; }
                     </div>
                     <div>
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Valor (R$)</label>
-                        <input id="valorDespesa" type="number" step="0.01" placeholder="0.00" onkeyup="checkEnter(event, salvarDespesa)" />
+                        <input id="valorDespesa" type="text" placeholder="0,00" oninput="mascararMoeda(this)" onkeyup="checkEnter(event, salvarDespesa)" />
                     </div>
                     
                     <button class="btn btn-danger" onclick="salvarDespesa()">Registrar Saída</button>
@@ -358,6 +394,10 @@ textarea { resize: vertical; min-height: 80px; }
                     <div>
                         <h2 id="cdNome" style="margin:0 0 5px 0">NOME DO CLIENTE</h2>
                         <span id="cdContrato" style="color:var(--text-secondary); font-size:0.9rem;">CT: 1234</span>
+                        <br>
+                        <button class="btn btn-secondary" style="width:auto; padding: 6px 12px; font-size:0.75rem; margin-top:8px;" onclick="editarCadastroCliente()">
+                            <i class="fas fa-user-edit"></i> Alterar Cadastro
+                        </button>
                     </div>
                     <button class="btn btn-secondary" style="width:auto; padding: 8px 15px;" onclick="fecharDetalhesCliente()"><i class="fas fa-arrow-left"></i> Voltar</button>
                 </div>
@@ -410,25 +450,31 @@ textarea { resize: vertical; min-height: 80px; }
 // --- CORE LOGIC ---
 let pagamentos = JSON.parse(localStorage.getItem('pg') || '[]');
 let despesas = JSON.parse(localStorage.getItem('dp') || '[]');
+let fechamentos = JSON.parse(localStorage.getItem('fechamentos') || '[]');
 let clientesDB = [];
 let chartInstance = null;
 let modoMisto = false;
 let dashFilter = 'dia'; 
+let ultimoLancamento = null;
+let clienteAtivoDetalhe = { nome: '', contrato: '' }; // Auxiliar para edição de cadastro
 
-// Sidebar Toggle Function
+// Backup Automático
+setInterval(() => {
+    const backup = { pagamentos, despesas, data: new Date().toLocaleString('pt-BR') };
+    localStorage.setItem('autoBackupJSGestao', JSON.stringify(backup));
+}, 300000);
+
 function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('collapsed');
     document.getElementById('main-content').classList.toggle('collapsed');
 }
 
-// Identificar Mês e Ano atual para Referência Automática
 function getMesAtual() {
     const meses = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
     const d = new Date();
     return meses[d.getMonth()] + '/' + d.getFullYear();
 }
 
-// Data Inicial para o Header e Filtros Fixos Hoje
 const hoje = new Date();
 const anoHj = hoje.getFullYear();
 const mesHj = String(hoje.getMonth() + 1).padStart(2, '0');
@@ -439,11 +485,24 @@ document.getElementById('filtroDataLista').value = dataPadrao;
 document.getElementById('dataAtual').innerText = hoje.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
 document.getElementById('referencia').value = getMesAtual();
 
+function mascararMoeda(i) {
+    let v = i.value.replace(/\D/g, "");
+    if (!v) { i.value = ""; return; }
+    v = (v/100).toFixed(2).replace(".", ",");
+    v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+    i.value = v;
+}
+
+function lerValor(id) {
+    let v = document.getElementById(id).value;
+    if(!v) return NaN;
+    return parseFloat(v.replace(/\./g, "").replace(",", "."));
+}
+
 migrarDados();
 atualizarBaseClientes();
 navegar('dashboard');
 
-// ATALHOS GLOBAIS DE TECLADO
 document.addEventListener('keydown', function(e) {
     if (e.key === 'F2') {
         e.preventDefault(); 
@@ -462,12 +521,50 @@ function checkEnter(event, callback) {
     }
 }
 
-// Base de Clientes para Autocomplete
+document.getElementById('contrato').addEventListener('keydown', function(e){
+    if(e.key === 'Enter') {
+        autoPreencher('contrato');
+        document.getElementById('valorPago').focus();
+    }
+});
+
+function verificarDuplicidade() {
+    const nome = document.getElementById('nomeCliente').value.trim().toUpperCase();
+    const contrato = document.getElementById('contrato').value.trim().toUpperCase();
+    const ref = document.getElementById('referencia').value.trim().toUpperCase();
+
+    const aviso = document.getElementById('avisoDuplicidade');
+    if(!nome || !ref) { aviso.classList.add('hidden'); return; }
+
+    const duplicado = pagamentos.find(p => p.nome === nome && (p.contrato || '') === contrato && (p.ref || '') === ref);
+
+    if(duplicado) {
+        aviso.innerHTML = `⚠ Atenção: Cliente já possui pagamento registrado para <strong>${ref}</strong>`;
+        aviso.classList.remove('hidden');
+    } else {
+        aviso.classList.add('hidden');
+    }
+}
+
+function mostrarUltimoPagamento(cliente) {
+    const box = document.getElementById('ultimoPagamentoInfo');
+    if(!cliente) { box.classList.add('hidden'); return; }
+
+    const ult = pagamentos.filter(p => p.nome === cliente.nome).sort((a,b) => b.ts - a.ts)[0];
+
+    if(!ult) { box.classList.add('hidden'); return; }
+
+    box.innerHTML = `<strong>Último pagamento:</strong><br>${ult.ref || 'SEM REF'} • ${ult.metodo} • ${ult.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}<br>${ult.data}`;
+    box.classList.remove('hidden');
+}
+
 function atualizarBaseClientes() {
     clientesDB = [];
-    pagamentos.forEach(p => {
+    const sorted = [...pagamentos].sort((a,b) => b.ts - a.ts);
+    
+    sorted.forEach(p => {
         if(p.nome && !clientesDB.find(c => c.nome === p.nome && c.contrato === p.contrato)) {
-            clientesDB.push({ nome: p.nome, contrato: p.contrato || '' });
+            clientesDB.push({ nome: p.nome, contrato: p.contrato || '', ultimoValor: p.valor });
         }
     });
     
@@ -480,18 +577,25 @@ function atualizarBaseClientes() {
 function autoPreencher(origem) {
     const nomeInp = document.getElementById('nomeCliente');
     const contInp = document.getElementById('contrato');
+    const valInp = document.getElementById('valorPago');
     
+    let cliente = null;
+
     if (origem === 'nome' && nomeInp.value) {
-        const cliente = clientesDB.find(c => c.nome === nomeInp.value);
-        if (cliente && cliente.contrato && !contInp.value) {
-            contInp.value = cliente.contrato;
-        }
+        cliente = clientesDB.find(c => c.nome === nomeInp.value);
+        if (cliente && cliente.contrato && !contInp.value) contInp.value = cliente.contrato;
     } else if (origem === 'contrato' && contInp.value) {
-        const cliente = clientesDB.find(c => c.contrato === contInp.value);
-        if (cliente && cliente.nome && !nomeInp.value) {
-            nomeInp.value = cliente.nome;
-        }
+        cliente = clientesDB.find(c => c.contrato === contInp.value);
+        if (cliente && cliente.nome && !nomeInp.value) nomeInp.value = cliente.nome;
     }
+    
+    if (cliente && cliente.ultimoValor && !valInp.value) {
+        valInp.value = cliente.ultimoValor.toFixed(2).replace('.', ',');
+        mascararMoeda(valInp);
+    }
+    
+    mostrarUltimoPagamento(cliente);
+    verificarDuplicidade();
 }
 
 function renderClientes() {
@@ -535,6 +639,9 @@ function abrirDetalhesCliente(nome, contrato) {
     const box = document.getElementById('clienteDetalhes');
     box.classList.remove('hidden');
     
+    clienteAtivoDetalhe.nome = nome;
+    clienteAtivoDetalhe.contrato = contrato;
+    
     const pgCliente = pagamentos.filter(p => p.nome === nome && (p.contrato || '') === contrato);
     pgCliente.sort((a,b) => b.ts - a.ts);
     
@@ -551,13 +658,22 @@ function abrirDetalhesCliente(nome, contrato) {
             metodoStr = `Misto (${p.mistoData[0].metodo} + ${p.mistoData[1].metodo})`;
         }
         return `
-        <li class="transaction-item t-entrada" style="padding:10px;">
-            <div>
-                <strong style="color:var(--text-main); font-size:0.9rem;">${p.data}</strong><br>
-                <small style="color:var(--text-secondary); font-size:0.75rem;">${p.ref ? 'Ref: '+p.ref : ''} • ${metodoStr}</small>
+        <li class="transaction-item t-entrada" style="flex-direction:column; align-items:stretch;">
+            <div style="display:flex; justify-content:space-between;">
+                <div>
+                    <strong style="color:var(--text-main); font-size:0.9rem;">${p.data}</strong><br>
+                    <small style="color:var(--text-secondary); font-size:0.75rem;">${p.ref ? 'Ref: '+p.ref : ''} • ${metodoStr}</small>
+                    ${p.obs ? `<br><small style="color:#facc15">📝 ${p.obs}</small>` : ''}
+                </div>
+                <div style="text-align:right">
+                    <span style="color:var(--accent-green); font-weight:600; font-size:0.9rem;">+ ${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+                </div>
             </div>
-            <div style="text-align:right">
-                <span style="color:var(--accent-green); font-weight:600; font-size:0.9rem;">+ ${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+            <div style="margin-top:10px; display:flex; gap:15px; justify-content:flex-end;">
+                <i class="fab fa-whatsapp" onclick="enviarReciboZap(${p.id})" style="cursor:pointer; color:var(--accent-green); font-size:1.1rem" title="Enviar no WhatsApp"></i>
+                <i class="fas fa-print" onclick="imprimirRecibo(${p.id})" style="cursor:pointer; color:var(--text-main); font-size:1.1rem" title="Imprimir"></i>
+                <i class="fas fa-pen" onclick="editarViaCliente(${p.id})" style="cursor:pointer; color:var(--primary); font-size:1.1rem" title="Editar"></i>
+                <i class="fas fa-trash" onclick="deletarViaCliente(${p.id})" style="cursor:pointer; color:var(--danger); font-size:1.1rem" title="Excluir"></i>
             </div>
         </li>
     `}).join('');
@@ -570,8 +686,76 @@ function fecharDetalhesCliente() {
     document.getElementById('painelClientesLista').classList.remove('hidden');
 }
 
+// Funções Exclusivas da Aba Cliente
+function editarCadastroCliente() {
+    const nomeAtual = clienteAtivoDetalhe.nome;
+    const contratoAtual = clienteAtivoDetalhe.contrato;
+    
+    const novoNome = prompt("Nome do Cliente:", nomeAtual);
+    if (novoNome === null) return;
+    
+    const novoContrato = prompt("Número do Contrato (Deixe em branco se não houver):", contratoAtual);
+    if (novoContrato === null) return;
+    
+    const nomeF = novoNome.trim().toUpperCase();
+    const contratoF = novoContrato.trim().toUpperCase();
+    
+    if(!nomeF) return showToast("O nome é obrigatório!", "error");
+    
+    let alterou = false;
+    pagamentos.forEach(p => {
+        if(p.nome === nomeAtual && (p.contrato || '') === contratoAtual) {
+            p.nome = nomeF;
+            p.contrato = contratoF;
+            alterou = true;
+        }
+    });
+    
+    if(alterou) {
+        save();
+        atualizarBaseClientes();
+        renderizarListas();
+        abrirDetalhesCliente(nomeF, contratoF);
+        showToast("Cadastro atualizado!");
+    }
+}
 
-// Impressão de Recibo Térmico (80mm)
+function editarViaCliente(id) {
+    fecharDetalhesCliente();
+    navegar('pagamentos');
+    editarPagamento(id);
+}
+
+function deletarViaCliente(id) {
+    if(!confirm("Tem certeza que deseja apagar este pagamento?")) return;
+    pagamentos = pagamentos.filter(p => p.id != id);
+    save(); atualizarBaseClientes(); atualizarDashboard(); renderizarListas();
+    abrirDetalhesCliente(clienteAtivoDetalhe.nome, clienteAtivoDetalhe.contrato);
+    showToast("Pagamento apagado!");
+}
+
+function enviarReciboZap(id) {
+    const p = pagamentos.find(x => x.id == id);
+    if(!p) return;
+    
+    let txtMetodo = p.metodo;
+    if(p.metodo === 'Misto' && p.mistoData) {
+        txtMetodo = `Misto (${p.mistoData[0].metodo} e ${p.mistoData[1].metodo})`;
+    }
+    
+    let texto = `*RECIBO DE PAGAMENTO*\n\n`;
+    texto += `*Cliente:* ${p.nome.trim()}\n`;
+    if(p.contrato) texto += `*Contrato:* ${p.contrato.trim()}\n`;
+    texto += `*Valor:* R$ ${p.valor.toLocaleString('pt-BR',{minimumFractionDigits:2})}\n`;
+    if(p.ref) texto += `*Referência:* ${p.ref.trim()}\n`;
+    texto += `*Forma de Pagamento:* ${txtMetodo}\n`;
+    texto += `*Data:* ${p.data}\n`;
+    if(p.obs) texto += `*Observação:* ${p.obs.trim()}\n`;
+    texto += `\n_Obrigado pela preferência!_`;
+
+    window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(texto), '_blank');
+}
+
 function imprimirRecibo(id) {
     const p = pagamentos.find(x => x.id == id);
     if(!p) return;
@@ -591,16 +775,7 @@ function imprimirRecibo(id) {
         <title>Recibo - ${p.nome}</title>
         <style>
             @page { margin: 0; }
-            body { 
-                font-family: Arial, Helvetica, sans-serif; 
-                width: 100%; 
-                max-width: 72mm; 
-                margin: 0; 
-                padding: 2mm 3mm;
-                font-size: 13px; 
-                color: #000 !important; 
-                line-height: 1.4;
-            }
+            body { font-family: Arial, Helvetica, sans-serif; width: 100%; max-width: 72mm; margin: 0; padding: 2mm 3mm; font-size: 13px; color: #000 !important; line-height: 1.4; }
             .center { text-align: center; }
             .subtitle { font-size: 16px; font-weight: bold; margin: 0 0 8px 0; padding-top: 2mm; }
             .dashed-line { border-top: 1px dashed #000; margin: 8px 0; }
@@ -612,28 +787,19 @@ function imprimirRecibo(id) {
     </head>
     <body>
         <div class="center subtitle">RECIBO DE PAGAMENTO</div>
-        
         <div class="dashed-line"></div>
-        
         <div class="item"><span class="label">Cliente:</span> ${p.nome}</div>
         ${p.contrato ? `<div class="item"><span class="label">Contrato:</span> ${p.contrato}</div>` : ''}
         <div class="item"><span class="label">Valor:</span> R$ ${p.valor.toFixed(2).replace('.', ',')}</div>
         ${p.ref ? `<div class="item"><span class="label">Ref:</span> ${p.ref}</div>` : ''}
         ${pgtoHtml}
         <div class="item"><span class="label">Emissão:</span> ${p.data}</div>
-        
+        ${p.obs ? `<div class="item"><span class="label">Obs:</span> ${p.obs}</div>` : ''}
         <div class="dashed-line"></div>
         <div class="stamp-space"></div>
         <div class="solid-line"></div>
-        
         <div class="center" style="font-size: 12px; font-weight: bold;">ASSINATURA / CARIMBO</div>
-        
-        <script>
-            window.onload = function() {
-                window.print();
-                setTimeout(function(){ window.close(); }, 500);
-            }
-        <\/script>
+        <script>window.onload = function() { window.print(); setTimeout(function(){ window.close(); }, 500); }<\/script>
     </body>
     </html>
     `;
@@ -641,7 +807,6 @@ function imprimirRecibo(id) {
     printWindow.document.write(html);
     printWindow.document.close();
 }
-
 
 function navegar(sec) {
     document.querySelectorAll('section').forEach(s => { s.classList.add('hidden'); s.classList.remove('active-section'); });
@@ -669,8 +834,28 @@ function navegar(sec) {
 
 function migrarDados() {
     let changed = false;
-    pagamentos.forEach((p, i) => { if(!p.id) { p.id = Date.now() + i; changed = true; } });
-    despesas.forEach((d, i) => { if(!d.id) { d.id = Date.now() + i; changed = true; } });
+    pagamentos.forEach((p, i) => { 
+        if(!p.id) { p.id = Date.now() + i; changed = true; } 
+        if(p.data && typeof p.data === 'string') {
+            let s = p.data.split(',')[0].trim();
+            let partes = s.split('/');
+            if(partes.length === 3 && (!p.ts || p.ts < 1000000000000)) {
+                p.ts = new Date(partes[2], partes[1]-1, partes[0], 12, 0, 0).getTime();
+                changed = true;
+            }
+        }
+    });
+    despesas.forEach((d, i) => { 
+        if(!d.id) { d.id = Date.now() + i; changed = true; } 
+        if(d.data && typeof d.data === 'string' && (!d.ts || d.ts < 1000000000000)) {
+            let s = d.data.split(',')[0].trim();
+            let partes = s.split('/');
+            if(partes.length === 3) {
+                d.ts = new Date(partes[2], partes[1]-1, partes[0], 12, 0, 0).getTime();
+                changed = true;
+            }
+        }
+    });
     if(changed) save();
 }
 
@@ -687,13 +872,26 @@ function toggleMisto() {
     else { box.classList.add('hidden'); icon.className = "far fa-square"; document.getElementById('valorPago2').value = ''; }
 }
 
+function desfazerUltimoLancamento() {
+    if(!ultimoLancamento) { return showToast('Nenhum lançamento recente.', 'error'); }
+    if(ultimoLancamento.tipo === 'pg') {
+        pagamentos = pagamentos.filter(p => p.id !== ultimoLancamento.id);
+    }
+    save();
+    renderizarListas();
+    atualizarDashboard();
+    ultimoLancamento = null;
+    showToast('Último lançamento desfeito!');
+}
+
 function salvarPagamento() {
     const idEdit = document.getElementById('idEmEdicao').value;
     const nome = document.getElementById('nomeCliente').value.toUpperCase().trim();
     const contrato = document.getElementById('contrato').value.toUpperCase().trim();
     const ref = document.getElementById('referencia').value.toUpperCase().trim();
+    const obs = document.getElementById('obsPagamento').value.trim().toUpperCase();
     
-    const v1 = parseFloat(document.getElementById('valorPago').value);
+    const v1 = lerValor('valorPago');
     const m1 = document.getElementById('metodo').value;
     
     if(!nome || isNaN(v1)) return showToast("Preencha Nome e Valor!", "error");
@@ -703,7 +901,7 @@ function salvarPagamento() {
     let mistoArr = null;
     
     if(modoMisto) {
-        const v2 = parseFloat(document.getElementById('valorPago2').value);
+        const v2 = lerValor('valorPago2');
         const m2 = document.getElementById('metodo2').value;
         if(!isNaN(v2) && v2 > 0) {
             valorSalvar = v1 + v2;
@@ -712,17 +910,21 @@ function salvarPagamento() {
         }
     }
     
+    ultimoLancamento = { tipo: 'pg' };
+
     if(idEdit) {
         const idx = pagamentos.findIndex(p => p.id == idEdit);
         if(idx > -1) {
             pagamentos[idx].nome = nome; 
             pagamentos[idx].contrato = contrato; 
             pagamentos[idx].ref = ref; 
+            pagamentos[idx].obs = obs;
             pagamentos[idx].valor = valorSalvar; 
             pagamentos[idx].metodo = metodoSalvar;
             pagamentos[idx].mistoData = mistoArr;
             showToast("Atualizado!"); 
             cancelarEdicao();
+            ultimoLancamento.id = pagamentos[idx].id;
         }
     } else {
         const agora = new Date();
@@ -730,6 +932,7 @@ function salvarPagamento() {
             id: Date.now(), 
             nome, 
             contrato, 
+            obs,
             valor: valorSalvar, 
             metodo: metodoSalvar, 
             mistoData: mistoArr,
@@ -738,19 +941,21 @@ function salvarPagamento() {
             ts: agora.getTime() 
         });
         showToast("Recebido!");
+        ultimoLancamento.id = pagamentos[0].id;
     }
     
     save(); 
     atualizarBaseClientes();
     limparFormPag(); 
     renderizarListas();
-    document.getElementById('nomeCliente').focus();
+    document.getElementById('contrato').focus();
 }
 
 function salvarDespesa() {
     const tipo = document.getElementById('tipoSaida').value;
     const desc = document.getElementById('descDespesa').value.toUpperCase().trim();
-    const val = parseFloat(document.getElementById('valorDespesa').value);
+    const val = lerValor('valorDespesa');
+    
     if(!desc || isNaN(val)) return showToast("Preencha tudo!", "error");
     const agora = new Date();
     despesas.unshift({ id: Date.now(), tipo: tipo, descricao: desc, valor: val, data: agora.toLocaleString('pt-BR'), ts: agora.getTime() });
@@ -766,15 +971,19 @@ function editarPagamento(id) {
     document.getElementById('nomeCliente').value = p.nome; 
     document.getElementById('contrato').value = p.contrato || '';
     document.getElementById('referencia').value = p.ref || '';
+    document.getElementById('obsPagamento').value = p.obs || '';
     
     if(p.metodo === 'Misto' && p.mistoData) {
-        document.getElementById('valorPago').value = p.mistoData[0].valor; 
+        document.getElementById('valorPago').value = p.mistoData[0].valor.toFixed(2).replace('.', ','); 
+        mascararMoeda(document.getElementById('valorPago'));
         document.getElementById('metodo').value = p.mistoData[0].metodo;
         if(!modoMisto) toggleMisto();
-        document.getElementById('valorPago2').value = p.mistoData[1].valor; 
+        document.getElementById('valorPago2').value = p.mistoData[1].valor.toFixed(2).replace('.', ','); 
+        mascararMoeda(document.getElementById('valorPago2'));
         document.getElementById('metodo2').value = p.mistoData[1].metodo;
     } else {
-        document.getElementById('valorPago').value = p.valor; 
+        document.getElementById('valorPago').value = p.valor.toFixed(2).replace('.', ','); 
+        mascararMoeda(document.getElementById('valorPago'));
         document.getElementById('metodo').value = p.metodo;
         if(modoMisto) toggleMisto();
     }
@@ -793,8 +1002,11 @@ function cancelarEdicao() {
 function limparFormPag() {
     document.getElementById('nomeCliente').value = ''; 
     document.getElementById('contrato').value = ''; 
+    document.getElementById('obsPagamento').value = '';
     document.getElementById('referencia').value = getMesAtual();
     document.getElementById('valorPago').value = '';
+    document.getElementById('avisoDuplicidade').classList.add('hidden');
+    document.getElementById('ultimoPagamentoInfo').classList.add('hidden');
     if(modoMisto) toggleMisto();
 }
 
@@ -826,24 +1038,36 @@ function renderizarListas() {
             metodoBadge = `Misto <span class="badge-misto">${p.mistoData[0].metodo} + ${p.mistoData[1].metodo}</span>`;
         }
         return `
-        <li class="transaction-item t-entrada">
-            <div style="flex:1">
-                <strong style="color:var(--text-main)">${p.nome}</strong> 
-                <span style="font-size:0.8rem; color:var(--text-secondary); margin-left:5px">(${metodoBadge})</span><br>
-                <small style="color:var(--text-secondary)">${p.data} ${p.contrato ? '• CT: '+p.contrato : ''} ${p.ref ? '• '+p.ref : ''}</small>
-            </div>
-            <div style="text-align:right">
-                <span style="color:var(--accent-green); font-weight:700;">+ ${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
-                <div style="margin-top:5px; display:flex; gap:12px; justify-content:flex-end;">
-                    <i class="fas fa-print" onclick="imprimirRecibo(${p.id})" style="cursor:pointer; color:var(--text-main); font-size:1rem" title="Imprimir Recibo"></i>
-                    <i class="fas fa-pen" onclick="editarPagamento(${p.id})" style="cursor:pointer; color:var(--primary); font-size:1rem"></i>
-                    <i class="fas fa-trash" onclick="deletar('pg', ${p.id})" style="cursor:pointer; color:var(--danger); font-size:1rem"></i>
+        <li class="transaction-item t-entrada" style="flex-direction: column; align-items: stretch;">
+            <div style="display:flex; justify-content:space-between; width: 100%;">
+                <div>
+                    <strong style="color:var(--text-main)">${p.nome}</strong> 
+                    <span style="font-size:0.8rem; color:var(--text-secondary); margin-left:5px">(${metodoBadge})</span><br>
+                    <small style="color:var(--text-secondary)">${p.data} ${p.contrato ? '• CT: '+p.contrato : ''} ${p.ref ? '• '+p.ref : ''}</small>
+                    ${p.obs ? `<br><small style="color:#facc15">📝 ${p.obs}</small>` : ''}
                 </div>
+                <div style="text-align:right">
+                    <span style="color:var(--accent-green); font-weight:700;">+ ${p.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+                </div>
+            </div>
+            <div style="margin-top:10px; display:flex; gap:15px; justify-content:flex-end; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px;">
+                <i class="fab fa-whatsapp" onclick="enviarReciboZap(${p.id})" style="cursor:pointer; color:var(--accent-green); font-size:1.1rem" title="Enviar no WhatsApp"></i>
+                <i class="fas fa-print" onclick="imprimirRecibo(${p.id})" style="cursor:pointer; color:var(--text-main); font-size:1.1rem" title="Imprimir Recibo"></i>
+                <i class="fas fa-pen" onclick="editarPagamento(${p.id})" style="cursor:pointer; color:var(--primary); font-size:1.1rem" title="Editar"></i>
+                <i class="fas fa-trash" onclick="deletar('pg', ${p.id})" style="cursor:pointer; color:var(--danger); font-size:1.1rem" title="Excluir"></i>
             </div>
         </li>
     `}).join('') : '<li style="text-align:center; padding:20px; color:var(--text-secondary)">Nenhum registro encontrado.</li>';
     
-    document.getElementById('listaDespesas').innerHTML = despesas.map(d => {
+    let listaDp = despesas;
+    if(dataFiltroInput) {
+        const partes = dataFiltroInput.split('-');
+        const inicioDia = new Date(partes[0], partes[1]-1, partes[2], 0, 0, 0).getTime();
+        const fimDia = new Date(partes[0], partes[1]-1, partes[2], 23, 59, 59).getTime();
+        listaDp = listaDp.filter(d => { if(!d.ts) return false; return d.ts >= inicioDia && d.ts <= fimDia; });
+    }
+
+    document.getElementById('listaDespesas').innerHTML = listaDp.map(d => {
         const isDep = d.tipo === 'Depósito';
         const colorClass = isDep ? 'text-blue' : 'text-red';
         const borderClass = isDep ? 't-deposito' : 't-saida';
@@ -900,9 +1124,11 @@ function atualizarDashboard() {
     }
     else if(dashFilter === 'data') {
         const val = document.getElementById('dashDateFilter').value;
-        const partes = val.split('-');
-        inicio = new Date(partes[0], partes[1]-1, partes[2], 0, 0, 0).getTime();
-        fim = new Date(partes[0], partes[1]-1, partes[2], 23, 59, 59).getTime();
+        if(val) {
+            const partes = val.split('-');
+            inicio = new Date(partes[0], partes[1]-1, partes[2], 0, 0, 0).getTime();
+            fim = new Date(partes[0], partes[1]-1, partes[2], 23, 59, 59).getTime();
+        }
     }
     else if(dashFilter === 'semana') { const d = new Date(agora); d.setDate(agora.getDate() - agora.getDay()); d.setHours(0,0,0,0); inicio = d.getTime(); }
     else if (dashFilter === 'mes') inicio = new Date(agora.getFullYear(), agora.getMonth(), 1).getTime();
@@ -918,14 +1144,33 @@ function atualizarDashboard() {
     document.getElementById('dashSaidas').innerText = totalS.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
     document.getElementById('dashSaldo').innerText = (totalE - totalS).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
+    let dinheiro = 0;
+    let pix = 0;
+    let cartao = 0;
+
     const metodos = {};
     pgFiltro.forEach(p => { 
         if(p.metodo === 'Misto' && p.mistoData) {
-            p.mistoData.forEach(md => { metodos[md.metodo] = (metodos[md.metodo]||0) + md.valor; });
+            p.mistoData.forEach(md => { 
+                metodos[md.metodo] = (metodos[md.metodo]||0) + md.valor; 
+                if(md.metodo === 'Dinheiro') dinheiro += md.valor;
+                else if(md.metodo === 'Pix') pix += md.valor;
+                else cartao += md.valor;
+            });
         } else {
             metodos[p.metodo] = (metodos[p.metodo]||0) + p.valor; 
+            if(p.metodo === 'Dinheiro') dinheiro += p.valor;
+            else if(p.metodo === 'Pix') pix += p.valor;
+            else cartao += p.valor;
         }
     });
+
+    const saidasDinheiro = dpFiltro.reduce((acc, curr) => acc + curr.valor, 0);
+    const saldoGaveta = dinheiro - saidasDinheiro;
+
+    document.getElementById('saldoDinheiro').innerText = saldoGaveta.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+    document.getElementById('saldoPix').innerText = pix.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+    document.getElementById('saldoCartao').innerText = cartao.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
     
     if(chartInstance) chartInstance.destroy();
     const ctx = document.getElementById('financeChart').getContext('2d');
@@ -942,31 +1187,111 @@ function atualizarDashboard() {
         </div>`).join('') || '<div style="text-align:center; color:#64748b; padding:10px">Sem dados no período</div>';
 }
 
-function exportarWhatsApp() {
-    const dataFiltroInput = document.getElementById('filtroDataLista').value; 
-    let inicioDia, fimDia, dataTexto;
+function gerarFechamento() {
+    const hoje = new Date();
+    const inicio = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate(), 0,0,0).getTime();
+    const fim = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate(), 23,59,59).getTime();
 
+    const pgHoje = pagamentos.filter(p => p.ts >= inicio && p.ts <= fim);
+    const dpHoje = despesas.filter(d => d.ts >= inicio && d.ts <= fim);
+
+    let dinheiro = 0; let pix = 0; let credito = 0; let debito = 0;
+
+    pgHoje.forEach(p => {
+        if(p.metodo === 'Misto' && p.mistoData) {
+            p.mistoData.forEach(md => {
+                if(md.metodo === 'Dinheiro') dinheiro += md.valor;
+                if(md.metodo === 'Pix') pix += md.valor;
+                if(md.metodo === 'Crédito') credito += md.valor;
+                if(md.metodo === 'Débito') debito += md.valor;
+            });
+        }
+        else {
+            if(p.metodo === 'Dinheiro') dinheiro += p.valor;
+            if(p.metodo === 'Pix') pix += p.valor;
+            if(p.metodo === 'Crédito') credito += p.valor;
+            if(p.metodo === 'Débito') debito += p.valor;
+        }
+    });
+
+    const totalSaidas = dpHoje.reduce((acc, curr) => acc + curr.valor, 0);
+
+    const fechamento = {
+        data: hoje.toLocaleString('pt-BR'),
+        dinheiro, pix, credito, debito,
+        saidas: totalSaidas, saldo: dinheiro - totalSaidas
+    };
+
+    fechamentos.unshift(fechamento);
+    localStorage.setItem('fechamentos', JSON.stringify(fechamentos));
+
+    const texto = `
+══════════════════
+JS GESTÃO
+FECHAMENTO DIÁRIO
+══════════════════
+
+Data: ${fechamento.data}
+
+💵 Dinheiro: ${dinheiro.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+📱 Pix: ${pix.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+💳 Crédito: ${credito.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+💳 Débito: ${debito.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+
+📤 Saídas: ${totalSaidas.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+
+💰 Saldo Gaveta:
+${(dinheiro-totalSaidas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+
+══════════════════
+`;
+
+    window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(texto), '_blank');
+    showToast('Fechamento gerado!');
+}
+
+function exportarWhatsAppAvancado() {
+    const periodoSelecionado = document.getElementById('periodoExportacao').value;
+    const dataFiltroInput = document.getElementById('filtroDataLista').value; 
+    
+    let inicio, fim, tituloRelatorio;
+    let dataBase = new Date();
+    
     if(dataFiltroInput) {
         const partes = dataFiltroInput.split('-');
-        inicioDia = new Date(partes[0], partes[1]-1, partes[2], 0, 0, 0).getTime();
-        fimDia = new Date(partes[0], partes[1]-1, partes[2], 23, 59, 59).getTime();
-        dataTexto = `${partes[2]}/${partes[1]}/${partes[0]}`;
-    } else {
-        const agora = new Date();
-        inicioDia = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 0, 0, 0).getTime();
-        fimDia = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 23, 59, 59).getTime();
-        dataTexto = agora.toLocaleDateString('pt-BR');
+        dataBase = new Date(partes[0], partes[1]-1, partes[2]);
+    }
+
+    if (periodoSelecionado === 'dia') {
+        inicio = new Date(dataBase.getFullYear(), dataBase.getMonth(), dataBase.getDate(), 0,0,0).getTime();
+        fim = new Date(dataBase.getFullYear(), dataBase.getMonth(), dataBase.getDate(), 23,59,59).getTime();
+        tituloRelatorio = `RELATÓRIO DIÁRIO - ${dataBase.toLocaleDateString('pt-BR')}`;
+    } else if (periodoSelecionado === 'semana') {
+        const d = new Date(dataBase);
+        d.setDate(d.getDate() - d.getDay());
+        inicio = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0,0,0).getTime();
+        d.setDate(d.getDate() + 6);
+        fim = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23,59,59).getTime();
+        tituloRelatorio = `RELATÓRIO SEMANAL (${new Date(inicio).toLocaleDateString('pt-BR')} a ${new Date(fim).toLocaleDateString('pt-BR')})`;
+    } else if (periodoSelecionado === 'mes') {
+        inicio = new Date(dataBase.getFullYear(), dataBase.getMonth(), 1, 0,0,0).getTime();
+        fim = new Date(dataBase.getFullYear(), dataBase.getMonth() + 1, 0, 23,59,59).getTime();
+        tituloRelatorio = `RELATÓRIO MENSAL - ${(dataBase.getMonth()+1).toString().padStart(2,'0')}/${dataBase.getFullYear()}`;
+    } else if (periodoSelecionado === 'ano') {
+        inicio = new Date(dataBase.getFullYear(), 0, 1, 0,0,0).getTime();
+        fim = new Date(dataBase.getFullYear(), 11, 31, 23,59,59).getTime();
+        tituloRelatorio = `RELATÓRIO ANUAL - ${dataBase.getFullYear()}`;
     }
     
-    const pgFiltrados = pagamentos.filter(p => p.ts >= inicioDia && p.ts <= fimDia);
-    const dpFiltrados = despesas.filter(d => d.ts >= inicioDia && d.ts <= fimDia);
+    const pgFiltrados = pagamentos.filter(p => p.ts >= inicio && p.ts <= fim);
+    const dpFiltrados = despesas.filter(d => d.ts >= inicio && d.ts <= fim);
     
     if(pgFiltrados.length === 0 && dpFiltrados.length === 0) {
-        showToast("Não há dados nessa data para exportar.", "error");
+        showToast("Não há dados para exportar nesse período.", "error");
         return;
     }
 
-    let relatorio = `*FECHAMENTO DE CAIXA - ${dataTexto}*\n\n`;
+    let relatorio = `*${tituloRelatorio}*\n\n`;
     let totalDinheiro = 0, totalPix = 0, totalCredito = 0, totalDebito = 0, totalEntradas = 0;
     
     if(pgFiltrados.length > 0) {
@@ -987,15 +1312,14 @@ function exportarWhatsApp() {
             }
             
             totalEntradas += p.valor;
-            
             const valorFormat = p.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2});
             let txtMetodo = p.metodo;
             if(p.metodo === 'Misto' && p.mistoData) {
                 txtMetodo = `Misto: ${p.mistoData[0].metodo} e ${p.mistoData[1].metodo}`;
             }
-            
             relatorio += `• *${p.nome.trim()}* (${txtMetodo})\n`;
             relatorio += `${p.data} ${p.contrato ? '• CT: ' + p.contrato.trim() : ''} ${p.ref ? '• ' + p.ref.trim() : ''}\n`;
+            if (p.obs) relatorio += `📝 Obs: ${p.obs}\n`;
             relatorio += `+ R$ ${valorFormat}\n\n`;
         });
         
