@@ -340,6 +340,14 @@ textarea { resize: vertical; min-height: 80px; }
                         </div>
                         <button class="btn btn-secondary" onclick="limparFiltroData()" style="width:auto; padding:0 15px;" title="Limpar Data"><i class="fas fa-eraser"></i></button>
                         
+                        <select id="filtroMetodo" onchange="renderizarListas()" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 10px; color: white; min-width:140px;">
+                            <option value="todos">Todos os Métodos</option>
+                            <option value="Dinheiro">Dinheiro</option>
+                            <option value="Pix">Pix</option>
+                            <option value="Crédito">Crédito</option>
+                            <option value="Débito">Débito</option>
+                        </select>
+
                         <select id="periodoExportacao" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 10px; color: white; min-width:110px;">
                             <option value="dia">Diário</option>
                             <option value="semana">Semanal</option>
@@ -465,7 +473,7 @@ let chartInstance = null;
 let modoMisto = false;
 let dashFilter = 'dia'; 
 let ultimoLancamento = null;
-let clienteAtivoDetalhe = { nome: '' }; // Agora focamos no NOME como chave mestre
+let clienteAtivoDetalhe = { nome: '' }; 
 
 // Backup Automático
 setInterval(() => {
@@ -570,7 +578,6 @@ function atualizarBaseClientes() {
     clientesDB = [];
     const sorted = [...pagamentos].sort((a,b) => b.ts - a.ts);
     
-    // NOVA LÓGICA DE FUSÃO: Agrupa tudo pelo Nome
     const map = {};
     sorted.forEach(p => {
         if(p.nome) {
@@ -583,7 +590,7 @@ function atualizarBaseClientes() {
 
     clientesDB = Object.values(map).map(c => ({
         nome: c.nome,
-        contrato: Array.from(c.contratos)[0] || '', // pega o primeiro contrato pra autocompletar se houver
+        contrato: Array.from(c.contratos)[0] || '', 
         todosContratos: Array.from(c.contratos),
         ultimoValor: c.ultimoValor
     }));
@@ -627,7 +634,6 @@ function renderClientes() {
     const termo = document.getElementById('pesquisaClienteDB').value.toLowerCase();
     const grid = document.getElementById('clientesGrid');
     
-    // Agrupa apenas pelo Nome
     const cliMap = {};
     pagamentos.forEach(p => {
         const key = p.nome;
@@ -678,7 +684,6 @@ function abrirDetalhesCliente(nome) {
     
     const total = pgCliente.reduce((acc, curr) => acc + curr.valor, 0);
     
-    // Pega todos os contratos únicos deste nome no histórico
     const cts = new Set();
     pgCliente.forEach(p => { if(p.contrato) cts.add(p.contrato); });
     const ctList = Array.from(cts).join(', ');
@@ -723,11 +728,8 @@ function fecharDetalhesCliente() {
     renderClientes();
 }
 
-// EDIÇÃO GLOBAL (O QUE RESOLVE SEU PROBLEMA COM O SGP)
 function editarCadastroUnificado() {
     const nomeAtual = clienteAtivoDetalhe.nome;
-    
-    // Pega contrato principal
     let contratoAtual = '';
     const cli = clientesDB.find(c => c.nome === nomeAtual);
     if(cli && cli.todosContratos.length > 0) contratoAtual = cli.todosContratos[0];
@@ -747,7 +749,7 @@ function editarCadastroUnificado() {
     pagamentos.forEach(p => {
         if(p.nome === nomeAtual) {
             p.nome = nomeF;
-            if (contratoF) p.contrato = contratoF; // Sobrescreve o contrato
+            if (contratoF) p.contrato = contratoF;
             alterou = true;
         }
     });
@@ -813,6 +815,58 @@ function enviarReciboZap(id) {
     texto += `\n_Obrigado pela preferência!_`;
 
     window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(texto), '_blank');
+}
+
+function imprimirRecibo(id) {
+    const p = pagamentos.find(x => x.id == id);
+    if(!p) return;
+    
+    let pgtoHtml = `<div class="item"><span class="label">Pgto:</span> ${p.metodo}</div>`;
+    if(p.metodo === 'Misto' && p.mistoData) {
+        pgtoHtml = `
+        <div class="item"><span class="label">Pgto:</span> MISTO</div>
+        <div class="item" style="font-size: 11px; margin-top:-3px;">(${p.mistoData[0].metodo}: R$ ${p.mistoData[0].valor.toFixed(2).replace('.',',')} | ${p.mistoData[1].metodo}: R$ ${p.mistoData[1].valor.toFixed(2).replace('.',',')})</div>
+        `;
+    }
+    
+    const printWindow = window.open('', '_blank', 'width=350,height=600');
+    const html = `
+    <html>
+    <head>
+        <title>Recibo - ${p.nome}</title>
+        <style>
+            @page { margin: 0; }
+            body { font-family: Arial, Helvetica, sans-serif; width: 100%; max-width: 72mm; margin: 0; padding: 2mm 3mm; font-size: 13px; color: #000 !important; line-height: 1.4; }
+            .center { text-align: center; }
+            .subtitle { font-size: 16px; font-weight: bold; margin: 0 0 8px 0; padding-top: 2mm; }
+            .dashed-line { border-top: 1px dashed #000; margin: 8px 0; }
+            .solid-line { border-top: 1px solid #000; margin: 15px 0 5px 0; }
+            .item { margin-bottom: 4px; word-wrap: break-word; }
+            .label { font-weight: bold; }
+            .stamp-space { height: 15mm; } 
+        </style>
+    </head>
+    <body>
+        <div class="center subtitle">RECIBO DE PAGAMENTO</div>
+        <div class="dashed-line"></div>
+        <div class="item"><span class="label">Cliente:</span> ${p.nome}</div>
+        ${p.contrato ? `<div class="item"><span class="label">Contrato:</span> ${p.contrato}</div>` : ''}
+        <div class="item"><span class="label">Valor:</span> R$ ${p.valor.toFixed(2).replace('.', ',')}</div>
+        ${p.ref ? `<div class="item"><span class="label">Ref:</span> ${p.ref}</div>` : ''}
+        ${pgtoHtml}
+        <div class="item"><span class="label">Emissão:</span> ${p.data}</div>
+        ${p.obs ? `<div class="item"><span class="label">Obs:</span> ${p.obs}</div>` : ''}
+        <div class="dashed-line"></div>
+        <div class="stamp-space"></div>
+        <div class="solid-line"></div>
+        <div class="center" style="font-size: 12px; font-weight: bold;">ASSINATURA / CARIMBO</div>
+        <script>window.onload = function() { window.print(); setTimeout(function(){ window.close(); }, 500); }<\/script>
+    </body>
+    </html>
+    `;
+    printWindow.document.open();
+    printWindow.document.write(html);
+    printWindow.document.close();
 }
 
 function navegar(sec) {
@@ -1020,22 +1074,36 @@ function limparFiltroData() { document.getElementById('filtroDataLista').value =
 function renderizarListas() {
     const termo = document.getElementById('buscaPagamentos').value.toLowerCase();
     const dataFiltroInput = document.getElementById('filtroDataLista').value; 
+    const metodoFiltro = document.getElementById('filtroMetodo').value;
+    
     let listaPg = pagamentos;
+    
+    // Filtro por Data
     if(dataFiltroInput) {
         const partes = dataFiltroInput.split('-');
         const inicioDia = new Date(partes[0], partes[1]-1, partes[2], 0, 0, 0).getTime();
         const fimDia = new Date(partes[0], partes[1]-1, partes[2], 23, 59, 59).getTime();
         listaPg = listaPg.filter(p => { if(!p.ts) return false; return p.ts >= inicioDia && p.ts <= fimDia; });
     }
+    
+    // Filtro por Texto (Nome/Contrato)
     listaPg = listaPg.filter(p => p.nome.toLowerCase().includes(termo) || (p.contrato && p.contrato.toLowerCase().includes(termo)));
     
-    // Atualiza o contador diário na aba Receber
+    // Filtro por Método de Pagamento
+    if(metodoFiltro !== 'todos') {
+        listaPg = listaPg.filter(p => {
+            if(p.metodo === 'Misto' && p.mistoData) {
+                return p.mistoData.some(md => md.metodo === metodoFiltro);
+            }
+            return p.metodo === metodoFiltro;
+        });
+    }
+
     const ctsSet = new Set();
     listaPg.forEach(p => { if(p.contrato) ctsSet.add(p.contrato); });
     document.getElementById('badgePagamentosDia').innerText = `${listaPg.length} Recebimentos | ${ctsSet.size} Contratos`;
 
     const ulPg = document.getElementById('listaPagamentos');
-    
     ulPg.innerHTML = listaPg.length ? listaPg.map(p => {
         let metodoBadge = p.metodo;
         if(p.metodo === 'Misto' && p.mistoData) {
@@ -1146,7 +1214,6 @@ function atualizarDashboard() {
     
     document.getElementById('dashEntradas').innerText = totalE.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
     
-    // Contadores de Recebimentos Diários
     const uniqueContracts = new Set(pgFiltro.map(p => p.contrato).filter(c=>c));
     document.getElementById('dashEntradasSub').innerText = `${pgFiltro.length} Lançamentos | ${uniqueContracts.size} Contratos`;
 
@@ -1198,72 +1265,10 @@ function atualizarDashboard() {
         </div>`).join('') || '<div style="text-align:center; color:#64748b; padding:10px">Sem dados no período</div>';
 }
 
-function gerarFechamento() {
-    const hoje = new Date();
-    const inicio = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate(), 0,0,0).getTime();
-    const fim = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate(), 23,59,59).getTime();
-
-    const pgHoje = pagamentos.filter(p => p.ts >= inicio && p.ts <= fim);
-    const dpHoje = despesas.filter(d => d.ts >= inicio && d.ts <= fim);
-
-    let dinheiro = 0; let pix = 0; let credito = 0; let debito = 0;
-
-    pgHoje.forEach(p => {
-        if(p.metodo === 'Misto' && p.mistoData) {
-            p.mistoData.forEach(md => {
-                if(md.metodo === 'Dinheiro') dinheiro += md.valor;
-                if(md.metodo === 'Pix') pix += md.valor;
-                if(md.metodo === 'Crédito') credito += md.valor;
-                if(md.metodo === 'Débito') debito += md.valor;
-            });
-        }
-        else {
-            if(p.metodo === 'Dinheiro') dinheiro += p.valor;
-            if(p.metodo === 'Pix') pix += p.valor;
-            if(p.metodo === 'Crédito') credito += p.valor;
-            if(p.metodo === 'Débito') debito += p.valor;
-        }
-    });
-
-    const totalSaidas = dpHoje.reduce((acc, curr) => acc + curr.valor, 0);
-
-    const fechamento = {
-        data: hoje.toLocaleString('pt-BR'),
-        dinheiro, pix, credito, debito,
-        saidas: totalSaidas, saldo: dinheiro - totalSaidas
-    };
-
-    fechamentos.unshift(fechamento);
-    localStorage.setItem('fechamentos', JSON.stringify(fechamentos));
-
-    const texto = `
-══════════════════
-JS GESTÃO
-FECHAMENTO DIÁRIO
-══════════════════
-
-Data: ${fechamento.data}
-
-💵 Dinheiro: ${dinheiro.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-📱 Pix: ${pix.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-💳 Crédito: ${credito.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-💳 Débito: ${debito.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-
-📤 Saídas: ${totalSaidas.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-
-💰 Saldo Gaveta:
-${(dinheiro-totalSaidas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-
-══════════════════
-`;
-
-    window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(texto), '_blank');
-    showToast('Fechamento gerado!');
-}
-
 function exportarWhatsAppAvancado() {
     const periodoSelecionado = document.getElementById('periodoExportacao').value;
     const dataFiltroInput = document.getElementById('filtroDataLista').value; 
+    const metodoFiltro = document.getElementById('filtroMetodo').value;
     
     let inicio, fim, tituloRelatorio;
     let dataBase = new Date();
@@ -1294,39 +1299,72 @@ function exportarWhatsAppAvancado() {
         tituloRelatorio = `RELATÓRIO ANUAL - ${dataBase.getFullYear()}`;
     }
     
-    const pgFiltrados = pagamentos.filter(p => p.ts >= inicio && p.ts <= fim);
-    const dpFiltrados = despesas.filter(d => d.ts >= inicio && d.ts <= fim);
+    let pgFiltrados = pagamentos.filter(p => p.ts >= inicio && p.ts <= fim);
+    let dpFiltrados = despesas.filter(d => d.ts >= inicio && d.ts <= fim);
+    
+    // Se tiver filtro de método ativo, a gente enxuga a lista aqui
+    if(metodoFiltro !== 'todos') {
+        pgFiltrados = pgFiltrados.filter(p => {
+            if(p.metodo === 'Misto' && p.mistoData) {
+                return p.mistoData.some(md => md.metodo === metodoFiltro);
+            }
+            return p.metodo === metodoFiltro;
+        });
+        
+        // Despesas geralmente não precisam filtrar por método nesse relatório de entradas, mas podemos zerar para não confundir se for um relatório só de "Crédito"
+        if(metodoFiltro !== 'Dinheiro') {
+            dpFiltrados = []; 
+        }
+    }
     
     if(pgFiltrados.length === 0 && dpFiltrados.length === 0) {
-        showToast("Não há dados para exportar nesse período.", "error");
+        showToast("Não há dados para exportar nesse período com este filtro.", "error");
         return;
     }
 
-    let relatorio = `*${tituloRelatorio}*\n\n`;
+    let relatorio = `*${tituloRelatorio}*\n`;
+    if(metodoFiltro !== 'todos') {
+        relatorio += `*Filtro Aplicado:* Apenas ${metodoFiltro.toUpperCase()}\n`;
+    }
+    relatorio += `\n`;
+    
     let totalDinheiro = 0, totalPix = 0, totalCredito = 0, totalDebito = 0, totalEntradas = 0;
+    let somaDoFiltroUnico = 0;
     
     if(pgFiltrados.length > 0) {
         relatorio += `*ENTRADAS:*\n`;
         pgFiltrados.forEach(p => {
+            let valorExibir = p.valor;
+            
             if(p.metodo === 'Misto' && p.mistoData) {
                 p.mistoData.forEach(md => {
                     if(md.metodo === 'Dinheiro') totalDinheiro += md.valor;
                     else if(md.metodo === 'Pix') totalPix += md.valor;
                     else if(md.metodo === 'Crédito') totalCredito += md.valor;
                     else if(md.metodo === 'Débito') totalDebito += md.valor;
+                    
+                    if(metodoFiltro !== 'todos' && md.metodo === metodoFiltro) {
+                        somaDoFiltroUnico += md.valor;
+                        valorExibir = md.valor; // Se o relatório é só de crédito, mostra só o valor de crédito do misto
+                    }
                 });
             } else {
                 if(p.metodo === 'Dinheiro') totalDinheiro += p.valor;
                 else if(p.metodo === 'Pix') totalPix += p.valor;
                 else if(p.metodo === 'Crédito') totalCredito += p.valor;
                 else if(p.metodo === 'Débito') totalDebito += p.valor;
+                
+                if(metodoFiltro !== 'todos' && p.metodo === metodoFiltro) {
+                    somaDoFiltroUnico += p.valor;
+                }
             }
             
             totalEntradas += p.valor;
-            const valorFormat = p.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+            const valorFormat = valorExibir.toLocaleString('pt-BR', {minimumFractionDigits: 2});
             let txtMetodo = p.metodo;
             if(p.metodo === 'Misto' && p.mistoData) {
                 txtMetodo = `Misto: ${p.mistoData[0].metodo} e ${p.mistoData[1].metodo}`;
+                if(metodoFiltro !== 'todos') txtMetodo += ` (Fração de ${metodoFiltro})`;
             }
             relatorio += `• *${p.nome.trim()}* (${txtMetodo})\n`;
             relatorio += `${p.data} ${p.contrato ? '• CT: ' + p.contrato.trim() : ''} ${p.ref ? '• ' + p.ref.trim() : ''}\n`;
@@ -1334,16 +1372,19 @@ function exportarWhatsAppAvancado() {
             relatorio += `+ R$ ${valorFormat}\n\n`;
         });
         
-        relatorio += `*RESUMO DOS RECEBIMENTOS:*\n`;
-        if(totalDinheiro > 0) relatorio += `💵 *Dinheiro:* R$ ${totalDinheiro.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
-        if(totalPix > 0) relatorio += `📱 *Pix:* R$ ${totalPix.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
-        if(totalCredito > 0) relatorio += `💳 *Crédito:* R$ ${totalCredito.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
-        if(totalDebito > 0) relatorio += `💳 *Débito:* R$ ${totalDebito.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
-        
-        relatorio += `\n*TOTAL GERAL:* R$ ${totalEntradas.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n\n`;
+        relatorio += `*RESUMO:*\n`;
+        if(metodoFiltro === 'todos') {
+            if(totalDinheiro > 0) relatorio += `💵 *Dinheiro:* R$ ${totalDinheiro.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
+            if(totalPix > 0) relatorio += `📱 *Pix:* R$ ${totalPix.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
+            if(totalCredito > 0) relatorio += `💳 *Crédito:* R$ ${totalCredito.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
+            if(totalDebito > 0) relatorio += `💳 *Débito:* R$ ${totalDebito.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
+            relatorio += `\n*TOTAL GERAL:* R$ ${totalEntradas.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n\n`;
+        } else {
+            relatorio += `Total em ${metodoFiltro}: R$ ${somaDoFiltroUnico.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n\n`;
+        }
     }
     
-    if(dpFiltrados.length > 0) {
+    if(dpFiltrados.length > 0 && metodoFiltro === 'todos') {
         relatorio += `*SAÍDAS / SANGRIAS:*\n`;
         let totalSaidas = 0;
         dpFiltrados.forEach(d => {
