@@ -157,13 +157,22 @@ textarea { resize: vertical; min-height: 80px; }
 .hidden-date-input { position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; border: none; }
 
 .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px; }
+
+/* Botões Rápidos da Referência */
+.chip-ref {
+    background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.4); color: #bfdbfe; 
+    padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; white-space: nowrap; 
+    transition: 0.2s; font-weight: 600;
+}
+.chip-ref:hover { background: rgba(59,130,246,0.3); }
+.quick-refs-container { display: flex; gap: 6px; margin-top: 8px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.quick-refs-container::-webkit-scrollbar { display: none; }
 </style>
 </head>
 <body>
 
 <datalist id="listaNomes"></datalist>
 <datalist id="listaContratos"></datalist>
-<datalist id="listaRefs"></datalist>
 
 <div class="app-wrapper">
     <aside id="sidebar">
@@ -279,7 +288,9 @@ textarea { resize: vertical; min-height: 80px; }
                     </div>
                     <div>
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Referência</label>
-                        <input id="referencia" class="uppercase-input" list="listaRefs" placeholder="EX: MAI/2026" oninput="this.value = this.value.toUpperCase(); verificarDuplicidade()" onkeyup="checkEnter(event, salvarPagamento)" />
+                        <input id="referencia" class="uppercase-input" placeholder="EX: MAI/2026" oninput="this.value = this.value.toUpperCase(); verificarDuplicidade()" onkeyup="checkEnter(event, salvarPagamento)" autocomplete="off" />
+                        <!-- BOTÕES DE REFERÊNCIA RÁPIDA -->
+                        <div id="quickRefs" class="quick-refs-container"></div>
                     </div>
                     
                     <div id="avisoDuplicidade" class="hidden" style="grid-column: span 2; background: rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); padding:10px; border-radius:8px; color:#fca5a5; font-size:0.85rem; margin-top:5px;"></div>
@@ -506,31 +517,44 @@ const diaHj = String(hoje.getDate()).padStart(2, '0');
 const dataPadrao = anoHj + '-' + mesHj + '-' + diaHj;
 document.getElementById('filtroDataLista').value = dataPadrao;
 
+// GERA O MÊS PASSADO COMO PADRÃO E CRIA OS BOTÕES (CHIPS) RÁPIDOS
 function preencherRefDefault() {
     const meses = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
-    const d = new Date();
-    d.setMonth(d.getMonth() - 1); 
-    document.getElementById('referencia').value = meses[d.getMonth()] + '/' + d.getFullYear();
+    const dHoje = new Date();
     
-    const dl = document.getElementById('listaRefs');
-    let opts = '';
-    for(let i = -3; i <= 1; i++) {
-        let tempD = new Date();
-        tempD.setMonth(tempD.getMonth() + i);
-        opts += `<option value="${meses[tempD.getMonth()] + '/' + tempD.getFullYear()}">`;
+    // Calcula Mês Passado e preenche o input automaticamente
+    const dPassado = new Date(dHoje.getFullYear(), dHoje.getMonth() - 1, 1);
+    document.getElementById('referencia').value = meses[dPassado.getMonth()] + '/' + dPassado.getFullYear();
+    
+    // Monta os botões (chips) de -2 a +1 meses a partir de hoje
+    const quickRefs = document.getElementById('quickRefs');
+    let chipsHtml = '';
+    
+    for(let i = -2; i <= 1; i++) {
+        let tempD = new Date(dHoje.getFullYear(), dHoje.getMonth() + i, 1);
+        let refStr = meses[tempD.getMonth()] + '/' + tempD.getFullYear();
+        chipsHtml += `<span class="chip-ref" onclick="setRefRapida('${refStr}')">${refStr}</span>`;
     }
-    dl.innerHTML = opts;
+    quickRefs.innerHTML = chipsHtml;
+}
+
+// Ao clicar num botão rápido, preenche e já foca no Valor
+function setRefRapida(val) {
+    document.getElementById('referencia').value = val;
+    verificarDuplicidade();
+    document.getElementById('valorPago').focus();
 }
 
 preencherRefDefault();
 
-// Nova Máscara (Sem centavos, foca em números inteiros e adiciona ,00)
+// NOVA MÁSCARA - DIRETO PRO INTEIRO E CRAVA ,00
 function mascararMoeda(i) {
     let v = i.value.split(',')[0].replace(/\D/g, ""); 
     if (!v) { i.value = ""; return; }
     v = parseInt(v, 10).toString();
     v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
     i.value = v + ",00";
+    // Mantém o cursor antes da vírgula para ele poder continuar digitando os inteiros
     let pos = i.value.length - 3;
     i.setSelectionRange(pos, pos);
 }
@@ -603,7 +627,7 @@ function atualizarBaseClientes() {
     clientesDB = [];
     const sorted = [...pagamentos].sort((a,b) => b.ts - a.ts);
     
-    // Homônimos separados por Nome + Contrato
+    // Homônimos separados por Nome + Contrato (Voltou a Lógica Rígida)
     const cliMap = {};
     sorted.forEach(p => {
         if(p.nome) {
@@ -1419,6 +1443,156 @@ ${(dinheiro-totalSaidas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'
 
     window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(texto), '_blank');
     showToast('Fechamento gerado!');
+}
+
+function exportarWhatsAppAvancado() {
+    const periodoSelecionado = document.getElementById('periodoExportacao').value;
+    const dataFiltroInput = document.getElementById('filtroDataLista').value; 
+    const metodoFiltro = document.getElementById('filtroMetodo').value;
+    
+    let inicio, fim, tituloRelatorio;
+    let dataBase = new Date();
+    
+    if(dataFiltroInput) {
+        const partes = dataFiltroInput.split('-');
+        dataBase = new Date(partes[0], partes[1]-1, partes[2]);
+    }
+
+    if (periodoSelecionado === 'dia') {
+        inicio = new Date(dataBase.getFullYear(), dataBase.getMonth(), dataBase.getDate(), 0,0,0).getTime();
+        fim = new Date(dataBase.getFullYear(), dataBase.getMonth(), dataBase.getDate(), 23,59,59).getTime();
+        tituloRelatorio = `RELATÓRIO DIÁRIO - ${dataBase.toLocaleDateString('pt-BR')}`;
+    } else if (periodoSelecionado === 'semana') {
+        const d = new Date(dataBase);
+        d.setDate(d.getDate() - d.getDay());
+        inicio = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0,0,0).getTime();
+        d.setDate(d.getDate() + 6);
+        fim = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23,59,59).getTime();
+        tituloRelatorio = `RELATÓRIO SEMANAL (${new Date(inicio).toLocaleDateString('pt-BR')} a ${new Date(fim).toLocaleDateString('pt-BR')})`;
+    } else if (periodoSelecionado === 'mes') {
+        inicio = new Date(dataBase.getFullYear(), dataBase.getMonth(), 1, 0,0,0).getTime();
+        fim = new Date(dataBase.getFullYear(), dataBase.getMonth() + 1, 0, 23,59,59).getTime();
+        tituloRelatorio = `RELATÓRIO MENSAL - ${(dataBase.getMonth()+1).toString().padStart(2,'0')}/${dataBase.getFullYear()}`;
+    } else if (periodoSelecionado === 'ano') {
+        inicio = new Date(dataBase.getFullYear(), 0, 1, 0,0,0).getTime();
+        fim = new Date(dataBase.getFullYear(), 11, 31, 23,59,59).getTime();
+        tituloRelatorio = `RELATÓRIO ANUAL - ${dataBase.getFullYear()}`;
+    }
+    
+    let pgFiltrados = pagamentos.filter(p => p.ts >= inicio && p.ts <= fim);
+    let dpFiltrados = despesas.filter(d => d.ts >= inicio && d.ts <= fim);
+    
+    if(metodoFiltro !== 'todos') {
+        pgFiltrados = pgFiltrados.filter(p => {
+            if(p.metodo === 'Misto' && p.mistoData) {
+                return p.mistoData.some(md => md.metodo === metodoFiltro);
+            }
+            return p.metodo === metodoFiltro;
+        });
+        if(metodoFiltro !== 'Dinheiro') dpFiltrados = []; 
+    }
+    
+    if(pgFiltrados.length === 0 && dpFiltrados.length === 0) {
+        showToast("Não há dados para exportar nesse período com este filtro.", "error");
+        return;
+    }
+
+    let relatorio = `*${tituloRelatorio}*\n`;
+    if(metodoFiltro !== 'todos') relatorio += `*Filtro Aplicado:* Apenas ${metodoFiltro.toUpperCase()}\n`;
+    relatorio += `\n`;
+    
+    let totalDinheiro = 0, totalPix = 0, totalCredito = 0, totalDebito = 0, totalEntradas = 0;
+    let somaDoFiltroUnico = 0;
+    
+    if(pgFiltrados.length > 0) {
+        relatorio += `*ENTRADAS:*\n`;
+        pgFiltrados.forEach(p => {
+            let valorExibir = p.valor;
+            
+            if(p.metodo === 'Misto' && p.mistoData) {
+                p.mistoData.forEach(md => {
+                    if(md.metodo === 'Dinheiro') totalDinheiro += md.valor;
+                    else if(md.metodo === 'Pix') totalPix += md.valor;
+                    else if(md.metodo === 'Crédito') totalCredito += md.valor;
+                    else if(md.metodo === 'Débito') totalDebito += md.valor;
+                    
+                    if(metodoFiltro !== 'todos' && md.metodo === metodoFiltro) {
+                        somaDoFiltroUnico += md.valor;
+                        valorExibir = md.valor;
+                    }
+                });
+            } else {
+                if(p.metodo === 'Dinheiro') totalDinheiro += p.valor;
+                else if(p.metodo === 'Pix') totalPix += p.valor;
+                else if(p.metodo === 'Crédito') totalCredito += p.valor;
+                else if(p.metodo === 'Débito') totalDebito += p.valor;
+                
+                if(metodoFiltro !== 'todos' && p.metodo === metodoFiltro) somaDoFiltroUnico += p.valor;
+            }
+            
+            totalEntradas += p.valor;
+            const valorFormat = valorExibir.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+            let txtMetodo = p.metodo;
+            if(p.metodo === 'Misto' && p.mistoData) {
+                txtMetodo = `Misto: ${p.mistoData[0].metodo} e ${p.mistoData[1].metodo}`;
+                if(metodoFiltro !== 'todos') txtMetodo += ` (Fração de ${metodoFiltro})`;
+            }
+            relatorio += `• *${p.nome.trim()}* (${txtMetodo})\n`;
+            relatorio += `${p.data} ${p.contrato ? '• CT: ' + p.contrato.trim() : ''} ${p.ref ? '• ' + p.ref.trim() : ''}\n`;
+            if (p.obs) relatorio += `📝 Obs: ${p.obs}\n`;
+            relatorio += `+ R$ ${valorFormat}\n\n`;
+        });
+        
+        relatorio += `*RESUMO:*\n`;
+        if(metodoFiltro === 'todos') {
+            if(totalDinheiro > 0) relatorio += `💵 *Dinheiro:* R$ ${totalDinheiro.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
+            if(totalPix > 0) relatorio += `📱 *Pix:* R$ ${totalPix.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
+            if(totalCredito > 0) relatorio += `💳 *Crédito:* R$ ${totalCredito.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
+            if(totalDebito > 0) relatorio += `💳 *Débito:* R$ ${totalDebito.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n`;
+            relatorio += `\n*TOTAL GERAL:* R$ ${totalEntradas.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n\n`;
+        } else {
+            relatorio += `Total em ${metodoFiltro}: R$ ${somaDoFiltroUnico.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n\n`;
+        }
+    }
+    
+    if(dpFiltrados.length > 0 && metodoFiltro === 'todos') {
+        relatorio += `*SAÍDAS / SANGRIAS:*\n`;
+        let totalSaidas = 0;
+        dpFiltrados.forEach(d => {
+            relatorio += `• *${d.descricao.trim()}* (${d.tipo})\n`;
+            relatorio += `- R$ ${d.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n\n`;
+            totalSaidas += d.valor;
+        });
+        relatorio += `*TOTAL SAÍDAS:* R$ ${totalSaidas.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n\n`;
+        
+        const saldoGaveta = totalDinheiro - totalSaidas;
+        relatorio += `*SALDO FÍSICO NA GAVETA (Dinheiro - Saídas):* R$ ${saldoGaveta.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n\n`;
+    }
+    
+    const zapLink = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(relatorio);
+    window.open(zapLink, '_blank');
+}
+
+function baixarBackup() {
+    const node = document.createElement('a');
+    node.setAttribute("href", "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({pagamentos, despesas})));
+    node.setAttribute("download", "backup_jsgestao.json");
+    document.body.appendChild(node); node.click(); node.remove();
+}
+function restaurarBackup(input) {
+    const fr = new FileReader();
+    fr.onload = (e) => {
+        const d = JSON.parse(e.target.result);
+        if(d.pagamentos && d.despesas) { pagamentos = d.pagamentos; despesas = d.despesas; migrarDados(); save(); location.reload(); }
+    }; fr.readAsText(input.files[0]);
+}
+function limparDados(){ if(confirm("Apagar tudo permanentemente?")) { localStorage.clear(); location.reload(); } }
+function showToast(msg, type='success') {
+    const t = document.createElement('div'); 
+    t.className = 'toast' + (type === 'error' ? ' error-toast' : '');
+    t.innerHTML = `<i class="fas fa-${type==='error'?'times':'check'}-circle" style="color:${type==='error'?'var(--danger)':'var(--accent-green)'}"></i> <span>${msg}</span>`;
+    document.getElementById('toast-container').appendChild(t); 
+    setTimeout(()=>t.remove(), 3000);
 }
 </script>
 </body>
