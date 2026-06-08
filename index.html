@@ -17,6 +17,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
 <style>
 /* ================= CSS (VISUAL ELITE) ================= */
@@ -167,12 +168,20 @@ textarea { resize: vertical; min-height: 80px; }
 .chip-ref:hover { background: rgba(59,130,246,0.3); }
 .quick-refs-container { display: flex; gap: 6px; margin-top: 8px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .quick-refs-container::-webkit-scrollbar { display: none; }
+
+/* Estilos Especiais do Leitor da Câmera */
+#reader { width: 100%; border: none; border-radius: 8px; overflow: hidden; background: #000; }
+#reader video { border-radius: 8px; object-fit: cover; }
+#reader__dashboard_section_csr span { color: var(--text-main) !important; }
+#reader__dashboard_section_swaplink { color: var(--primary) !important; text-decoration: none; }
+#reader button { background: var(--primary); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-top:10px;}
 </style>
 </head>
 <body>
 
 <datalist id="listaNomes"></datalist>
 <datalist id="listaContratos"></datalist>
+<datalist id="listaRefs"></datalist>
 
 <div class="app-wrapper">
     <aside id="sidebar">
@@ -282,14 +291,20 @@ textarea { resize: vertical; min-height: 80px; }
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Cliente</label>
                         <input id="nomeCliente" class="uppercase-input" list="listaNomes" placeholder="NOME DO CLIENTE" oninput="this.value = this.value.toUpperCase(); verificarDuplicidade(); autoPreencher('nome')" onkeyup="checkEnter(event, salvarPagamento)" autocomplete="off" />
                     </div>
-                    <div>
-                        <label style="font-size:0.8rem; color:var(--text-secondary)">Contrato</label>
+                    
+                    <div style="grid-column: span 2;">
+                        <label style="font-size:0.8rem; color:var(--text-secondary); display:flex; justify-content:space-between; align-items:center;">
+                            <span>Contrato</span>
+                            <div onclick="abrirScanner()" style="background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.4); padding:4px 10px; border-radius:6px; cursor:pointer; color:var(--accent-green); font-weight:600; display:flex; align-items:center; gap:6px;">
+                                <i class="fas fa-camera"></i> Ler Carnê
+                            </div>
+                        </label>
                         <input id="contrato" class="uppercase-input" list="listaContratos" placeholder="Nº CONTRATO" oninput="this.value = this.value.toUpperCase(); verificarDuplicidade(); autoPreencher('contrato')" autocomplete="off" />
                     </div>
-                    <div>
+
+                    <div style="grid-column: span 2;">
                         <label style="font-size:0.8rem; color:var(--text-secondary)">Referência</label>
-                        <input id="referencia" class="uppercase-input" placeholder="EX: MAI/2026" oninput="this.value = this.value.toUpperCase(); verificarDuplicidade()" onkeyup="checkEnter(event, salvarPagamento)" autocomplete="off" />
-                        <!-- BOTÕES DE REFERÊNCIA RÁPIDA -->
+                        <input id="referencia" class="uppercase-input" list="listaRefs" placeholder="EX: MAI/2026" oninput="this.value = this.value.toUpperCase(); verificarDuplicidade()" onkeyup="checkEnter(event, salvarPagamento)" autocomplete="off" />
                         <div id="quickRefs" class="quick-refs-container"></div>
                     </div>
                     
@@ -475,13 +490,21 @@ textarea { resize: vertical; min-height: 80px; }
     <button onclick="navegar('config')" class="mobile-btn" id="mob-config"><i class="fas fa-cog"></i></button>
 </nav>
 
-<!-- Modal Resumo Gráfico -->
 <div id="modalResumo" class="hidden modal-overlay">
     <div class="card" style="width:100%; max-width:500px; max-height:80vh; overflow-y:auto; position:relative;">
         <i class="fas fa-times" onclick="fecharResumoMetodo()" style="position:absolute; top:20px; right:20px; cursor:pointer; font-size:1.5rem; color:var(--text-secondary);"></i>
         <h2 id="mrTitulo" style="margin-top:0; color:var(--primary); padding-right:30px;">Resumo</h2>
         <p style="color:var(--text-secondary); margin-bottom: 20px;">Lançamentos no período selecionado</p>
         <div id="mrConteudo"></div>
+    </div>
+</div>
+
+<div id="modalScanner" class="hidden modal-overlay">
+    <div class="card" style="width:100%; max-width:500px; position:relative; padding: 15px;">
+        <i class="fas fa-times" onclick="fecharScanner()" style="position:absolute; top:15px; right:15px; cursor:pointer; font-size:1.5rem; color:var(--text-secondary); z-index: 10;"></i>
+        <h3 style="margin-top:0; margin-bottom: 15px;"><i class="fas fa-camera"></i> Escanear Carnê</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: -10px;">Aponte para o código de barras ou QR Code do boleto</p>
+        <div id="reader"></div>
     </div>
 </div>
 
@@ -498,6 +521,9 @@ let modoMisto = false;
 let dashFilter = 'dia'; 
 let ultimoLancamento = null;
 let clienteAtivoDetalhe = { nome: '', contrato: '' }; 
+
+// Scanner
+let html5QrcodeScanner = null;
 
 // Backup Automático
 setInterval(() => {
@@ -517,19 +543,14 @@ const diaHj = String(hoje.getDate()).padStart(2, '0');
 const dataPadrao = anoHj + '-' + mesHj + '-' + diaHj;
 document.getElementById('filtroDataLista').value = dataPadrao;
 
-// GERA O MÊS PASSADO COMO PADRÃO E CRIA OS BOTÕES (CHIPS) RÁPIDOS
 function preencherRefDefault() {
     const meses = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
     const dHoje = new Date();
-    
-    // Calcula Mês Passado e preenche o input automaticamente
     const dPassado = new Date(dHoje.getFullYear(), dHoje.getMonth() - 1, 1);
     document.getElementById('referencia').value = meses[dPassado.getMonth()] + '/' + dPassado.getFullYear();
     
-    // Monta os botões (chips) de -2 a +1 meses a partir de hoje
     const quickRefs = document.getElementById('quickRefs');
     let chipsHtml = '';
-    
     for(let i = -2; i <= 1; i++) {
         let tempD = new Date(dHoje.getFullYear(), dHoje.getMonth() + i, 1);
         let refStr = meses[tempD.getMonth()] + '/' + tempD.getFullYear();
@@ -538,7 +559,6 @@ function preencherRefDefault() {
     quickRefs.innerHTML = chipsHtml;
 }
 
-// Ao clicar num botão rápido, preenche e já foca no Valor
 function setRefRapida(val) {
     document.getElementById('referencia').value = val;
     verificarDuplicidade();
@@ -547,14 +567,12 @@ function setRefRapida(val) {
 
 preencherRefDefault();
 
-// NOVA MÁSCARA - DIRETO PRO INTEIRO E CRAVA ,00
 function mascararMoeda(i) {
     let v = i.value.split(',')[0].replace(/\D/g, ""); 
     if (!v) { i.value = ""; return; }
     v = parseInt(v, 10).toString();
     v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
     i.value = v + ",00";
-    // Mantém o cursor antes da vírgula para ele poder continuar digitando os inteiros
     let pos = i.value.length - 3;
     i.setSelectionRange(pos, pos);
 }
@@ -576,6 +594,7 @@ document.addEventListener('keydown', function(e) {
         document.getElementById('nomeCliente').focus();
     } else if (e.key === 'Escape') {
         cancelarEdicao();
+        fecharScanner();
         document.getElementById('descDespesa').value = ''; 
         document.getElementById('valorDespesa').value = '';
     }
@@ -593,6 +612,67 @@ document.getElementById('contrato').addEventListener('keydown', function(e){
         document.getElementById('valorPago').focus();
     }
 });
+
+/* ================= LÓGICA DO SCANNER ================= */
+function abrirScanner() {
+    document.getElementById('modalScanner').classList.remove('hidden');
+    
+    if(!html5QrcodeScanner) {
+        html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", { fps: 10, qrbox: {width: 250, height: 100} }, false);
+    }
+    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+}
+
+function fecharScanner() {
+    document.getElementById('modalScanner').classList.add('hidden');
+    if(html5QrcodeScanner) {
+        html5QrcodeScanner.clear().catch(error => {
+            console.error("Failed to clear scanner. ", error);
+        });
+    }
+}
+
+function onScanSuccess(decodedText, decodedResult) {
+    fecharScanner();
+    
+    // Limpa tudo o que não for número do texto lido
+    let numerosLidos = decodedText.replace(/\D/g, '');
+    let melhorMatch = "";
+    
+    // Varre toda a base de clientes tentando encontrar o contrato escondido nesses números
+    for(let i=0; i<clientesDB.length; i++) {
+        for(let j=0; j<clientesDB[i].todosContratos.length; j++) {
+            let ct = clientesDB[i].todosContratos[j];
+            if(ct && numerosLidos.includes(ct)) {
+                // Se achar mais de um, pega o maior para evitar erros
+                if(ct.length > melhorMatch.length) {
+                    melhorMatch = ct;
+                }
+            }
+        }
+    }
+    
+    const inputContrato = document.getElementById('contrato');
+    
+    if(melhorMatch.length >= 3) {
+        inputContrato.value = melhorMatch;
+        showToast("Leitura feita! Cliente localizado.", "success");
+        autoPreencher('contrato');
+        // Espera a UI atualizar e foca no Confirmar para ser instantâneo
+        setTimeout(() => document.getElementById('btnSalvar').focus(), 100);
+    } else {
+        // Se não encontrou o cliente, joga os 15 primeiros números lidos e avisa
+        inputContrato.value = numerosLidos.substring(0, 15);
+        showToast("Código lido, mas cliente não encontrado na base.", "error");
+        inputContrato.focus();
+    }
+}
+
+function onScanFailure(error) {
+    // Ignora os erros contínuos enquanto ele tenta focar o código
+}
+/* ===================================================== */
 
 function verificarDuplicidade() {
     const nome = document.getElementById('nomeCliente').value.trim().toUpperCase();
@@ -627,13 +707,15 @@ function atualizarBaseClientes() {
     clientesDB = [];
     const sorted = [...pagamentos].sort((a,b) => b.ts - a.ts);
     
-    // Homônimos separados por Nome + Contrato (Voltou a Lógica Rígida)
     const cliMap = {};
     sorted.forEach(p => {
         if(p.nome) {
             const key = p.nome + '|' + (p.contrato || '');
             if(!cliMap[key]) {
-                cliMap[key] = { nome: p.nome, contrato: p.contrato || '', ultimoValor: p.valor };
+                cliMap[key] = { nome: p.nome, contrato: p.contrato || '', ultimoValor: p.valor, todosContratos: [] };
+            }
+            if(p.contrato && !cliMap[key].todosContratos.includes(p.contrato)) {
+                cliMap[key].todosContratos.push(p.contrato);
             }
         }
     });
